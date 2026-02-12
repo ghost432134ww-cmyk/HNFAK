@@ -2,139 +2,159 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HNFAK</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HNFAK PREMIUM</title>
+    
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#000000">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/5977/5977590.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
-        :root { --red: #E50914; --black: #141414; --bg: #000; }
-        body { margin: 0; background-color: var(--bg); color: #fff; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; overflow-x: hidden; }
+        :root { --red: #E50914; --bg: #141414; }
+        body { margin: 0; background: #000; color: #fff; font-family: 'Roboto', sans-serif; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
 
-        /* NETFLIX TARZI HEADER */
+        /* HEADER */
         .header {
-            position: fixed; top: 0; width: 100%; z-index: 1000;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 10%, transparent);
-            display: flex; align-items: center; padding: 20px 4%; transition: 0.5s;
+            position: fixed; top: 0; width: 100%; z-index: 900;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+            padding: 15px 20px;
+            display: flex; justify-content: space-between; align-items: center;
         }
-        .logo { color: var(--red); font-size: 28px; font-weight: bold; letter-spacing: 2px; }
+        .logo { color: var(--red); font-size: 26px; font-weight: bold; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
 
-        /* CANLI KESİT ALANI (BILLBOARD) */
+        /* HERO (Hareketli Arka Plan) */
         .hero {
-            position: relative; width: 100%; height: 80vh; background: #000;
-            display: flex; align-items: center; justify-content: flex-start;
+            position: relative; height: 70vh; width: 100%; overflow: hidden;
+            display: flex; align-items: flex-end;
         }
-        .video-background {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; overflow: hidden;
+        .hero-video {
+            position: absolute; top: 50%; left: 50%; 
+            width: 300%; height: 150%; 
+            transform: translate(-50%, -50%);
+            pointer-events: none; opacity: 0.6;
         }
-        .video-background iframe {
-            width: 100vw; height: 56.25vw; min-height: 80vh; min-width: 142.22vh;
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        .hero-content {
+            position: relative; z-index: 10; padding: 20px; width: 100%;
+            background: linear-gradient(to top, #000, transparent);
         }
-        .hero-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(77deg, rgba(0,0,0,0.8) 0%, transparent 85%);
-            padding: 0 4%; display: flex; flex-direction: column; justify-content: center;
+        .hero-title { font-size: 3rem; font-weight: bold; margin-bottom: 10px; line-height: 1; }
+        .hero-desc { font-size: 0.9rem; color: #ccc; margin-bottom: 15px; max-width: 80%; }
+        .play-btn {
+            background: #fff; color: #000; border: none; padding: 8px 20px;
+            font-size: 1rem; font-weight: bold; border-radius: 4px; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 5px;
         }
-        .hero-title { font-size: 3rem; margin-bottom: 10px; font-weight: bold; }
-        .hero-desc { font-size: 1.2rem; max-width: 500px; color: #ddd; margin-bottom: 20px; }
 
-        /* FİLM LİSTELERİ */
-        .main-container { margin-top: -100px; position: relative; z-index: 10; padding-bottom: 100px; }
-        .row { padding: 20px 0 0 4%; }
-        .row-title { font-size: 1.4rem; font-weight: 600; margin-bottom: 10px; }
+        /* LİSTELER */
+        .category { margin-top: 10px; padding-left: 15px; }
+        .cat-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 10px; color: #e5e5e5; }
         
         .slider {
-            display: flex; overflow-x: scroll; gap: 10px;
-            padding: 20px 0; scrollbar-width: none;
+            display: flex; gap: 10px; overflow-x: auto; padding-bottom: 20px;
+            scrollbar-width: none;
         }
         .slider::-webkit-scrollbar { display: none; }
-
+        
         .card {
-            flex: 0 0 auto; width: 200px; transition: transform 0.3s;
-            cursor: pointer; border-radius: 4px; overflow: hidden;
+            flex: 0 0 auto; width: 140px; border-radius: 6px; overflow: hidden;
+            position: relative; transition: transform 0.2s; cursor: pointer;
         }
-        .card:hover { transform: scale(1.1); z-index: 20; }
-        .card img { width: 100%; border-radius: 4px; }
+        .card:active { transform: scale(0.95); }
+        .card img { width: 100%; height: 210px; object-fit: cover; }
 
-        /* VİDEO OYNATICI MODAL */
-        #player-overlay {
+        /* PLAYER OVERLAY (Tam Ekran Oynatıcı) */
+        #video-player {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; display: none; z-index: 2000;
+            background: #000; z-index: 2000; display: none;
         }
-        .close-btn {
-            position: absolute; top: 20px; right: 20px; font-size: 30px;
-            cursor: pointer; color: white; z-index: 2100;
+        .close-player {
+            position: absolute; top: 20px; right: 20px; color: #fff;
+            font-size: 30px; cursor: pointer; z-index: 2001; background: rgba(0,0,0,0.5);
+            width: 40px; height: 40px; text-align: center; line-height: 40px; border-radius: 50%;
         }
-        iframe#main-player { width: 100%; height: 100%; border: none; }
+        iframe { width: 100%; height: 100%; border: none; }
 
         /* MOBİL NAV */
-        .mobile-nav {
+        .nav-bar {
             position: fixed; bottom: 0; width: 100%; background: #121212;
-            display: flex; justify-content: space-around; padding: 15px 0;
+            display: flex; justify-content: space-around; padding: 12px 0;
             border-top: 1px solid #333; z-index: 1000;
         }
-        .nav-item { color: #888; text-decoration: none; font-size: 12px; text-align: center; }
-        .nav-item.active { color: white; }
+        .nav-item { color: #888; text-decoration: none; font-size: 0.7rem; text-align: center; }
+        .nav-item.active { color: #fff; }
+        .nav-icon { display: block; font-size: 1.3rem; margin-bottom: 3px; }
+
     </style>
 </head>
 <body>
 
-    <header class="header"><div class="logo">HNFAK</div></header>
+    <div class="header">
+        <div class="logo">HNFAK</div>
+    </div>
 
     <div class="hero">
-        <div class="video-background">
-            <iframe src="https://www.youtube.com/embed/D30r0CwtIKc?autoplay=1&mute=1&controls=0&loop=1&playlist=D30r0CwtIKc" frameborder="0"></iframe>
+        <div class="hero-video">
+            <iframe src="https://www.youtube.com/embed/73_1biilkYk?autoplay=1&mute=1&controls=0&loop=1&playlist=73_1biilkYk&start=10" allow="autoplay"></iframe>
         </div>
-        <div class="hero-overlay">
-            <div class="hero-title">Deadpool & Wolverine</div>
-            <div class="hero-desc">Dünyayı kurtarmak için isteksiz bir kahraman ve daha da isteksiz bir kurtarıcı bir araya geliyor.</div>
-            <button onclick="openPlayer('tt6263850')" style="padding: 10px 25px; font-size: 18px; font-weight: bold; cursor: pointer; border: none; border-radius: 4px;">▶ Oynat</button>
-        </div>
-    </div>
-
-    <div class="main-container">
-        <div class="row">
-            <div class="row-title">Popüler Filmler</div>
-            <div class="slider">
-                <div class="card" onclick="openPlayer('tt31046101')">
-                    <img src="https://image.tmdb.org/t/p/w500/29SBy9p2A963Tia8pP2S0Y6v8p6.jpg" alt="Primate">
-                </div>
-                <div class="card" onclick="openPlayer('tt6263850')">
-                    <img src="https://image.tmdb.org/t/p/w500/8cdWjvZQUmOZabaBSEm6768v6NG.jpg" alt="Deadpool">
-                </div>
-                <div class="card" onclick="openPlayer('tt11389872')">
-                    <img src="https://image.tmdb.org/t/p/w500/gKkl37HQuKTSkA6Y3XpxlYpRw33.jpg" alt="Maymunlar">
-                </div>
-                <div class="card" onclick="openPlayer('tt11317426')">
-                    <img src="https://image.tmdb.org/t/p/w500/udDcl70jRiiQZ60o9p6G60o2o1u.jpg" alt="Joker">
-                </div>
-            </div>
+        <div class="hero-content">
+            <div class="hero-title">Deadpool &<br>Wolverine</div>
+            <div class="hero-desc">Marvel evreni sonsuza dek değişmek üzere. Wolverine iyileşiyor, Deadpool ise gevezeliğe devam ediyor.</div>
+            <button class="play-btn" onclick="openMovie('tt6263850')">▶ Oynat</button>
         </div>
     </div>
 
-    <div id="player-overlay">
-        <span class="close-btn" onclick="closePlayer()">✕</span>
-        <iframe id="main-player" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
+    <div class="category" id="filmler">
+        <div class="cat-title">🔥 Trend Filmler</div>
+        <div class="slider">
+            <div class="card" onclick="openMovie('tt31046101')"><img src="https://image.tmdb.org/t/p/w300/29SBy9p2A963Tia8pP2S0Y6v8p6.jpg"></div> <div class="card" onclick="openMovie('tt6263850')"><img src="https://image.tmdb.org/t/p/w300/8cdWjvZQUmOZabaBSEm6768v6NG.jpg"></div> <div class="card" onclick="openMovie('tt11389872')"><img src="https://image.tmdb.org/t/p/w300/gKkl37HQuKTSkA6Y3XpxlYpRw33.jpg"></div> <div class="card" onclick="openMovie('tt11317426')"><img src="https://image.tmdb.org/t/p/w300/udDcl70jRiiQZ60o9p6G60o2o1u.jpg"></div> <div class="card" onclick="openMovie('tt15239678')"><img src="https://image.tmdb.org/t/p/w300/pWy85e9Q3Z4r9tD4T3S1g5f4q5A.jpg"></div> <div class="card" onclick="openMovie('tt1630029')"><img src="https://image.tmdb.org/t/p/w300/t6HIqrRAclMCA60NsSmeqe9RmPA.jpg"></div> <div class="card" onclick="openMovie('tt15398776')"><img src="https://image.tmdb.org/t/p/w300/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg"></div> <div class="card" onclick="openMovie('tt14849144')"><img src="https://image.tmdb.org/t/p/w300/iwsMu0ehhpdUAkjJ763CQRch99q.jpg"></div> <div class="card" onclick="openMovie('tt10366206')"><img src="https://image.tmdb.org/t/p/w300/vZloFAK7NmvMGKE7VkF5UHaz0I.jpg"></div> <div class="card" onclick="openMovie('tt1160419')"><img src="https://image.tmdb.org/t/p/w300/d5NxsKlXo0qyCIkg5J03No22vT.jpg"></div> <div class="card" onclick="openMovie('tt0816692')"><img src="https://image.tmdb.org/t/p/w300/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg"></div> <div class="card" onclick="openMovie('tt1375666')"><img src="https://image.tmdb.org/t/p/w300/9gk7admal4zlL24hJ4F3ypeDeSh.jpg"></div> </div>
     </div>
 
-    <nav class="mobile-nav">
-        <a href="#" class="nav-item active">🏠<br>Ana Sayfa</a>
-        <a href="#" class="nav-item">🎬<br>Filmler</a>
-        <a href="#" class="nav-item">📺<br>Diziler</a>
-    </nav>
+    <div class="category" id="diziler">
+        <div class="cat-title">📺 Efsane Diziler</div>
+        <div class="slider">
+            <div class="card" onclick="openTV('tt3556926')"><img src="https://image.tmdb.org/t/p/w300/uKvVjHNqBPlVZjZSThO2F68Ck86.jpg"></div> <div class="card" onclick="openTV('tt12637874')"><img src="https://image.tmdb.org/t/p/w300/hUu9bTwhA7V13X6c12U533JkHhF.jpg"></div> <div class="card" onclick="openTV('tt2788316')"><img src="https://image.tmdb.org/t/p/w300/7WUHnLXwnxFZ58qZzM5l85J4qIv.jpg"></div> <div class="card" onclick="openTV('tt4574334')"><img src="https://image.tmdb.org/t/p/w300/49WJfeN0moxb9IPfGn8AIqMGskD.jpg"></div> <div class="card" onclick="openTV('tt11198330')"><img src="https://image.tmdb.org/t/p/w300/1X4h40nqsUAUSyUBsWLoCfjj89.jpg"></div> <div class="card" onclick="openTV('tt0903747')"><img src="https://image.tmdb.org/t/p/w300/ggFHVNu6YYI5L9pCfOacjizRGt.jpg"></div> <div class="card" onclick="openTV('tt1190634')"><img src="https://image.tmdb.org/t/p/w300/7Ns6tO3aYjppI5bFhyPwLOFgdbY.jpg"></div> <div class="card" onclick="openTV('tt10919420')"><img src="https://image.tmdb.org/t/p/w300/dDlEqlF81sDDnerwoCConQUj9i5.jpg"></div> <div class="card" onclick="openTV('tt13443470')"><img src="https://image.tmdb.org/t/p/w300/9PFonBhy4cQy7Jz20NpMygczOkv.jpg"></div> <div class="card" onclick="openTV('tt0944947')"><img src="https://image.tmdb.org/t/p/w300/1XS1oqL89opfnbGw83trZrcr5H.jpg"></div> </div>
+    </div>
+
+    <div class="category" id="animasyon">
+        <div class="cat-title">🧸 Animasyon Dünyası</div>
+        <div class="slider">
+            <div class="card" onclick="openMovie('tt22022452')"><img src="https://image.tmdb.org/t/p/w300/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg"></div> <div class="card" onclick="openMovie('tt21692408')"><img src="https://image.tmdb.org/t/p/w300/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg"></div> <div class="card" onclick="openMovie('tt9362722')"><img src="https://image.tmdb.org/t/p/w300/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg"></div> <div class="card" onclick="openMovie('tt6791350')"><img src="https://image.tmdb.org/t/p/w300/qmbaVsQA25i88rTPo7wQc72rL3w.jpg"></div> <div class="card" onclick="openMovie('tt2380307')"><img src="https://image.tmdb.org/t/p/w300/gGEsBPAijhVUFoiNpgZXqRVWJt2.jpg"></div> <div class="card" onclick="openMovie('tt0432283')"><img src="https://image.tmdb.org/t/p/w300/npHNjldbeTHdKKw28bJKs7rzzqj.jpg"></div> <div class="card" onclick="openMovie('tt1979376')"><img src="https://image.tmdb.org/t/p/w300/l1f9JgV5Vn61fP4f4wZp8r9XZ5.jpg"></div> <div class="card" onclick="openMovie('tt0448115')"><img src="https://image.tmdb.org/t/p/w300/h1B7tW0t399VDjAcWJh8m87469b.jpg"></div> <div class="card" onclick="openMovie('tt1049413')"><img src="https://image.tmdb.org/t/p/w300/vpO16WqjQk93pW4vV9yKq1y9w.jpg"></div> <div class="card" onclick="openMovie('tt1365162')"><img src="https://image.tmdb.org/t/p/w300/ygGmAO60t8GyqU69EXxC0MhD.jpg"></div> </div>
+    </div>
+
+    <div class="nav-bar">
+        <a href="#" class="nav-item active"><span class="nav-icon">🏠</span>Ana Sayfa</a>
+        <a href="#filmler" class="nav-item"><span class="nav-icon">🎬</span>Filmler</a>
+        <a href="#diziler" class="nav-item"><span class="nav-icon">📺</span>Diziler</a>
+        <a href="#animasyon" class="nav-item"><span class="nav-icon">🧸</span>Çocuk</a>
+    </div>
+
+    <div id="video-player">
+        <div class="close-player" onclick="closeVideo()">✕</div>
+        <iframe id="iframe-screen" src="" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
+    </div>
 
     <script>
-        function openPlayer(id) {
-            const player = document.getElementById('main-player');
-            const overlay = document.getElementById('player-overlay');
-            player.src = "https://vidsrc.cc/v2/embed/movie/" + id;
-            overlay.style.display = 'block';
+        // Oynatıcıyı Açma Fonksiyonları
+        // "vidsrc.cc/v2" kullandım çünkü en stabil ve hatasız olan bu.
+        
+        function openMovie(id) {
+            document.getElementById('video-player').style.display = 'block';
+            document.getElementById('iframe-screen').src = "https://vidsrc.cc/v2/embed/movie/" + id;
         }
-        function closePlayer() {
-            const player = document.getElementById('main-player');
-            const overlay = document.getElementById('player-overlay');
-            player.src = "";
-            overlay.style.display = 'none';
+
+        function openTV(id) {
+            document.getElementById('video-player').style.display = 'block';
+            document.getElementById('iframe-screen').src = "https://vidsrc.cc/v2/embed/tv/" + id;
+        }
+
+        function closeVideo() {
+            document.getElementById('video-player').style.display = 'none';
+            document.getElementById('iframe-screen').src = ""; // Videoyu durdurur
         }
     </script>
+
 </body>
 </html>
