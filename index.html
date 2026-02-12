@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HNFAK | Premium Sinema Keyfi</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <div class="logo" onclick="location.reload()">HNF<span>AK</span></div>
+            <nav class="categories">
+                <button onclick="app.fetchByCategory(28)">Aksiyon</button>
+                <button onclick="app.fetchByCategory(35)">Komedi</button>
+                <button onclick="app.fetchByCategory(27)">Korku</button>
+                <button onclick="app.fetchByCategory(878)">Bilim Kurgu</button>
+            </nav>
+        </div>
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="HNFAK'ta ara..." onkeyup="event.key === 'Enter' && app.search()">
+        </div>
+    </header>
+
+    <section class="hero" id="heroSection">
+        <div class="hero-content">
+            <h1 id="heroTitle">HNFAK PREMIUM</h1>
+            <p id="heroDesc">En yeni Türkçe dublajlı filmleri keşfedin.</p>
+            <div class="hero-btns">
+                <button class="play-btn" id="heroPlayBtn"><i class="fas fa-play"></i> Hemen İzle</button>
+            </div>
+        </div>
+    </section>
+
+    <h2 class="row-title">Popüler İçerikler</h2>
+    <main id="movieGrid" class="grid"></main>
+
+    <div id="playerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="app.closePlayer()">&times;</span>
+            <iframe id="videoFrame" src="" allowfullscreen frameborder="0" referrerpolicy="no-referrer"></iframe>
+            <div id="sourceBar" class="source-bar"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
