@@ -4,163 +4,117 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>HNFAK PREMIUM</title>
-    
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    
     <style>
-        :root { --red: #E50914; --bg: #050505; --card: #141414; }
-        html { scroll-behavior: smooth; }
-        body { 
-            margin: 0; 
-            background: var(--bg); 
-            color: #fff; 
-            font-family: 'Poppins', sans-serif; 
-            padding-bottom: 80px; 
-        }
+        :root { --red: #E50914; --bg: #050505; --card: #181818; }
+        body { margin: 0; background: var(--bg); color: #fff; font-family: 'Poppins', sans-serif; overflow-x: hidden; padding-bottom: 80px; }
 
-        /* --- ÜST PANEL --- */
-        .top-nav {
-            padding: 15px;
+        /* --- LOGO --- */
+        .header { padding: 15px; text-align: center; background: #000; border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 1000; }
+        .logo { color: var(--red); font-size: 24px; font-weight: bold; letter-spacing: 2px; }
+
+        /* --- HAREKETLİ KESİT ALANI (3-4 SN DEĞİŞİM) --- */
+        .hero-slider {
+            width: 100%;
+            height: 50vh;
+            position: relative;
+            overflow: hidden;
             background: #000;
-            text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid #222;
         }
-        .logo { color: var(--red); font-size: 24px; font-weight: bold; letter-spacing: 2px; text-decoration: none; }
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: flex-end;
+            padding: 40px;
+        }
+        .slide.active { opacity: 1; }
+        .slide-info { background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px; backdrop-filter: blur(5px); }
 
-        /* --- SATIRLAR --- */
-        .row { padding: 20px 0 0 5%; }
-        .row-title { font-size: 1.1rem; margin-bottom: 12px; font-weight: 600; border-left: 4px solid var(--red); padding-left: 10px; }
-        
-        .slider { 
-            display: flex; 
-            overflow-x: scroll; 
-            gap: 15px; 
-            padding-bottom: 15px; 
-            scrollbar-width: none; 
-        }
+        /* --- FİLM SIRALARI --- */
+        .row { padding: 25px 0 0 4%; }
+        .row-title { font-size: 1.2rem; margin-bottom: 15px; font-weight: 600; color: #fff; }
+        .slider { display: flex; overflow-x: scroll; gap: 15px; padding-bottom: 20px; scrollbar-width: none; }
         .slider::-webkit-scrollbar { display: none; }
-        
-        .card { 
-            flex: 0 0 auto; 
-            width: 280px; 
-            background: var(--card); 
-            border-radius: 12px; 
-            overflow: hidden; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        }
-        
-        /* TAM EKRAN VE OYNATICI AYARI */
-        .card iframe { 
-            width: 100%; 
-            aspect-ratio: 16/9; 
-            border: none; 
-            background: #000;
-        }
-        
-        .info { 
-            padding: 12px; 
-            font-size: 0.85rem; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            background: #111;
-        }
+
+        /* --- POSTER KARTLARI --- */
+        .card { flex: 0 0 auto; width: 180px; background: var(--card); border-radius: 8px; overflow: hidden; transition: 0.3s; cursor: pointer; border: 1px solid #333; }
+        .card:hover { transform: scale(1.08); border-color: var(--red); }
+        .poster { width: 100%; aspect-ratio: 2/3; background-size: cover; background-position: center; }
+        .card iframe { width: 100%; aspect-ratio: 16/9; display: none; border: none; } /* Başta gizli, tıklayınca açılır */
+        .card.playing .poster { display: none; }
+        .card.playing iframe { display: block; }
+        .info { padding: 8px; font-size: 0.75rem; text-align: center; }
 
         /* --- MOBİL NAV --- */
-        .app-bar {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: rgba(0,0,0,0.95);
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
-            border-top: 1px solid #222;
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-        }
-        .app-item { text-align: center; color: #777; text-decoration: none; font-size: 0.7rem; }
+        .app-bar { position: fixed; bottom: 0; width: 100%; background: #000; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #222; z-index: 1000; }
+        .app-item { color: #777; text-decoration: none; font-size: 0.7rem; text-align: center; }
         .app-item.active { color: var(--red); }
-        .app-icon { font-size: 1.2rem; display: block; margin-bottom: 2px; }
-
-        .fullscreen-msg {
-            background: #1a1a1a;
-            color: #46d369;
-            text-align: center;
-            padding: 8px;
-            font-size: 0.7rem;
-            border-bottom: 1px solid #222;
-        }
     </style>
 </head>
 <body>
 
-<div class="top-nav"><a href="#" class="logo">HNFAK PREMIUM</a></div>
-<div class="fullscreen-msg">✅ Tam ekran desteği aktif. Videoyu başlatıp sağ alttaki simgeye dokunun.</div>
+<div class="header"><div class="logo">HNFAK</div></div>
 
-<div id="filmler" class="row">
-    <div class="row-title">Popüler Filmler</div>
-    <div class="slider">
-        <div class="card">
-            <iframe src="https://vidsrc.cc/v2/embed/movie/tt31046101" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
-            <div class="info"><span>Primate (2024)</span></div>
-        </div>
-        <div class="card">
-            <iframe src="https://vidsrc.cc/v2/embed/movie/tt6263850" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
-            <div class="info"><span>Deadpool & Wolverine</span></div>
-        </div>
-        <div class="card">
-            <iframe src="https://vidsrc.cc/v2/embed/movie/tt11389872" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
-            <div class="info"><span>Maymunlar Cehennemi</span></div>
-        </div>
-        <div class="card">
-            <iframe src="https://vidsrc.cc/v2/embed/movie/tt11317426" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
-            <div class="info"><span>Joker 2</span></div>
-        </div>
+<div class="hero-slider" id="heroSlider">
+    <div class="slide active" style="background-image: linear-gradient(to top, #050505, transparent), url('https://image.tmdb.org/t/p/original/m4Jm2unRjBkvvCU2Zp2Setp9YmE.jpg');">
+        <div class="slide-info"><h2>Deadpool & Wolverine</h2><p>Şimdi İzle</p></div>
+    </div>
+    <div class="slide" style="background-image: linear-gradient(to top, #050505, transparent), url('https://image.tmdb.org/t/p/original/3mY9p990mS7v6T2S7L838vVf8A9.jpg');">
+        <div class="slide-info"><h2>Primate (2024)</h2><p>Gizem ve Aksiyon</p></div>
+    </div>
+    <div class="slide" style="background-image: linear-gradient(to top, #050505, transparent), url('https://image.tmdb.org/t/p/original/9BBTo63ANSmhC4p6r62ZL6JpGv1.jpg');">
+        <div class="slide-info"><h2>Avatar: Suyun Yolu</h2><p>Görsel Şölen</p></div>
     </div>
 </div>
 
-<div id="diziler" class="row">
-    <div class="row-title">Trend Diziler</div>
+<div class="row">
+    <div class="row-title">🍿 Popüler Filmler</div>
     <div class="slider">
-        <div class="card">
-            <iframe src="https://vidsrc.cc/v2/embed/tv/tt3556926" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
-            <div class="info"><span>The Last of Us</span></div>
+        <div class="card" onclick="playVideo(this)">
+            <div class="poster" style="background-image: url('https://image.tmdb.org/t/p/w500/29SBy9p2A963Tia8pP2S0Y6v8p6.jpg');"></div>
+            <iframe src="https://vidsrc.cc/v2/embed/movie/tt31046101" allowfullscreen></iframe>
+            <div class="info">Primate (2024)</div>
         </div>
-        <div class="card">
-            <iframe src="https://vidsrc.cc/v2/embed/tv/tt4574334" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
-            <div class="info"><span>Stranger Things</span></div>
+        <div class="card" onclick="playVideo(this)">
+            <div class="poster" style="background-image: url('https://image.tmdb.org/t/p/w500/8cdWjvZQUmOZabaBSEm6768v6NG.jpg');"></div>
+            <iframe src="https://vidsrc.cc/v2/embed/movie/tt6263850" allowfullscreen></iframe>
+            <div class="info">Deadpool & Wolverine</div>
         </div>
-        <div class="card">
-            <iframe src="https://vidsrc.cc/v2/embed/tv/tt11198330" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
-            <div class="info"><span>House of the Dragon</span></div>
-        </div>
-    </div>
-</div>
-
-<div id="animasyonlar" class="row">
-    <div class="row-title">Efsane Animasyonlar</div>
-    <div class="slider">
-        <div class="card">
-            <iframe src="https://vidsrc.cc/v2/embed/movie/tt22022452" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
-            <div class="info"><span>Ters Yüz 2</span></div>
-        </div>
-        <div class="card">
-            <iframe src="https://vidsrc.cc/v2/embed/movie/tt9362722" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
-            <div class="info"><span>Spider-Man</span></div>
+        <div class="card" onclick="playVideo(this)">
+            <div class="poster" style="background-image: url('https://image.tmdb.org/t/p/w500/gKkl37HQuKTSkA6Y3XpxlYpRw33.jpg');"></div>
+            <iframe src="https://vidsrc.cc/v2/embed/movie/tt11389872" allowfullscreen></iframe>
+            <div class="info">Maymunlar Cehennemi</div>
         </div>
     </div>
 </div>
 
 <div class="app-bar">
-    <a href="#" class="app-item active"><span class="app-icon">🏠</span>Ana Sayfa</a>
-    <a href="#filmler" class="app-item"><span class="app-icon">🎬</span>Filmler</a>
-    <a href="#diziler" class="app-item"><span class="app-icon">📺</span>Diziler</a>
-    <a href="#animasyonlar" class="app-item"><span class="app-icon">🧸</span>Animasyon</a>
+    <a href="#" class="app-item active">🏠<br>Ana Sayfa</a>
+    <a href="#filmler" class="app-item">🎬<br>Filmler</a>
+    <a href="#diziler" class="app-item">📺<br>Diziler</a>
 </div>
+
+<script>
+    // Hareketli Kesit Döngüsü (4 saniyede bir)
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    setInterval(() => {
+        slides[currentSlide].classList.remove('active');
+        currentSlide = (currentSlide + 1) % slides.length;
+        slides[currentSlide].classList.add('active');
+    }, 4000);
+
+    // Resme tıklayınca videoyu başlat
+    function playVideo(card) {
+        card.classList.add('playing');
+    }
+</script>
 
 </body>
 </html>
