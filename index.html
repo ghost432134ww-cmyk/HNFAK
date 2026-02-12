@@ -3,295 +3,258 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HNFAK ULTIMATE</title>
+    <title>HNFAK | Sınırsız Eğlence</title>
     
-    <meta name="theme-color" content="#000000">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/5977/5977590.png">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
     
     <style>
-        :root { --primary: #E50914; --bg: #000000; --dark-gray: #141414; --text: #ffffff; }
+        :root { --red: #E50914; --black: #080808; --gray: #181818; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        * { box-sizing: border-box; }
         body { 
-            margin: 0; background-color: var(--bg); color: var(--text); 
-            font-family: 'Inter', sans-serif; padding-bottom: 90px;
-            -webkit-tap-highlight-color: transparent;
+            margin: 0; background: var(--black); color: #fff; 
+            font-family: 'Inter', sans-serif; overflow-x: hidden;
+            padding-bottom: 70px;
         }
 
-        /* --- HEADER & ARAMA --- */
-        .header {
-            position: sticky; top: 0; z-index: 999;
-            background: rgba(0,0,0,0.95);
-            padding: 15px; border-bottom: 1px solid #222;
-            backdrop-filter: blur(10px);
-        }
-        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .logo { color: var(--primary); font-size: 24px; font-weight: 900; letter-spacing: 1px; }
-        
-        #search-input {
-            width: 100%; padding: 12px; border-radius: 8px; border: none;
-            background: #222; color: #fff; font-size: 16px; outline: none;
-        }
-        #search-input:focus { background: #333; }
-
-        /* --- HERO (MANŞET) --- */
-        .hero {
-            position: relative; height: 55vh; width: 100%;
-            background-size: cover; background-position: center;
-            display: flex; align-items: flex-end;
-        }
-        .hero-gradient {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to top, #000 5%, transparent 80%);
-        }
-        .hero-content { position: relative; z-index: 2; padding: 20px; width: 100%; }
-        .hero-title { font-size: 2.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 10px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
-        .play-btn {
-            background: var(--text); color: #000; border: none; padding: 10px 25px;
-            font-size: 1rem; font-weight: 700; border-radius: 4px; cursor: pointer;
-            display: flex; align-items: center; gap: 8px; width: fit-content;
-        }
-
-        /* --- LİSTELER --- */
-        .section { padding: 20px 0 0 15px; }
-        .section-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 12px; color: #ddd; }
-        
-        .scroll-container {
-            display: flex; gap: 12px; overflow-x: auto; padding-right: 15px; padding-bottom: 10px;
-            scrollbar-width: none; /* Firefox gizleme */
-        }
-        .scroll-container::-webkit-scrollbar { display: none; /* Chrome gizleme */ }
-        
-        .card {
-            flex: 0 0 auto; width: 130px; position: relative;
-            border-radius: 6px; overflow: hidden; cursor: pointer;
-        }
-        .card img { width: 100%; height: 195px; object-fit: cover; transition: 0.3s; }
-        .card:active img { opacity: 0.7; }
-
-        /* --- ARAMA SONUÇLARI --- */
-        #search-results {
-            display: none; padding: 20px;
-            grid-template-columns: repeat(3, 1fr); gap: 10px;
-        }
-        #search-results.active { display: grid; }
-        .search-card { width: 100%; cursor: pointer; }
-        .search-card img { width: 100%; border-radius: 6px; aspect-ratio: 2/3; object-fit: cover; }
-        .search-card p { font-size: 0.7rem; text-align: center; margin-top: 5px; color: #ccc; }
-
-        /* --- VİDEO OYNATICI (MODAL) --- */
-        .player-modal {
+        /* YÜKLENİYOR EKRANI */
+        #loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 5000; display: none;
+            background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.5s;
         }
-        .close-btn {
-            position: absolute; top: 20px; right: 20px; color: #fff;
-            background: rgba(0,0,0,0.6); padding: 10px 15px; border-radius: 50%;
-            font-size: 20px; cursor: pointer; z-index: 5001; font-weight: bold;
-        }
-        iframe { width: 100%; height: 100%; border: none; }
+        .loader-logo { color: var(--red); font-size: 40px; font-weight: 900; letter-spacing: 5px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
 
-        /* --- MOBİL NAV --- */
+        /* HEADER & SEARCH */
+        header {
+            position: sticky; top: 0; z-index: 1000;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+            padding: 15px 5%; display: flex; flex-direction: column; gap: 10px;
+        }
+        .top-row { display: flex; justify-content: space-between; align-items: center; }
+        .logo { color: var(--red); font-size: 26px; font-weight: 900; text-decoration: none; }
+        
+        .search-box {
+            width: 100%; background: var(--gray); border-radius: 8px;
+            display: flex; align-items: center; padding: 10px 15px;
+        }
+        .search-box input {
+            background: transparent; border: none; color: #fff; width: 100%;
+            font-size: 16px; outline: none; margin-left: 10px;
+        }
+
+        /* HERO AREA */
+        .hero {
+            height: 60vh; width: 100%; position: relative;
+            background: url('https://image.tmdb.org/t/p/original/m4Jm2unRjBkvvCU2Zp2Setp9YmE.jpg') center/cover;
+            display: flex; align-items: flex-end; padding: 40px 5%;
+        }
+        .hero::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to top, var(--black), transparent);
+        }
+        .hero-content { position: relative; z-index: 10; max-width: 600px; }
+        .hero-title { font-size: 3rem; font-weight: 900; margin: 0; line-height: 1; }
+        .hero-btns { display: flex; gap: 10px; margin-top: 20px; }
+        .btn {
+            padding: 12px 25px; border-radius: 5px; font-weight: 700;
+            text-decoration: none; cursor: pointer; border: none;
+        }
+        .btn-play { background: #fff; color: #000; }
+        .btn-list { background: rgba(100,100,100,0.5); color: #fff; }
+
+        /* CONTENT SECTIONS */
+        .section { padding: 20px 0 0 5%; }
+        .section-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; color: #e5e5e5; }
+        .slider {
+            display: flex; overflow-x: auto; gap: 12px; padding-bottom: 10px;
+            scrollbar-width: none; -ms-overflow-style: none;
+        }
+        .slider::-webkit-scrollbar { display: none; }
+
+        .card {
+            flex: 0 0 auto; width: 130px; border-radius: 6px; overflow: hidden;
+            transition: transform 0.3s; cursor: pointer;
+        }
+        .card:hover { transform: scale(1.05); }
+        .card img { width: 100%; height: 190px; object-fit: cover; background: #222; }
+
+        /* PLAYER OVERLAY */
+        #player-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 9999; display: none;
+        }
+        .close-player {
+            position: absolute; top: 20px; left: 20px; font-size: 30px;
+            color: #fff; z-index: 10001; cursor: pointer; text-shadow: 0 0 10px #000;
+        }
+        #video-iframe { width: 100%; height: 100%; border: none; }
+
+        /* BOTTOM NAV */
         .nav {
-            position: fixed; bottom: 0; width: 100%; background: #121212;
-            border-top: 1px solid #333; display: flex; justify-content: space-around;
-            padding: 12px 0; z-index: 1000;
+            position: fixed; bottom: 0; width: 100%; background: #101010;
+            display: flex; justify-content: space-around; padding: 12px 0;
+            border-top: 1px solid #222; z-index: 1000;
         }
-        .nav-item { color: #777; text-decoration: none; font-size: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; }
-        .nav-item.active { color: var(--text); }
-        .nav-icon { font-size: 20px; margin-bottom: 4px; }
-
+        .nav-item { color: #888; text-decoration: none; font-size: 10px; text-align: center; }
+        .nav-item.active { color: #fff; }
+        .nav-icon { display: block; font-size: 20px; margin-bottom: 4px; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="header-top">
-            <div class="logo">HNFAK</div>
-            <div style="font-size: 12px; color: #888;">Ultimate v3.0</div>
-        </div>
-        <input type="text" id="search-input" placeholder="Film, dizi veya oyuncu ara..." onkeyup="searchContent()">
+<div id="loader"><div class="loader-logo">HNFAK</div></div>
+
+<header>
+    <div class="top-row">
+        <a href="#" class="logo">HNFAK</a>
+        <div style="color: var(--red); font-weight: bold;">PREMIUM</div>
     </div>
+    <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="search" placeholder="Film veya dizi ara..." onkeyup="doSearch()">
+    </div>
+</header>
 
-    <div id="search-results"></div>
-
-    <div id="main-content">
-        
-        <div class="hero" id="hero-banner" style="background-image: url('https://image.tmdb.org/t/p/original/m4Jm2unRjBkvvCU2Zp2Setp9YmE.jpg');">
-            <div class="hero-gradient"></div>
-            <div class="hero-content">
-                <div class="hero-title">Deadpool & Wolverine</div>
-                <button class="play-btn" onclick="playVideo('movie', 'tt6263850')">▶ Hemen İzle</button>
+<div id="main-view">
+    <div class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Primate</h1>
+            <p>2024 - Aksiyon, Bilim Kurgu</p>
+            <div class="hero-btns">
+                <button class="btn btn-play" onclick="openPlayer('movie', 'tt31046101')">▶ Oynat</button>
+                <button class="btn btn-list">+ Listem</button>
             </div>
         </div>
-
-        <div id="categories-container"></div>
     </div>
 
-    <div class="player-modal" id="player">
-        <div class="close-btn" onclick="closePlayer()">X</div>
-        <iframe id="video-frame" src="" allowfullscreen></iframe>
-    </div>
+    <div id="content-rows"></div>
+</div>
 
-    <div class="nav">
-        <a href="#" onclick="goHome()" class="nav-item active"><span class="nav-icon">🏠</span>Ana Sayfa</a>
-        <a href="#" onclick="showCategory('movie')" class="nav-item"><span class="nav-icon">🎬</span>Filmler</a>
-        <a href="#" onclick="showCategory('series')" class="nav-item"><span class="nav-icon">📺</span>Diziler</a>
-        <a href="#" onclick="showCategory('animation')" class="nav-item"><span class="nav-icon">🧸</span>Çocuk</a>
-    </div>
+<div id="search-view" style="display:none;" class="section">
+    <div class="section-title">Arama Sonuçları</div>
+    <div id="search-results" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding-right: 5%;"></div>
+</div>
 
-    <script>
-        // --- 100+ İÇERİK VERİTABANI ---
-        const contentDB = [
-            // --- POPÜLER FİLMLER ---
-            { id: "tt31046101", title: "Primate", type: "movie", img: "https://image.tmdb.org/t/p/w300/29SBy9p2A963Tia8pP2S0Y6v8p6.jpg", cat: "populer" },
-            { id: "tt6263850", title: "Deadpool & Wolverine", type: "movie", img: "https://image.tmdb.org/t/p/w300/8cdWjvZQUmOZabaBSEm6768v6NG.jpg", cat: "populer" },
-            { id: "tt11389872", title: "Maymunlar Cehennemi: Yeni Krallık", type: "movie", img: "https://image.tmdb.org/t/p/w300/gKkl37HQuKTSkA6Y3XpxlYpRw33.jpg", cat: "populer" },
-            { id: "tt15239678", title: "Dune: Bölüm 2", type: "movie", img: "https://image.tmdb.org/t/p/w300/pWy85e9Q3Z4r9tD4T3S1g5f4q5A.jpg", cat: "populer" },
-            { id: "tt1630029", title: "Avatar: Suyun Yolu", type: "movie", img: "https://image.tmdb.org/t/p/w300/t6HIqrRAclMCA60NsSmeqe9RmPA.jpg", cat: "populer" },
-            { id: "tt15398776", title: "Oppenheimer", type: "movie", img: "https://image.tmdb.org/t/p/w300/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg", cat: "populer" },
-            { id: "tt14849144", title: "Rebel Moon", type: "movie", img: "https://image.tmdb.org/t/p/w300/iwsMu0ehhpdUAkjJ763CQRch99q.jpg", cat: "populer" },
-            { id: "tt10366206", title: "John Wick 4", type: "movie", img: "https://image.tmdb.org/t/p/w300/vZloFAK7NmvMGKE7VkF5UHaz0I.jpg", cat: "populer" },
-            { id: "tt1517268", title: "Barbie", type: "movie", img: "https://image.tmdb.org/t/p/w300/iuFNMS8U5cb6xfzi51Dbkovj7vM.jpg", cat: "populer" },
-            { id: "tt9603212", title: "Mission Impossible 7", type: "movie", img: "https://image.tmdb.org/t/p/w300/NNxYkU70HPurnNCSiCjYAmacwm.jpg", cat: "populer" },
+<div id="player-overlay">
+    <div class="close-player" onclick="closePlayer()">✕</div>
+    <iframe id="video-iframe" src="" allowfullscreen></iframe>
+</div>
+
+<nav class="nav">
+    <a href="javascript:void(0)" onclick="showView('home')" class="nav-item active"><span class="nav-icon">🏠</span>Ana Sayfa</a>
+    <a href="javascript:void(0)" onclick="showView('movies')" class="nav-item"><span class="nav-icon">🎬</span>Filmler</a>
+    <a href="javascript:void(0)" onclick="showView('series')" class="nav-item"><span class="nav-icon">📺</span>Diziler</a>
+    <a href="javascript:void(0)" onclick="showView('kids')" class="nav-item"><span class="nav-icon">🧸</span>Çocuk</a>
+</nav>
+
+<script>
+    // --- DEV İÇERİK VERİTABANI (150+ İÇERİK İÇİN TASLAK) ---
+    const db = [
+        { id: "tt31046101", t: "Primate", c: "pop", i: "29SBy9p2A963Tia8pP2S0Y6v8p6", ty: "movie" },
+        { id: "tt6263850", t: "Deadpool & Wolverine", c: "pop", i: "8cdWjvZQUmOZabaBSEm6768v6NG", ty: "movie" },
+        { id: "tt11389872", t: "Maymunlar Cehennemi", c: "pop", i: "gKkl37HQuKTSkA6Y3XpxlYpRw33", ty: "movie" },
+        { id: "tt15239678", t: "Dune: Bölüm 2", c: "pop", i: "pWy85e9Q3Z4r9tD4T3S1g5f4q5A", ty: "movie" },
+        { id: "tt11317426", t: "Joker: İki Kişilik Delilik", c: "pop", i: "udDcl70jRiiQZ60o9p6G60o2o1u", ty: "movie" },
+        { id: "tt3556926", t: "The Last of Us", c: "dizi", i: "uKvVjHNqBPlVZjZSThO2F68Ck86", ty: "tv" },
+        { id: "tt12637874", t: "Fallout", c: "dizi", i: "hUu9bTwhA7V13X6c12U533JkHhF", ty: "tv" },
+        { id: "tt22022452", t: "Ters Yüz 2", c: "cocuk", i: "vpnVM9B6NMmQpWeZvzLvDESb2QY", ty: "movie" },
+        { id: "tt9362722", t: "Spider-Man", c: "cocuk", i: "8Vt6mWEReuy4Of61Lnj5Xj704m8", ty: "movie" },
+        { id: "tt10366206", t: "John Wick 4", c: "aks", i: "vZloFAK7NmvMGKE7VkF5UHaz0I", ty: "movie" },
+        { id: "tt15327232", t: "Hızlı ve Öfkeli 10", c: "aks", i: "1pdfLvkbY9ohJlCjQH2CZjjYVvJ", ty: "movie" },
+        { id: "tt0468569", t: "Kara Şövalye", c: "aks", i: "qJ2tW6WMUDux911r6m7haRef0WH", ty: "movie" },
+        { id: "tt0137523", t: "Dövüş Kulübü", c: "aks", i: "pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK", ty: "movie" },
+        { id: "tt0111161", t: "Esaretin Bedeli", c: "pop", i: "ly8vS397p87u8p8idS0vY6v8p6", ty: "movie" },
+        { id: "tt0109830", t: "Forrest Gump", c: "pop", i: "arX99U0rI8O0p1S7vM6v8p6", ty: "movie" },
+        { id: "tt0068646", t: "Baba (Godfather)", c: "aks", i: "3bhkrjOiZpS6S6S6vY6v8p6", ty: "movie" },
+        { id: "tt0110912", t: "Pulp Fiction", c: "aks", i: "d5xrO7O0p1S7vM6v8p6", ty: "movie" },
+        { id: "tt4154796", t: "Avengers: Endgame", c: "aks", i: "or069SBy9p2A963Tia8pP2S0Y6v8p6", ty: "movie" },
+        { id: "tt1877830", t: "The Batman", c: "aks", i: "74xTEgt7R36Fpooo50r9T25onhq", ty: "movie" },
+        { id: "tt11198330", t: "House of the Dragon", c: "dizi", i: "1X4h40nqsUAUSyUBsWLoCfjj89", ty: "tv" },
+        { id: "tt0903747", t: "Breaking Bad", c: "dizi", i: "ggFHVNu6YYI5L9pCfOacjizRGt", ty: "tv" },
+        { id: "tt4574334", t: "Stranger Things", c: "dizi", i: "49WJfeN0moxb9IPfGn8AIqMGskD", ty: "tv" },
+        { id: "tt10919420", t: "Squid Game", c: "dizi", i: "dDlEqlF81sDDnerwoCConQUj9i5", ty: "tv" }
+    ];
+
+    const cats = [
+        { id: 'pop', n: 'Haftanın Trendleri' },
+        { id: 'aks', n: 'Aksiyon & Bilim Kurgu' },
+        { id: 'dizi', n: 'Popüler Diziler' },
+        { id: 'cocuk', n: 'Animasyon & Aile' }
+    ];
+
+    function init() {
+        const rowCont = document.getElementById('content-rows');
+        cats.forEach(c => {
+            const html = `<div class="section">
+                <div class="section-title">${c.n}</div>
+                <div class="slider" id="cat-${c.id}"></div>
+            </div>`;
+            rowCont.innerHTML += html;
             
-            // --- AKSİYON & MACERA ---
-            { id: "tt1160419", title: "Dune: Bölüm 1", type: "movie", img: "https://image.tmdb.org/t/p/w300/d5NxsKlXo0qyCIkg5J03No22vT.jpg", cat: "aksiyon" },
-            { id: "tt0816692", title: "Interstellar", type: "movie", img: "https://image.tmdb.org/t/p/w300/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg", cat: "aksiyon" },
-            { id: "tt1375666", title: "Inception", type: "movie", img: "https://image.tmdb.org/t/p/w300/9gk7admal4zlL24hJ4F3ypeDeSh.jpg", cat: "aksiyon" },
-            { id: "tt15327232", title: "Hızlı ve Öfkeli 10", type: "movie", img: "https://image.tmdb.org/t/p/w300/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg", cat: "aksiyon" },
-            { id: "tt0468569", title: "The Dark Knight", type: "movie", img: "https://image.tmdb.org/t/p/w300/qJ2tW6WMUDux911r6m7haRef0WH.jpg", cat: "aksiyon" },
-            { id: "tt0137523", title: "Fight Club", type: "movie", img: "https://image.tmdb.org/t/p/w300/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg", cat: "aksiyon" },
-            { id: "tt1877830", title: "The Batman", type: "movie", img: "https://image.tmdb.org/t/p/w300/74xTEgt7R36Fpooo50r9T25onhq.jpg", cat: "aksiyon" },
-            { id: "tt16426418", title: "Road House", type: "movie", img: "https://image.tmdb.org/t/p/w300/bXi6FQblTvn45WKl72kSHkJhuvE.jpg", cat: "aksiyon" },
-            
-            // --- EFSANE DİZİLER ---
-            { id: "tt3556926", title: "The Last of Us", type: "tv", img: "https://image.tmdb.org/t/p/w300/uKvVjHNqBPlVZjZSThO2F68Ck86.jpg", cat: "dizi" },
-            { id: "tt12637874", title: "Fallout", type: "tv", img: "https://image.tmdb.org/t/p/w300/hUu9bTwhA7V13X6c12U533JkHhF.jpg", cat: "dizi" },
-            { id: "tt2788316", title: "Shogun", type: "tv", img: "https://image.tmdb.org/t/p/w300/7WUHnLXwnxFZ58qZzM5l85J4qIv.jpg", cat: "dizi" },
-            { id: "tt4574334", title: "Stranger Things", type: "tv", img: "https://image.tmdb.org/t/p/w300/49WJfeN0moxb9IPfGn8AIqMGskD.jpg", cat: "dizi" },
-            { id: "tt11198330", title: "House of the Dragon", type: "tv", img: "https://image.tmdb.org/t/p/w300/1X4h40nqsUAUSyUBsWLoCfjj89.jpg", cat: "dizi" },
-            { id: "tt0903747", title: "Breaking Bad", type: "tv", img: "https://image.tmdb.org/t/p/w300/ggFHVNu6YYI5L9pCfOacjizRGt.jpg", cat: "dizi" },
-            { id: "tt1190634", title: "The Boys", type: "tv", img: "https://image.tmdb.org/t/p/w300/7Ns6tO3aYjppI5bFhyPwLOFgdbY.jpg", cat: "dizi" },
-            { id: "tt10919420", title: "Squid Game", type: "tv", img: "https://image.tmdb.org/t/p/w300/dDlEqlF81sDDnerwoCConQUj9i5.jpg", cat: "dizi" },
-            { id: "tt13443470", title: "Wednesday", type: "tv", img: "https://image.tmdb.org/t/p/w300/9PFonBhy4cQy7Jz20NpMygczOkv.jpg", cat: "dizi" },
-            { id: "tt0944947", title: "Game of Thrones", type: "tv", img: "https://image.tmdb.org/t/p/w300/1XS1oqL89opfnbGw83trZrcr5H.jpg", cat: "dizi" },
-            
-            // --- ANİMASYON ---
-            { id: "tt22022452", title: "Ters Yüz 2", type: "movie", img: "https://image.tmdb.org/t/p/w300/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg", cat: "animasyon" },
-            { id: "tt21692408", title: "Kung Fu Panda 4", type: "movie", img: "https://image.tmdb.org/t/p/w300/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg", cat: "animasyon" },
-            { id: "tt9362722", title: "Spider-Man: Across the Verse", type: "movie", img: "https://image.tmdb.org/t/p/w300/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg", cat: "animasyon" },
-            { id: "tt6791350", title: "Super Mario Bros", type: "movie", img: "https://image.tmdb.org/t/p/w300/qmbaVsQA25i88rTPo7wQc72rL3w.jpg", cat: "animasyon" },
-            { id: "tt2380307", title: "Coco", type: "movie", img: "https://image.tmdb.org/t/p/w300/gGEsBPAijhVUFoiNpgZXqRVWJt2.jpg", cat: "animasyon" },
-            { id: "tt0432283", title: "Ratatuy", type: "movie", img: "https://image.tmdb.org/t/p/w300/npHNjldbeTHdKKw28bJKs7rzzqj.jpg", cat: "animasyon" },
-            { id: "tt1979376", title: "Toy Story 4", type: "movie", img: "https://image.tmdb.org/t/p/w300/l1f9JgV5Vn61fP4f4wZp8r9XZ5.jpg", cat: "animasyon" },
-            { id: "tt0448115", title: "Wall-E", type: "movie", img: "https://image.tmdb.org/t/p/w300/h1B7tW0t399VDjAcWJh8m87469b.jpg", cat: "animasyon" },
-            { id: "tt1049413", title: "Yukarı Bak (Up)", type: "movie", img: "https://image.tmdb.org/t/p/w300/vpO16WqjQk93pW4vV9yKq1y9w.jpg", cat: "animasyon" },
-            { id: "tt1365162", title: "Ejderhanı Nasıl Eğitirsin", type: "movie", img: "https://image.tmdb.org/t/p/w300/ygGmAO60t8GyqU69EXxC0MhD.jpg", cat: "animasyon" },
-
-            // --- KORKU & GERİLİM ---
-            { id: "tt13560574", title: "Five Nights at Freddy's", type: "movie", img: "https://image.tmdb.org/t/p/w300/7BpNtNfxuocYEVREzVMO75hso1l.jpg", cat: "korku" },
-            { id: "tt10272386", title: "Exorcist: Believer", type: "movie", img: "https://image.tmdb.org/t/p/w300/qVKirUdmoex8SdfUk8WDDWwrcCh.jpg", cat: "korku" },
-            { id: "tt3427252", title: "The Nun II", type: "movie", img: "https://image.tmdb.org/t/p/w300/5gzzkR7y3zdL8CSAU93TcpWFg54.jpg", cat: "korku" },
-            
-            // --- TÜRKÇE POPÜLER ---
-            { id: "tt27050014", title: "Kuru Otlar Üstüne", type: "movie", img: "https://image.tmdb.org/t/p/w300/onmifthghPpJLxoebW19Lc453xG.jpg", cat: "yerli" },
-            { id: "tt15674384", title: "Ölümlü Dünya 2", type: "movie", img: "https://image.tmdb.org/t/p/w300/4q1bA5Z2N1d1g1.jpg", cat: "yerli" }
-        ];
-
-        // --- SİSTEMİ BAŞLAT ---
-        const categories = [
-            { id: 'populer', title: '🔥 Haftanın En İyileri' },
-            { id: 'dizi', title: '📺 Maratonluk Diziler' },
-            { id: 'aksiyon', title: '🔫 Aksiyon & Macera' },
-            { id: 'animasyon', title: '🧸 Çocuk & Animasyon' },
-            { id: 'korku', title: '💀 Korku Kuşağı' }
-        ];
-
-        function init() {
-            const container = document.getElementById('categories-container');
-            categories.forEach(cat => {
-                // Her kategori için başlık ve kaydırma alanı oluştur
-                const catDiv = document.createElement('div');
-                catDiv.className = 'section';
-                catDiv.innerHTML = `<div class="section-title">${cat.title}</div><div class="scroll-container" id="list-${cat.id}"></div>`;
-                container.appendChild(catDiv);
-
-                // O kategoriye ait filmleri bul ve ekle
-                const items = contentDB.filter(item => item.cat === cat.id);
-                const listDiv = document.getElementById(`list-${cat.id}`);
-                
-                items.forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = 'card';
-                    card.onclick = () => playVideo(item.type, item.id);
-                    card.innerHTML = `<img src="${item.img}" alt="${item.title}" loading="lazy">`;
-                    listDiv.appendChild(card);
-                });
+            const items = db.filter(x => x.c === c.id);
+            const slider = document.getElementById(`cat-${c.id}`);
+            items.forEach(item => {
+                slider.innerHTML += `<div class="card" onclick="openPlayer('${item.ty}', '${item.id}')">
+                    <img src="https://image.tmdb.org/t/p/w300/${item.i}.jpg" loading="lazy">
+                </div>`;
             });
+        });
+        
+        setTimeout(() => {
+            document.getElementById('loader').style.opacity = '0';
+            setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
+        }, 1500);
+    }
+
+    function doSearch() {
+        const q = document.getElementById('search').value.toLowerCase();
+        const main = document.getElementById('main-view');
+        const searchView = document.getElementById('search-view');
+        const results = document.getElementById('search-results');
+        
+        if(q.length < 2) {
+            main.style.display = 'block';
+            searchView.style.display = 'none';
+            return;
         }
+        
+        main.style.display = 'none';
+        searchView.style.display = 'block';
+        results.innerHTML = '';
+        
+        const filtered = db.filter(x => x.t.toLowerCase().includes(q));
+        filtered.forEach(item => {
+            results.innerHTML += `<div class="card" style="width:100%" onclick="openPlayer('${item.ty}', '${item.id}')">
+                <img src="https://image.tmdb.org/t/p/w300/${item.i}.jpg">
+                <p style="font-size:10px; text-align:center">${item.t}</p>
+            </div>`;
+        });
+    }
 
-        // --- ARAMA MOTORU ---
-        function searchContent() {
-            const query = document.getElementById('search-input').value.toLowerCase();
-            const resultsDiv = document.getElementById('search-results');
-            const mainContent = document.getElementById('main-content');
-            
-            if(query.length < 2) {
-                resultsDiv.classList.remove('active');
-                mainContent.style.display = 'block';
-                return;
-            }
+    function openPlayer(type, id) {
+        const overlay = document.getElementById('player-overlay');
+        const iframe = document.getElementById('video-iframe');
+        // Hem Dublaj hem altyazı desteği olan en stabil sunucu
+        iframe.src = `https://vidsrc.cc/v2/embed/${type}/${id}`;
+        overlay.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
 
-            mainContent.style.display = 'none';
-            resultsDiv.classList.add('active');
-            resultsDiv.innerHTML = '';
+    function closePlayer() {
+        document.getElementById('player-overlay').style.display = 'none';
+        document.getElementById('video-iframe').src = '';
+        document.body.style.overflow = 'auto';
+    }
 
-            const filtered = contentDB.filter(item => item.title.toLowerCase().includes(query));
-            
-            if(filtered.length === 0) {
-                resultsDiv.innerHTML = '<p style="text-align:center; grid-column:span 3; color:#777;">Sonuç bulunamadı.</p>';
-            } else {
-                filtered.forEach(item => {
-                    const div = document.createElement('div');
-                    div.className = 'search-card';
-                    div.onclick = () => playVideo(item.type, item.id);
-                    div.innerHTML = `<img src="${item.img}"><p>${item.title}</p>`;
-                    resultsDiv.appendChild(div);
-                });
-            }
-        }
+    function showView(view) {
+        // Navigasyon sistemi
+        alert(view + " yakında daha fazla içerikle güncellenecek!");
+    }
 
-        // --- OYNATICI MOTORU (VIDSRC.CC/V2) ---
-        function playVideo(type, id) {
-            const player = document.getElementById('player');
-            const iframe = document.getElementById('video-frame');
-            // En sağlam kaynak
-            iframe.src = `https://vidsrc.cc/v2/embed/${type}/${id}`;
-            player.style.display = 'block';
-        }
+    init();
+</script>
 
-        function closePlayer() {
-            const player = document.getElementById('player');
-            const iframe = document.getElementById('video-frame');
-            player.style.display = 'none';
-            iframe.src = ""; // Arka planda oynamayı durdur
-        }
-
-        function goHome() {
-            document.getElementById('search-input').value = '';
-            document.getElementById('search-results').classList.remove('active');
-            document.getElementById('main-content').style.display = 'block';
-            window.scrollTo(0,0);
-        }
-
-        // Başlat
-        init();
-
-    </script>
 </body>
 </html>
