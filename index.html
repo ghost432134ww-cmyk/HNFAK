@@ -2,14 +2,13 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HNFAK | Premium Sinema Keyfi</title>
+    <title>HNFAK | Sinemanın Adresi</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 
-    <header>
+    <header id="mainHeader">
         <div class="header-left">
             <div class="logo" onclick="location.reload()">HNF<span>AK</span></div>
             <nav class="categories">
@@ -27,10 +26,10 @@
 
     <section class="hero" id="heroSection">
         <div class="hero-content">
-            <h1 id="heroTitle">HNFAK PREMIUM</h1>
-            <p id="heroDesc">En yeni Türkçe dublajlı filmleri keşfedin.</p>
+            <h1 id="heroTitle">HNFAK</h1>
+            <p id="heroDesc">En yeni Türkçe dublajlı içerikler burada.</p>
             <div class="hero-btns">
-                <button class="play-btn" id="heroPlayBtn"><i class="fas fa-play"></i> Hemen İzle</button>
+                <button class="play-btn" id="heroPlayBtn"><i class="fas fa-play"></i> Oynat</button>
             </div>
         </div>
     </section>
@@ -42,7 +41,6 @@
         <div class="modal-content">
             <span class="close" onclick="app.closePlayer()">&times;</span>
             <iframe id="videoFrame" src="" allowfullscreen frameborder="0" referrerpolicy="no-referrer"></iframe>
-            <div id="sourceBar" class="source-bar"></div>
         </div>
     </div>
 
