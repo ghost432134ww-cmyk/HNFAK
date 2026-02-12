@@ -3,107 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PREMIUM SİNEMA KEYFİ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        :root { --yellow: #FFD700; --bg: #0b0b0b; }
-        body { margin: 0; background: var(--bg); color: white; font-family: 'Roboto', sans-serif; overflow-x: hidden; }
-
-        /* HEADER */
-        header { 
-            display: flex; align-items: center; justify-content: space-between; 
-            padding: 15px 5%; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
-            position: fixed; width: 100%; z-index: 1000; box-sizing: border-box;
-        }
-        .logo { font-size: 28px; font-weight: 900; letter-spacing: -1px; cursor: pointer; }
-        .logo span { color: var(--yellow); }
-        
-        nav { display: flex; gap: 25px; }
-        nav a { color: #bbb; text-decoration: none; font-weight: 700; font-size: 13px; text-transform: uppercase; transition: 0.3s; }
-        nav a:hover { color: var(--yellow); }
-
-        .search-area { background: rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 20px; display: flex; align-items: center; }
-        .search-area input { background: transparent; border: none; color: white; outline: none; font-size: 14px; width: 150px; }
-
-        /* HERO SECTION */
-        .hero { 
-            height: 85vh; background: url('https://image.tmdb.org/t/p/original/m4Jm2unRjBkvvCU2Zp2Setp9YmE.jpg') center/cover;
-            display: flex; align-items: center; padding: 0 5%; position: relative;
-        }
-        .hero::after { content:''; position:absolute; inset:0; background: linear-gradient(90deg, #0b0b0b 10%, transparent 80%); }
-        
-        .hero-content { position: relative; z-index: 10; max-width: 600px; }
-        .hero-content h1 { font-size: 60px; margin: 0; font-weight: 900; line-height: 1.1; }
-        .hero-content p { color: #ccc; font-size: 16px; margin: 20px 0; line-height: 1.5; }
-
-        .btn-watch { 
-            background: var(--yellow); color: black; border: none; 
-            padding: 15px 35px; border-radius: 5px; font-size: 18px; 
-            font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.3s;
-        }
-        .btn-watch:hover { transform: scale(1.05); }
-
-        /* CONTENT ROWS */
-        .content-area { padding: 40px 0 100px 5%; margin-top: -80px; position: relative; z-index: 20; }
-        .row-title { font-size: 22px; font-weight: 700; margin-bottom: 20px; color: var(--yellow); }
-        .slider { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 20px; scrollbar-width: none; }
-        .slider::-webkit-scrollbar { display: none; }
-        
-        .card { flex: 0 0 auto; width: 180px; border-radius: 8px; overflow: hidden; transition: 0.3s; cursor: pointer; border: 1px solid #222; }
-        .card img { width: 100%; height: 260px; object-fit: cover; }
-        .card:hover { transform: scale(1.05); border-color: var(--yellow); }
-
-        /* PLAYER OVERLAY */
-        #player-ui { position: fixed; inset: 0; background: #000; z-index: 9999; display: none; }
-        .close-btn { position: absolute; top: 20px; right: 20px; color: white; font-size: 40px; cursor: pointer; z-index: 10000; background: rgba(0,0,0,0.5); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-        iframe { width: 100%; height: 100%; border: none; }
-
-        @media (max-width: 768px) {
-            .hero-content h1 { font-size: 40px; }
-            nav, .search-area { display: none; } /* Mobilde sade görünüm */
-        }
-    </style>
+    <title>HNFAK | Premium Sinema</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
-    <div class="logo" onclick="location.reload()">HN<span>FAK</span></div>
+    <div class="logo">HN<span>FAK</span></div>
     <nav>
-        <a href="#">Aksiyon</a>
-        <a href="#">Dizi</a>
-        <a href="#">Film</a>
-        <a href="#">Trendler</a>
+        <a href="#">Filmler</a>
+        <a href="#">Diziler</a>
     </nav>
-    <div class="search-area">
-        <input type="text" placeholder="Film ara...">
-    </div>
 </header>
 
 <div class="hero">
     <div class="hero-content">
-        <h1>Greenland:<br>Kıyamet</h1>
-        <p>Dünyayı vuran büyük bir felaketler zincirinden kurtulmaya çalışan bir ailenin hayatta kalma mücadelesi. Aksiyonun ve gerilimin doruk noktası.</p>
-        <button class="btn-watch" onclick="openPlayer('movie', 'tt7737786')">
-            <span>▶</span> HEMEN İZLE
-        </button>
+        <h1>Greenland</h1>
+        <p>Kıyamet yaklaşıyor, hayatta kalmak için tek bir şansları var.</p>
+        <button class="btn-watch" onclick="openPlayer('movie', 'tt7737786')">▶ Hemen İzle</button>
     </div>
 </div>
 
-<div class="content-area">
-    <div class="row-title">Senin İçin Seçtiklerimiz</div>
-    <div id="movie-row" class="slider">
-        </div>
+<div class="content">
+    <h2 class="row-title">Popüler</h2>
+    <div class="slider" id="movie-row"></div>
 </div>
 
 <div id="player-ui">
     <span class="close-btn" onclick="closePlayer()">×</span>
-    <iframe id="video-frame" src="" allowfullscreen allow="autoplay"></iframe>
+    <iframe id="video-frame" src="" allowfullscreen></iframe>
 </div>
 
-<script>
-    document.write('<script src="script.js?v=' + Math.random() + '"><\/script>');
-</script>
-    
+<script src="script.js"></script>
 </body>
 </html>
-
