@@ -2,222 +2,150 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HNFAK | ULTIMATE TV</title>
-    
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" href="data:application/json;base64,ewogICJpbmRleCI6ICJpbmRleC5odG1sIiwKICAic3RhcnRfdXJsIjogImluZGV4Lmh0bWwiLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwMDAwMDAiLAogICJ0aGVtZV9jb2xvciI6ICIjRTVDOTE0Igp9">
-
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HNFAK - Premium Sinema</title>
     <style>
-        :root { --red: #E50914; --bg: #000000; --card: #111; --accent: #00ff88; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-        
-        body { 
-            margin: 0; background: var(--bg); color: #fff; 
-            font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden;
-            transition: 0.5s;
+        /* GENEL TASARIM */
+        body {
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle, #1a1a1a 0%, #000000 100%);
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* TEMA MODLARI */
-        body.matrix { --red: #00ff41; --bg: #000d00; --accent: #003300; }
-        body.cyber { --red: #f0f; --bg: #1a1a2e; --accent: #0ff; }
-
-        /* HEADER */
         header {
-            position: fixed; top: 0; width: 100%; z-index: 1000;
-            padding: 20px; display: flex; justify-content: space-between; align-items: center;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid gold;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
-        .logo { font-size: 24px; font-weight: 900; color: var(--red); text-shadow: 0 0 10px var(--red); }
 
-        /* HERO */
-        .hero {
-            height: 70vh; width: 100%; position: relative;
-            display: flex; align-items: flex-end; padding: 40px 5%;
-            background: url('https://image.tmdb.org/t/p/original/m4Jm2unRjBkvvCU2Zp2Setp9YmE.jpg') center/cover;
-            transition: 0.5s;
+        h1 { color: gold; margin: 0; letter-spacing: 3px; }
+
+        /* KAYIT FORMU ALANI */
+        .auth-container {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid gold;
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 400px;
+            border-radius: 15px;
+            text-align: center;
         }
-        .hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, var(--bg), transparent 70%); }
-        .hero-content { position: relative; z-index: 10; }
 
-        /* İZLEMEYE DEVAM ET & AI ÖNERİ */
-        .smart-row { display: none; padding: 100px 5% 0; }
-        .ai-badge { background: var(--accent); color: #000; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 4px; margin-bottom: 5px; display: inline-block; }
-
-        /* GRID SYSTEM */
-        .section { padding: 25px 0 0 5%; }
-        .slider { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 15px; scrollbar-width: none; }
-        .slider::-webkit-scrollbar { display: none; }
-        .card { flex: 0 0 auto; width: 120px; border-radius: 10px; transition: 0.3s; cursor: pointer; }
-        .card img { width: 100%; height: 180px; object-fit: cover; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); }
-        .card:active { transform: scale(0.9); }
-
-        /* PLAYER OVERLAY */
-        #player-ui { position: fixed; inset: 0; background: #000; z-index: 9999; display: none; }
-        .close-btn { position: absolute; top: 30px; left: 20px; z-index: 10000; color: #fff; font-size: 24px; }
-        .autoplay-timer { position: absolute; bottom: 50px; right: 30px; background: var(--red); padding: 10px 20px; border-radius: 50px; font-weight: 800; display: none; }
-
-        /* NAV BAR */
-        .nav {
-            position: fixed; bottom: 20px; left: 5%; width: 90%; 
-            background: rgba(15,15,15,0.9); backdrop-filter: blur(20px);
-            display: flex; justify-content: space-around; padding: 12px;
-            border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); z-index: 1000;
+        input {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
         }
-        .nav-item { color: #555; text-decoration: none; font-size: 11px; text-align: center; }
-        .nav-item.active { color: var(--red); }
-        .nav-icon { display: block; font-size: 20px; margin-bottom: 2px; }
 
-        /* SETTINGS VIEW */
-        #settings { display: none; padding: 100px 5% 0; }
-        .theme-btn { padding: 15px; border-radius: 10px; border: 1px solid #333; margin-bottom: 10px; text-align: center; font-weight: 700; }
+        .btn {
+            background: gold;
+            color: #000;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn:hover { background: #fff; transform: scale(1.05); }
+
+        /* FİLM ALANI */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .film-card {
+            width: 95%;
+            max-width: 800px;
+            background: #111;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid #333;
+        }
+
+        .film-info { padding: 15px; border-bottom: 1px solid #222; }
+        .film-title { font-size: 1.2rem; color: gold; font-weight: bold; }
+
+        iframe {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border: none;
+        }
+
+        /* MOBİL UYUM */
+        @media (max-width: 600px) {
+            h1 { font-size: 1.5rem; }
+            .auth-container { width: 85%; }
+        }
     </style>
 </head>
-<body id="body">
+<body>
 
 <header>
-    <div class="logo">HNFAK</div>
-    <div onclick="window.location.hash = 'settings'" style="font-size: 20px;">⚙️</div>
+    <h1>HNFAK PREMIUM</h1>
+    <p style="color: #ccc; font-size: 0.8rem;">Kalitenin Tek Adresi</p>
 </header>
 
-<div id="view-home">
-    <div id="continue-watching" class="smart-row">
-        <div class="ai-badge">KALDIĞIN YERDEN</div>
-        <div id="history-item"></div>
-    </div>
+<div class="auth-container" id="kayitPaneli">
+    <h3>Üye Ol / Giriş Yap</h3>
+    <input type="text" id="username" placeholder="Kullanıcı Adı">
+    <input type="password" id="password" placeholder="Şifre">
+    <br>
+    <button class="btn" onclick="kayitOl()">Hemen Başla</button>
+    <p id="mesaj" style="font-size: 0.8rem; margin-top: 10px;"></p>
+</div>
 
-    <div class="hero" id="hero-img">
-        <div class="hero-content">
-            <div class="ai-badge">AI SİZE ÖNERİYOR</div>
-            <h1 id="hero-title" style="font-size: 3rem; margin: 0;">Deadpool 3</h1>
-            <button onclick="playHero()" style="background:var(--red); color:white; border:none; padding:15px 40px; border-radius:50px; font-weight:800; margin-top:15px;">▶ HEMEN İZLE</button>
+<div class="main-content">
+    <div class="film-card">
+        <div class="film-info">
+            <div class="film-title">Maymunlar Cehennemi: Yeni Krallık (TR Dublaj)</div>
         </div>
+        <iframe src="https://vidsrc.me/embed/movie/tt11389872" allowfullscreen></iframe>
     </div>
 
-    <div id="dynamic-rows"></div>
-</div>
-
-<div id="view-settings" style="display:none; padding: 100px 5%;">
-    <h2>Görünüm Ayarları</h2>
-    <div class="theme-btn" onclick="setTheme('default')" style="background: #111;">Karanlık Mod (Varsayılan)</div>
-    <div class="theme-btn" onclick="setTheme('matrix')" style="background: #003300; border-color: #00ff41;">Matrix Modu</div>
-    <div class="theme-btn" onclick="setTheme('cyber')" style="background: #1a1a2e; border-color: #f0f;">Cyberpunk Modu</div>
-</div>
-
-<div id="player-ui">
-    <div class="close-btn" onclick="closePlayer()">✕ Kapat</div>
-    <iframe id="video-frame" src="" allowfullscreen allow="autoplay"></iframe>
-    <div class="autoplay-timer" id="next-timer">Sonraki Bölüm: 10s</div>
-</div>
-
-<nav class="nav">
-    <a href="#" onclick="window.location.hash = 'home'" class="nav-item active"><span class="nav-icon">🏠</span>Ev</a>
-    <a href="#" onclick="window.location.hash = 'ai'" class="nav-item"><span class="nav-icon">🧠</span>AI Öneri</a>
-    <a href="#" onclick="window.location.hash = 'settings'" class="nav-item"><span class="nav-icon">🎨</span>Temalar</a>
-</nav>
+    </div>
 
 <script>
-    // --- 150+ FİLM VE AI MANTIĞI ---
-    const db = [
-        { id: "tt31046101", t: "Primate", c: "aksiyon", i: "29SBy9p2A963Tia8pP2S0Y6v8p6", ty: "movie" },
-        { id: "tt6263850", t: "Deadpool", c: "pop", i: "8cdWjvZQUmOZabaBSEm6768v6NG", ty: "movie" },
-        { id: "tt11389872", t: "Kingdom of Apes", c: "aksiyon", i: "gKkl37HQuKTSkA6Y3XpxlYpRw33", ty: "movie" },
-        { id: "tt15239678", t: "Dune 2", c: "aksiyon", i: "pWy85e9Q3Z4r9tD4T3S1g5f4q5A", ty: "movie" },
-        { id: "tt3556926", t: "TLOU", c: "dizi", i: "uKvVjHNqBPlVZjZSThO2F68Ck86", ty: "tv" },
-        { id: "tt12637874", t: "Fallout", c: "dizi", i: "hUu9bTwhA7V13X6c12U533JkHhF", ty: "tv" },
-        { id: "tt0944947", t: "Game of Thrones", c: "dizi", i: "1XS1oqL89opfnbGw83trZrcr5H", ty: "tv" },
-        { id: "tt22022452", t: "Ters Yüz 2", c: "cocuk", i: "vpnVM9B6NMmQpWeZvzLvDESb2QY", ty: "movie" }
-    ];
-
-    const categories = [
-        { id: 'pop', n: 'Haftanın Trendleri' },
-        { id: 'aksiyon', n: 'Adrenalin Bombası' },
-        { id: 'dizi', n: 'Sürükleyici Diziler' }
-    ];
-
-    // --- 404 ENGELLEYİCİ NAVİGASYON (HASH ROUTER) ---
-    function router() {
-        const hash = window.location.hash.replace('#', '') || 'home';
-        document.getElementById('view-home').style.display = hash === 'home' || hash === 'ai' ? 'block' : 'none';
-        document.getElementById('view-settings').style.display = hash === 'settings' ? 'block' : 'none';
+    function kayitOl() {
+        const user = document.getElementById('username').value;
+        const mesaj = document.getElementById('mesaj');
         
-        if(hash === 'ai') {
-            const aiPick = db[Math.floor(Math.random() * db.length)];
-            play(aiPick.ty, aiPick.id, aiPick.t);
-            window.location.hash = 'home';
-        }
-    }
-    window.addEventListener('hashchange', router);
-
-    // --- TEMEL SİSTEM ---
-    function init() {
-        const rowCont = document.getElementById('dynamic-rows');
-        categories.forEach(cat => {
-            const items = db.filter(x => x.c === cat.id);
-            let html = `<div class="section"><div style="font-weight:800; margin-bottom:12px;">${cat.n}</div><div class="slider">`;
-            items.forEach(item => {
-                html += `<div class="card" onclick="play('${item.ty}', '${item.id}', '${item.t}')">
-                    <img src="https://image.tmdb.org/t/p/w300/${item.i}.jpg" loading="lazy">
-                </div>`;
-            });
-            html += `</div></div>`;
-            rowCont.innerHTML += html;
-        });
-        checkHistory();
-        router();
-    }
-
-    // --- OYNATICI & KALDIĞIN YERDEN DEVAM ---
-    function play(type, id, title) {
-        localStorage.setItem('hnfak_last', JSON.stringify({type, id, title}));
-        const player = document.getElementById('player-ui');
-        const frame = document.getElementById('video-frame');
-        
-        // Dublaj ve Altyazı Otomatik Seçenekli Sunucu
-        frame.src = `https://vidsrc.pro/embed/${type}/${id}`;
-        player.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-
-        // OTOMATİK BÖLÜM (Simülasyon)
-        if(type === 'tv') {
+        if(user.length > 3) {
+            mesaj.innerText = "Hoş geldin " + user + "! İyi seyirler.";
+            mesaj.style.color = "lightgreen";
+            // Burada bilgileri tarayıcıya geçici olarak kaydeder
+            localStorage.setItem('kullanici', user);
             setTimeout(() => {
-                document.getElementById('next-timer').style.display = 'block';
-            }, 5000); 
+                document.getElementById('kayitPaneli').style.display = "none";
+            }, 2000);
+        } else {
+            mesaj.innerText = "Lütfen geçerli bir isim girin.";
+            mesaj.style.color = "red";
         }
     }
 
-    function closePlayer() {
-        document.getElementById('player-ui').style.display = 'none';
-        document.getElementById('video-frame').src = '';
-        document.body.style.overflow = 'auto';
-        document.getElementById('next-timer').style.display = 'none';
-        checkHistory();
-    }
-
-    function checkHistory() {
-        const last = JSON.parse(localStorage.getItem('hnfak_last'));
-        if(last) {
-            document.getElementById('continue-watching').style.display = 'block';
-            document.getElementById('history-item').innerHTML = `
-                <div onclick="play('${last.type}', '${last.id}', '${last.title}')" style="background:#111; padding:15px; border-radius:12px; display:flex; align-items:center; gap:10px; border-left:4px solid var(--red);">
-                   <span style="font-size:20px;">▶</span> <b>${last.title}</b>
-                </div>`;
+    // Sayfa açıldığında kullanıcıyı hatırla
+    window.onload = function() {
+        const kayitliUser = localStorage.getItem('kullanici');
+        if(kayitliUser) {
+            document.getElementById('kayitPaneli').innerHTML = "<h3>Tekrar Hoş Geldin, " + kayitliUser + "!</h3>";
         }
     }
-
-    function setTheme(t) {
-        document.getElementById('body').className = t;
-    }
-
-    function playHero() {
-        play('movie', 'tt6263850', 'Deadpool 3');
-    }
-
-    init();
 </script>
+
 </body>
 </html>
