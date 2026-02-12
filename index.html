@@ -4,48 +4,134 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HNFAK | Premium Sinema Keyfi</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --yellow: #FFD700; --bg: #0f0f0f; }
+        body { margin: 0; background: var(--bg); color: white; font-family: 'Roboto', sans-serif; }
+
+        /* HEADER & LOGO */
+        header { 
+            display: flex; align-items: center; justify-content: space-between; 
+            padding: 20px 4%; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            position: fixed; width: 100%; z-index: 1000; box-sizing: border-box;
+        }
+        .logo-area { display: flex; align-items: center; gap: 30px; }
+        .logo { font-size: 32px; font-weight: 900; color: white; }
+        .logo span { color: var(--yellow); }
+        
+        nav { display: flex; gap: 20px; font-weight: 700; font-size: 14px; }
+        nav a { color: #ccc; text-decoration: none; text-transform: uppercase; }
+        nav a:hover { color: white; }
+
+        .search-box {
+            background: rgba(255,255,255,0.1); border-radius: 20px;
+            padding: 8px 15px; display: flex; align-items: center; width: 250px;
+        }
+        .search-box input { 
+            background: transparent; border: none; color: white; outline: none; width: 100%; 
+        }
+
+        /* HERO AREA */
+        .hero { 
+            height: 90vh; background: url('https://image.tmdb.org/t/p/original/m4Jm2unRjBkvvCU2Zp2Setp9YmE.jpg') center/cover;
+            display: flex; align-items: center; padding: 0 5%; position: relative;
+        }
+        .hero::after { content:''; position:absolute; inset:0; background: linear-gradient(90deg, #000 10%, transparent); }
+        
+        .hero-content { position: relative; z-index: 10; max-width: 700px; }
+        .hero-content h1 { font-size: 80px; margin: 0; font-weight: 900; }
+        .hero-content p { color: #ccc; font-size: 18px; line-height: 1.6; margin: 20px 0; }
+
+        .btn-watch { 
+            background: var(--yellow); color: black; border: none; 
+            padding: 15px 40px; border-radius: 30px; font-size: 20px; 
+            font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 10px;
+        }
+
+        /* SLIDERS */
+        .content-area { padding: 40px 0 100px 5%; margin-top: -100px; position: relative; z-index: 20; }
+        .row-title { font-size: 24px; font-weight: 700; margin-bottom: 20px; }
+        .slider { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 20px; scrollbar-width: none; }
+        .card { flex: 0 0 auto; width: 220px; border-radius: 10px; overflow: hidden; transition: 0.3s; cursor: pointer; }
+        .card img { width: 100%; height: 320px; object-fit: cover; }
+        .card:hover { transform: scale(1.05); }
+
+        /* PLAYER OVERLAY */
+        #player-ui { position: fixed; inset: 0; background: #000; z-index: 9999; display: none; }
+        .close-btn { position: absolute; top: 20px; right: 20px; color: white; font-size: 40px; cursor: pointer; z-index: 10000; }
+        iframe { width: 100%; height: 100%; border: none; }
+    </style>
 </head>
 <body>
 
-    <header>
-        <div class="header-left">
-            <div class="logo" onclick="location.reload()">HNF<span>AK</span></div>
-            <nav class="categories">
-                <button onclick="app.fetchByCategory(28)">Aksiyon</button>
-                <button onclick="app.fetchByCategory(35)">Komedi</button>
-                <button onclick="app.fetchByCategory(27)">Korku</button>
-                <button onclick="app.fetchByCategory(878)">Bilim Kurgu</button>
-            </nav>
-        </div>
-        <div class="search-box">
-            <i class="fas fa-search"></i>
-            <input type="text" id="searchInput" placeholder="HNFAK'ta ara..." onkeyup="event.key === 'Enter' && app.search()">
-        </div>
-    </header>
-
-    <section class="hero" id="heroSection">
-        <div class="hero-content">
-            <h1 id="heroTitle">HNFAK PREMIUM</h1>
-            <p id="heroDesc">En yeni Türkçe dublajlı filmleri keşfedin.</p>
-            <div class="hero-btns">
-                <button class="play-btn" id="heroPlayBtn"><i class="fas fa-play"></i> Hemen İzle</button>
-            </div>
-        </div>
-    </section>
-
-    <h2 class="row-title">Popüler İçerikler</h2>
-    <main id="movieGrid" class="grid"></main>
-
-    <div id="playerModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="app.closePlayer()">&times;</span>
-            <iframe id="videoFrame" src="" allowfullscreen frameborder="0" referrerpolicy="no-referrer"></iframe>
-            <div id="sourceBar" class="source-bar"></div>
-        </div>
+<header>
+    <div class="logo-area">
+        <div class="logo">HN<span>FAK</span></div>
+        <nav>
+            <a href="#">Aksiyon</a>
+            <a href="#">Komedi</a>
+            <a href="#">Korku</a>
+            <a href="#">Bilim Kurgu</a>
+        </nav>
     </div>
+    <div class="search-box">
+        <input type="text" placeholder="HNFAK'ta ara...">
+    </div>
+</header>
 
-    <script src="script.js"></script>
+<div class="hero">
+    <div class="hero-content">
+        <h1>Greenland: Kıyamet</h1>
+        <p>Dünyayı vuran büyük bir felaketler zincirinden Grönland sığınağına gitmeyi başararak kurtulan John Garrity ve ailesinin macerası...</p>
+        <button class="btn-watch" onclick="openPlayer('movie', 'tt7737786')">
+            <span>▶</span> Hemen İzle
+        </button>
+    </div>
+</div>
+
+<div class="content-area">
+    <div class="row-title">Popüler Filmler</div>
+    <div class="slider" id="movie-row"></div>
+</div>
+
+<div id="player-ui">
+    <span class="close-btn" onclick="closePlayer()">×</span>
+    <iframe id="video-frame" src="" allowfullscreen></iframe>
+</div>
+
+<script>
+    const movies = [
+        { id: "tt6263850", i: "8cdWjvZQUmOZabaBSEm6768v6NG" },
+        { id: "tt15239678", i: "pWy85e9Q3Z4r9tD4T3S1g5f4q5A" },
+        { id: "tt3556926", i: "uKvVjHNqBPlVZjZSThO2F68Ck86" },
+        { id: "tt31046101", i: "29SBy9p2A963Tia8pP2S0Y6v8p6" }
+    ];
+
+    function init() {
+        const row = document.getElementById('movie-row');
+        movies.forEach(m => {
+            row.innerHTML += `
+                <div class="card" onclick="openPlayer('movie', '${m.id}')">
+                    <img src="https://image.tmdb.org/t/p/w500/${m.i}.jpg">
+                </div>`;
+        });
+    }
+
+    function openPlayer(type, id) {
+        const player = document.getElementById('player-ui');
+        const frame = document.getElementById('video-frame');
+        // ARTIK AMPED.SU YOK! vidsrc.pro ile açıyoruz.
+        frame.src = `https://vidsrc.pro/embed/${type}/${id}`;
+        player.style.display = 'block';
+    }
+
+    function closePlayer() {
+        document.getElementById('player-ui').style.display = 'none';
+        document.getElementById('video-frame').src = '';
+    }
+
+    window.onload = init;
+</script>
+
 </body>
 </html>
