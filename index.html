@@ -3,149 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HNFAK - Premium Sinema</title>
-    <style>
-        /* GENEL TASARIM */
-        body {
-            margin: 0;
-            padding: 0;
-            background: radial-gradient(circle, #1a1a1a 0%, #000000 100%);
-            color: #fff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        header {
-            background: rgba(0, 0, 0, 0.8);
-            padding: 20px;
-            text-align: center;
-            border-bottom: 2px solid gold;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        h1 { color: gold; margin: 0; letter-spacing: 3px; }
-
-        /* KAYIT FORMU ALANI */
-        .auth-container {
-            background: rgba(255, 215, 0, 0.1);
-            border: 1px solid gold;
-            margin: 20px auto;
-            padding: 20px;
-            max-width: 400px;
-            border-radius: 15px;
-            text-align: center;
-        }
-
-        input {
-            width: 80%;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: none;
-        }
-
-        .btn {
-            background: gold;
-            color: #000;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .btn:hover { background: #fff; transform: scale(1.05); }
-
-        /* FİLM ALANI */
-        .main-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .film-card {
-            width: 95%;
-            max-width: 800px;
-            background: #111;
-            border-radius: 15px;
-            overflow: hidden;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border: 1px solid #333;
-        }
-
-        .film-info { padding: 15px; border-bottom: 1px solid #222; }
-        .film-title { font-size: 1.2rem; color: gold; font-weight: bold; }
-
-        iframe {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            border: none;
-        }
-
-        /* MOBİL UYUM */
-        @media (max-width: 600px) {
-            h1 { font-size: 1.5rem; }
-            .auth-container { width: 85%; }
-        }
-    </style>
+    <title>HNFAK | Premium Sinema Keyfi</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 
-<header>
-    <h1>HNFAK PREMIUM</h1>
-    <p style="color: #ccc; font-size: 0.8rem;">Kalitenin Tek Adresi</p>
-</header>
-
-<div class="auth-container" id="kayitPaneli">
-    <h3>Üye Ol / Giriş Yap</h3>
-    <input type="text" id="username" placeholder="Kullanıcı Adı">
-    <input type="password" id="password" placeholder="Şifre">
-    <br>
-    <button class="btn" onclick="kayitOl()">Hemen Başla</button>
-    <p id="mesaj" style="font-size: 0.8rem; margin-top: 10px;"></p>
-</div>
-
-<div class="main-content">
-    <div class="film-card">
-        <div class="film-info">
-            <div class="film-title">Maymunlar Cehennemi: Yeni Krallık (TR Dublaj)</div>
+    <header>
+        <div class="header-left">
+            <div class="logo" onclick="location.reload()">HNF<span>AK</span></div>
+            <nav class="categories">
+                <button onclick="app.fetchByCategory(28)">Aksiyon</button>
+                <button onclick="app.fetchByCategory(35)">Komedi</button>
+                <button onclick="app.fetchByCategory(27)">Korku</button>
+                <button onclick="app.fetchByCategory(878)">Bilim Kurgu</button>
+            </nav>
         </div>
-        <iframe src="https://vidsrc.me/embed/movie/tt11389872" allowfullscreen></iframe>
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="HNFAK'ta ara..." onkeyup="event.key === 'Enter' && app.search()">
+        </div>
+    </header>
+
+    <section class="hero" id="heroSection">
+        <div class="hero-content">
+            <h1 id="heroTitle">HNFAK PREMIUM</h1>
+            <p id="heroDesc">En yeni Türkçe dublajlı filmleri keşfedin.</p>
+            <div class="hero-btns">
+                <button class="play-btn" id="heroPlayBtn"><i class="fas fa-play"></i> Hemen İzle</button>
+            </div>
+        </div>
+    </section>
+
+    <h2 class="row-title">Popüler İçerikler</h2>
+    <main id="movieGrid" class="grid"></main>
+
+    <div id="playerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="app.closePlayer()">&times;</span>
+            <iframe id="videoFrame" src="" allowfullscreen frameborder="0" referrerpolicy="no-referrer"></iframe>
+            <div id="sourceBar" class="source-bar"></div>
+        </div>
     </div>
 
-    </div>
-
-<script>
-    function kayitOl() {
-        const user = document.getElementById('username').value;
-        const mesaj = document.getElementById('mesaj');
-        
-        if(user.length > 3) {
-            mesaj.innerText = "Hoş geldin " + user + "! İyi seyirler.";
-            mesaj.style.color = "lightgreen";
-            // Burada bilgileri tarayıcıya geçici olarak kaydeder
-            localStorage.setItem('kullanici', user);
-            setTimeout(() => {
-                document.getElementById('kayitPaneli').style.display = "none";
-            }, 2000);
-        } else {
-            mesaj.innerText = "Lütfen geçerli bir isim girin.";
-            mesaj.style.color = "red";
-        }
-    }
-
-    // Sayfa açıldığında kullanıcıyı hatırla
-    window.onload = function() {
-        const kayitliUser = localStorage.getItem('kullanici');
-        if(kayitliUser) {
-            document.getElementById('kayitPaneli').innerHTML = "<h3>Tekrar Hoş Geldin, " + kayitliUser + "!</h3>";
-        }
-    }
-</script>
-
+    <script src="script.js"></script>
 </body>
 </html>
