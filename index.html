@@ -2,48 +2,113 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>HNFAK | Sinemanın Adresi</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HNFAK | %100 Sorunsuz</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root { --brand: #ff3c00; --bg: #080808; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; overflow-x: hidden; }
+        header { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 15px 4%; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+            position: fixed; width: 100%; z-index: 1000; box-sizing: border-box;
+        }
+        .logo { font-size: 30px; font-weight: 900; cursor: pointer; }
+        .logo span { color: var(--brand); }
+        .search-box { background: rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 20px; display: flex; align-items: center; }
+        .search-box input { background: transparent; border: none; color: white; outline: none; width: 150px; margin-left: 10px; }
+        .hero { height: 75vh; display: flex; align-items: center; padding: 0 4%; background-size: cover; background-position: center; position: relative; }
+        .hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, var(--bg), transparent); }
+        .hero-content { position: relative; z-index: 10; max-width: 600px; }
+        .play-btn { background: var(--brand); color: white; border: none; padding: 15px 35px; font-size: 18px; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; padding: 40px 4%; }
+        .card { border-radius: 8px; overflow: hidden; cursor: pointer; transition: 0.3s; background: #111; aspect-ratio: 2/3; }
+        .card:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--brand); }
+        .card img { width: 100%; height: 100%; object-fit: cover; }
+        .modal { position: fixed; inset: 0; background: black; display: none; z-index: 2000; }
+        .modal-content { width: 100%; height: 100%; position: relative; }
+        .close { position: absolute; right: 20px; top: 20px; font-size: 40px; color: white; cursor: pointer; z-index: 2100; background: rgba(0,0,0,0.5); width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        iframe { width: 100%; height: 100%; border: none; }
+    </style>
 </head>
 <body>
 
-    <header id="mainHeader">
-        <div class="header-left">
-            <div class="logo" onclick="location.reload()">HNF<span>AK</span></div>
-            <nav class="categories">
-                <button onclick="app.fetchByCategory(28)">Aksiyon</button>
-                <button onclick="app.fetchByCategory(35)">Komedi</button>
-                <button onclick="app.fetchByCategory(27)">Korku</button>
-                <button onclick="app.fetchByCategory(878)">Bilim Kurgu</button>
-            </nav>
-        </div>
+    <header>
+        <div class="logo" onclick="location.reload()">HNF<span>AK</span></div>
         <div class="search-box">
             <i class="fas fa-search"></i>
-            <input type="text" id="searchInput" placeholder="HNFAK'ta ara..." onkeyup="event.key === 'Enter' && app.search()">
+            <input type="text" id="searchInput" placeholder="Film ara..." onkeyup="event.key === 'Enter' && app.search()">
         </div>
     </header>
 
     <section class="hero" id="heroSection">
         <div class="hero-content">
-            <h1 id="heroTitle">HNFAK</h1>
-            <p id="heroDesc">En yeni Türkçe dublajlı içerikler burada.</p>
-            <div class="hero-btns">
-                <button class="play-btn" id="heroPlayBtn"><i class="fas fa-play"></i> Oynat</button>
-            </div>
+            <h1 id="heroTitle">Yükleniyor...</h1>
+            <p id="heroDesc">HNFAK ile sinema keyfi başlıyor.</p>
+            <button class="play-btn" id="heroPlayBtn">HEMEN İZLE</button>
         </div>
     </section>
 
-    <h2 class="row-title">Popüler İçerikler</h2>
     <main id="movieGrid" class="grid"></main>
 
     <div id="playerModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="app.closePlayer()">&times;</span>
-            <iframe id="videoFrame" src="" allowfullscreen frameborder="0" referrerpolicy="no-referrer"></iframe>
+            <iframe id="videoFrame" src="" allowfullscreen></iframe>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        const TMDB_API = 'c4c468367090c8c779814353144fe7f7';
+        
+        const app = {
+            async fetchPopular() {
+                const res = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_API}&language=tr-TR`);
+                const data = await res.json();
+                this.setHero(data.results[0]);
+                this.render(data.results);
+            },
+
+            async search() {
+                const q = document.getElementById('searchInput').value;
+                const res = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API}&query=${q}&language=tr-TR`);
+                const data = await res.json();
+                this.render(data.results);
+            },
+
+            setHero(movie) {
+                document.getElementById('heroSection').style.backgroundImage = `url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`;
+                document.getElementById('heroTitle').innerText = movie.title;
+                document.getElementById('heroDesc').innerText = movie.overview.slice(0, 150) + "...";
+                document.getElementById('heroPlayBtn').onclick = () => this.play(movie.id);
+            },
+
+            render(movies) {
+                const grid = document.getElementById('movieGrid');
+                grid.innerHTML = movies.map(m => `
+                    <div class="card" onclick="app.play('${m.id}')">
+                        <img src="https://image.tmdb.org/t/p/w500${m.poster_path}">
+                    </div>
+                `).join('');
+            },
+
+            play(id) {
+                const frame = document.getElementById('videoFrame');
+                /* ÇÖZÜM BURADA: 
+                   'embed.su' veya 'amped.su' TAMAMEN SİLİNDİ.
+                   Yerine IP sorunu çıkarmayan 'vidsrc.me' eklendi.
+                */
+                frame.src = `https://vidsrc.me/embed/movie?tmdb=${id}`;
+                document.getElementById('playerModal').style.display = 'block';
+            },
+
+            closePlayer() {
+                document.getElementById('playerModal').style.display = 'none';
+                document.getElementById('videoFrame').src = '';
+            }
+        };
+
+        window.onload = () => app.fetchPopular();
+    </script>
 </body>
 </html>
