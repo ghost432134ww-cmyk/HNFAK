@@ -1,6 +1,6 @@
 const TMDB_API = 'c4c468367090c8c779814353144fe7f7';
-const IMG_PATH = 'https://image.tmdb.org/t/p/w500';
-const HERO_PATH = 'https://image.tmdb.org/t/p/original';
+const IMG_PATH = 'https://image.tmdb.org/t/p/w500/'; // Slash eklendi
+const HERO_PATH = 'https://image.tmdb.org/t/p/original/';
 
 const app = {
     async fetchPopular() {
@@ -13,8 +13,9 @@ const app = {
     async fetchByCategory(genreId) {
         const res = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_API}&with_genres=${genreId}&language=tr-TR`);
         const data = await res.json();
+        document.querySelector('.row-title').innerText = "Kategori Sonuçları";
         this.render(data.results);
-        window.scrollTo({ top: 450, behavior: 'smooth' });
+        window.scrollTo({ top: 400, behavior: 'smooth' });
     },
 
     async search() {
@@ -27,9 +28,10 @@ const app = {
 
     setHero(movie) {
         const hero = document.getElementById('heroSection');
-        hero.style.backgroundImage = `url(${HERO_PATH + movie.backdrop_path})`;
+        const bg = HERO_PATH + movie.backdrop_path;
+        hero.style.backgroundImage = `linear-gradient(to right, #080808 10%, transparent 90%), url(${bg})`;
         document.getElementById('heroTitle').innerText = movie.title;
-        document.getElementById('heroDesc').innerText = movie.overview.slice(0, 180) + "...";
+        document.getElementById('heroDesc').innerText = movie.overview.slice(0, 150) + "...";
         document.getElementById('heroPlayBtn').onclick = () => this.play(movie.id);
     },
 
@@ -43,23 +45,10 @@ const app = {
     },
 
     play(id) {
-        const modal = document.getElementById('playerModal');
         const frame = document.getElementById('videoFrame');
-        const sBar = document.getElementById('sourceBar');
-
-        // Dublaj öncelikli sunucu
-        frame.src = `https://vidsrc.me/embed/movie?tmdb=${id}&lang=tr`;
-        
-        sBar.innerHTML = `
-            <button class="source-btn" onclick="app.changeSource('https://vidsrc.me/embed/movie?tmdb=${id}&lang=tr')">Sunucu 1 (Dublaj)</button>
-            <button class="source-btn" onclick="app.changeSource('https://vidsrc.to/embed/movie/${id}')">Sunucu 2</button>
-        `;
-        
-        modal.style.display = 'flex';
-    },
-
-    changeSource(url) {
-        document.getElementById('videoFrame').src = url;
+        // vidsrc.to otomatik türkçe ses desteği sağlar
+        frame.src = `https://vidsrc.to/embed/movie/${id}`;
+        document.getElementById('playerModal').style.display = 'flex';
     },
 
     closePlayer() {
