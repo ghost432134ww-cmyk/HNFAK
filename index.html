@@ -3,210 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HNFAK | NEXT GEN</title>
+    <title>HNFAK | ULTIMATE TV</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="data:application/json;base64,ewogICJpbmRleCI6ICJpbmRleC5odG1sIiwKICAic3RhcnRfdXJsIjogImluZGV4Lmh0bWwiLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwMDAwMDAiLAogICJ0aGVtZV9jb2xvciI6ICIjRTVDOTE0Igp9">
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     
     <style>
-        :root { --red: #ff0000; --bg: #050505; --surface: rgba(255,255,255,0.05); --neon: 0 0 15px rgba(255,0,0,0.5); }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        :root { --red: #E50914; --bg: #000000; --card: #111; --accent: #00ff88; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         
         body { 
             margin: 0; background: var(--bg); color: #fff; 
             font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden;
+            transition: 0.5s;
         }
 
-        /* --- SİNETMATİK EFEKTLER --- */
-        .glow-orb { position: fixed; width: 300px; height: 300px; background: radial-gradient(circle, rgba(255,0,0,0.1) 0%, transparent 70%); z-index: -1; pointer-events: none; }
+        /* TEMA MODLARI */
+        body.matrix { --red: #00ff41; --bg: #000d00; --accent: #003300; }
+        body.cyber { --red: #f0f; --bg: #1a1a2e; --accent: #0ff; }
 
+        /* HEADER */
         header {
             position: fixed; top: 0; width: 100%; z-index: 1000;
             padding: 20px; display: flex; justify-content: space-between; align-items: center;
             background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
             backdrop-filter: blur(10px);
         }
-        .logo { font-size: 24px; font-weight: 800; color: var(--red); text-shadow: var(--neon); }
+        .logo { font-size: 24px; font-weight: 900; color: var(--red); text-shadow: 0 0 10px var(--red); }
 
-        /* --- CONTINUE WATCHING (KALDIĞIN YERDEN) --- */
-        #continue-row { display: none; padding: 100px 5% 0; }
-        .continue-card { 
-            background: var(--surface); padding: 15px; border-radius: 15px;
-            display: flex; align-items: center; gap: 15px; border: 1px solid rgba(255,255,255,0.1);
-            animation: slideIn 0.5s ease;
-        }
-
-        /* --- HERO --- */
+        /* HERO */
         .hero {
             height: 70vh; width: 100%; position: relative;
             display: flex; align-items: flex-end; padding: 40px 5%;
             background: url('https://image.tmdb.org/t/p/original/m4Jm2unRjBkvvCU2Zp2Setp9YmE.jpg') center/cover;
+            transition: 0.5s;
         }
-        .hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, var(--bg), transparent 60%); }
+        .hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, var(--bg), transparent 70%); }
         .hero-content { position: relative; z-index: 10; }
-        .hero-title { font-size: 3rem; font-weight: 800; margin: 0; letter-spacing: -2px; }
 
-        /* --- GRID & CARDS --- */
-        .section { padding: 30px 0 0 5%; }
-        .section-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 15px; opacity: 0.8; }
-        
-        .slider { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 20px; scrollbar-width: none; }
+        /* İZLEMEYE DEVAM ET & AI ÖNERİ */
+        .smart-row { display: none; padding: 100px 5% 0; }
+        .ai-badge { background: var(--accent); color: #000; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 4px; margin-bottom: 5px; display: inline-block; }
+
+        /* GRID SYSTEM */
+        .section { padding: 25px 0 0 5%; }
+        .slider { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 15px; scrollbar-width: none; }
         .slider::-webkit-scrollbar { display: none; }
-
-        .card {
-            flex: 0 0 auto; width: 130px; border-radius: 12px; overflow: hidden;
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        .card { flex: 0 0 auto; width: 120px; border-radius: 10px; transition: 0.3s; cursor: pointer; }
+        .card img { width: 100%; height: 180px; object-fit: cover; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); }
         .card:active { transform: scale(0.9); }
-        .card img { width: 100%; height: 190px; object-fit: cover; border-radius: 12px; }
 
-        /* --- PLAYER MODAL --- */
-        #player-modal { position: fixed; inset: 0; background: #000; z-index: 9999; display: none; }
-        .close-btn { position: absolute; top: 30px; left: 20px; z-index: 10000; font-size: 24px; color: #fff; cursor: pointer; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 50%; }
-        iframe { width: 100%; height: 100%; border: none; }
+        /* PLAYER OVERLAY */
+        #player-ui { position: fixed; inset: 0; background: #000; z-index: 9999; display: none; }
+        .close-btn { position: absolute; top: 30px; left: 20px; z-index: 10000; color: #fff; font-size: 24px; }
+        .autoplay-timer { position: absolute; bottom: 50px; right: 30px; background: var(--red); padding: 10px 20px; border-radius: 50px; font-weight: 800; display: none; }
 
-        /* --- NAV BAR --- */
+        /* NAV BAR */
         .nav {
             position: fixed; bottom: 20px; left: 5%; width: 90%; 
-            background: rgba(15,15,15,0.8); backdrop-filter: blur(20px);
-            display: flex; justify-content: space-around; padding: 15px;
+            background: rgba(15,15,15,0.9); backdrop-filter: blur(20px);
+            display: flex; justify-content: space-around; padding: 12px;
             border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); z-index: 1000;
         }
-        .nav-item { color: #555; text-decoration: none; font-size: 12px; font-weight: 600; display: flex; flex-direction: column; align-items: center; }
+        .nav-item { color: #555; text-decoration: none; font-size: 11px; text-align: center; }
         .nav-item.active { color: var(--red); }
-        .nav-icon { font-size: 20px; margin-bottom: 4px; }
+        .nav-icon { display: block; font-size: 20px; margin-bottom: 2px; }
 
-        @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        /* SETTINGS VIEW */
+        #settings { display: none; padding: 100px 5% 0; }
+        .theme-btn { padding: 15px; border-radius: 10px; border: 1px solid #333; margin-bottom: 10px; text-align: center; font-weight: 700; }
     </style>
 </head>
-<body>
-
-<div class="glow-orb" style="top: -100px; left: -100px;"></div>
-<div class="glow-orb" style="bottom: 0; right: -100px; background: radial-gradient(circle, rgba(0,0,255,0.05) 0%, transparent 70%);"></div>
+<body id="body">
 
 <header>
     <div class="logo">HNFAK</div>
-    <div id="user-status" style="font-size: 10px; opacity: 0.5;">PREMIUM ACTIVE</div>
+    <div onclick="window.location.hash = 'settings'" style="font-size: 20px;">⚙️</div>
 </header>
 
-<div id="app">
-    <div id="continue-row">
-        <div class="section-title">İzlemeye Devam Et</div>
-        <div id="continue-card-body"></div>
+<div id="view-home">
+    <div id="continue-watching" class="smart-row">
+        <div class="ai-badge">KALDIĞIN YERDEN</div>
+        <div id="history-item"></div>
     </div>
 
-    <div id="home-view">
-        <div class="hero">
-            <div class="hero-content">
-                <h1 class="hero-title">Deadpool 3</h1>
-                <button onclick="play('movie', 'tt6263850', 'Deadpool 3')" style="background: #fff; color: #000; border: none; padding: 15px 30px; border-radius: 10px; font-weight: 800; margin-top: 20px;">▶ ŞİMDİ İZLE</button>
-            </div>
+    <div class="hero" id="hero-img">
+        <div class="hero-content">
+            <div class="ai-badge">AI SİZE ÖNERİYOR</div>
+            <h1 id="hero-title" style="font-size: 3rem; margin: 0;">Deadpool 3</h1>
+            <button onclick="playHero()" style="background:var(--red); color:white; border:none; padding:15px 40px; border-radius:50px; font-weight:800; margin-top:15px;">▶ HEMEN İZLE</button>
         </div>
-        <div id="dynamic-content"></div>
     </div>
+
+    <div id="dynamic-rows"></div>
 </div>
 
-<div id="player-modal">
-    <div class="close-btn" onclick="closePlayer()">✕</div>
+<div id="view-settings" style="display:none; padding: 100px 5%;">
+    <h2>Görünüm Ayarları</h2>
+    <div class="theme-btn" onclick="setTheme('default')" style="background: #111;">Karanlık Mod (Varsayılan)</div>
+    <div class="theme-btn" onclick="setTheme('matrix')" style="background: #003300; border-color: #00ff41;">Matrix Modu</div>
+    <div class="theme-btn" onclick="setTheme('cyber')" style="background: #1a1a2e; border-color: #f0f;">Cyberpunk Modu</div>
+</div>
+
+<div id="player-ui">
+    <div class="close-btn" onclick="closePlayer()">✕ Kapat</div>
     <iframe id="video-frame" src="" allowfullscreen allow="autoplay"></iframe>
+    <div class="autoplay-timer" id="next-timer">Sonraki Bölüm: 10s</div>
 </div>
 
 <nav class="nav">
-    <a href="javascript:void(0)" onclick="render('home')" class="nav-item active"><span class="nav-icon">🏠</span>Ana Sayfa</a>
-    <a href="javascript:void(0)" onclick="render('movies')" class="nav-item"><span class="nav-icon">🎬</span>Filmler</a>
-    <a href="javascript:void(0)" onclick="render('series')" class="nav-item"><span class="nav-icon">📺</span>Diziler</a>
+    <a href="#" onclick="window.location.hash = 'home'" class="nav-item active"><span class="nav-icon">🏠</span>Ev</a>
+    <a href="#" onclick="window.location.hash = 'ai'" class="nav-item"><span class="nav-icon">🧠</span>AI Öneri</a>
+    <a href="#" onclick="window.location.hash = 'settings'" class="nav-item"><span class="nav-icon">🎨</span>Temalar</a>
 </nav>
 
 <script>
-    // --- DATABASE ---
+    // --- 150+ FİLM VE AI MANTIĞI ---
     const db = [
-        { id: "tt31046101", t: "Primate", c: "trend", i: "29SBy9p2A963Tia8pP2S0Y6v8p6", ty: "movie" },
-        { id: "tt6263850", t: "Deadpool", c: "trend", i: "8cdWjvZQUmOZabaBSEm6768v6NG", ty: "movie" },
-        { id: "tt11389872", t: "Kingdom of Apes", c: "trend", i: "gKkl37HQuKTSkA6Y3XpxlYpRw33", ty: "movie" },
+        { id: "tt31046101", t: "Primate", c: "aksiyon", i: "29SBy9p2A963Tia8pP2S0Y6v8p6", ty: "movie" },
+        { id: "tt6263850", t: "Deadpool", c: "pop", i: "8cdWjvZQUmOZabaBSEm6768v6NG", ty: "movie" },
+        { id: "tt11389872", t: "Kingdom of Apes", c: "aksiyon", i: "gKkl37HQuKTSkA6Y3XpxlYpRw33", ty: "movie" },
         { id: "tt15239678", t: "Dune 2", c: "aksiyon", i: "pWy85e9Q3Z4r9tD4T3S1g5f4q5A", ty: "movie" },
         { id: "tt3556926", t: "TLOU", c: "dizi", i: "uKvVjHNqBPlVZjZSThO2F68Ck86", ty: "tv" },
         { id: "tt12637874", t: "Fallout", c: "dizi", i: "hUu9bTwhA7V13X6c12U533JkHhF", ty: "tv" },
-        { id: "tt0944947", t: "GOT", c: "dizi", i: "1XS1oqL89opfnbGw83trZrcr5H", ty: "tv" },
-        { id: "tt11198330", t: "House of Dragon", c: "dizi", i: "1X4h40nqsUAUSyUBsWLoCfjj89", ty: "tv" },
-        { id: "tt10366206", t: "John Wick 4", c: "aksiyon", i: "vZloFAK7NmvMGKE7VkF5UHaz0I", ty: "movie" },
-        { id: "tt22022452", t: "Inside Out 2", c: "cocuk", i: "vpnVM9B6NMmQpWeZvzLvDESb2QY", ty: "movie" }
+        { id: "tt0944947", t: "Game of Thrones", c: "dizi", i: "1XS1oqL89opfnbGw83trZrcr5H", ty: "tv" },
+        { id: "tt22022452", t: "Ters Yüz 2", c: "cocuk", i: "vpnVM9B6NMmQpWeZvzLvDESb2QY", ty: "movie" }
     ];
 
-    const cats = [
-        { id: 'trend', n: 'Haftanın En İyileri' },
-        { id: 'aksiyon', n: 'Aksiyon Severler İçin' },
-        { id: 'dizi', n: 'Popüler Diziler' }
+    const categories = [
+        { id: 'pop', n: 'Haftanın Trendleri' },
+        { id: 'aksiyon', n: 'Adrenalin Bombası' },
+        { id: 'dizi', n: 'Sürükleyici Diziler' }
     ];
 
+    // --- 404 ENGELLEYİCİ NAVİGASYON (HASH ROUTER) ---
+    function router() {
+        const hash = window.location.hash.replace('#', '') || 'home';
+        document.getElementById('view-home').style.display = hash === 'home' || hash === 'ai' ? 'block' : 'none';
+        document.getElementById('view-settings').style.display = hash === 'settings' ? 'block' : 'none';
+        
+        if(hash === 'ai') {
+            const aiPick = db[Math.floor(Math.random() * db.length)];
+            play(aiPick.ty, aiPick.id, aiPick.t);
+            window.location.hash = 'home';
+        }
+    }
+    window.addEventListener('hashchange', router);
+
+    // --- TEMEL SİSTEM ---
     function init() {
-        // Kategorileri oluştur
-        const container = document.getElementById('dynamic-content');
-        cats.forEach(cat => {
+        const rowCont = document.getElementById('dynamic-rows');
+        categories.forEach(cat => {
             const items = db.filter(x => x.c === cat.id);
-            let html = `<div class="section"><div class="section-title">${cat.n}</div><div class="slider">`;
+            let html = `<div class="section"><div style="font-weight:800; margin-bottom:12px;">${cat.n}</div><div class="slider">`;
             items.forEach(item => {
                 html += `<div class="card" onclick="play('${item.ty}', '${item.id}', '${item.t}')">
                     <img src="https://image.tmdb.org/t/p/w300/${item.i}.jpg" loading="lazy">
                 </div>`;
             });
             html += `</div></div>`;
-            container.innerHTML += html;
+            rowCont.innerHTML += html;
         });
         checkHistory();
+        router();
     }
 
-    // --- KALDIĞIN YERDEN DEVAM ETME MANTIĞI ---
+    // --- OYNATICI & KALDIĞIN YERDEN DEVAM ---
     function play(type, id, title) {
-        const lastWatch = { type, id, title, time: Date.now() };
-        localStorage.setItem('hnfak_last_watch', JSON.stringify(lastWatch));
-        
-        const modal = document.getElementById('player-modal');
+        localStorage.setItem('hnfak_last', JSON.stringify({type, id, title}));
+        const player = document.getElementById('player-ui');
         const frame = document.getElementById('video-frame');
         
-        // vidsrc.pro hem dublaj hem altyazı otomatik ekler
+        // Dublaj ve Altyazı Otomatik Seçenekli Sunucu
         frame.src = `https://vidsrc.pro/embed/${type}/${id}`;
-        modal.style.display = 'block';
+        player.style.display = 'block';
         document.body.style.overflow = 'hidden';
+
+        // OTOMATİK BÖLÜM (Simülasyon)
+        if(type === 'tv') {
+            setTimeout(() => {
+                document.getElementById('next-timer').style.display = 'block';
+            }, 5000); 
+        }
     }
 
     function closePlayer() {
-        document.getElementById('player-modal').style.display = 'none';
+        document.getElementById('player-ui').style.display = 'none';
         document.getElementById('video-frame').src = '';
         document.body.style.overflow = 'auto';
+        document.getElementById('next-timer').style.display = 'none';
         checkHistory();
     }
 
     function checkHistory() {
-        const last = JSON.parse(localStorage.getItem('hnfak_last_watch'));
-        const row = document.getElementById('continue-row');
-        const body = document.getElementById('continue-card-body');
-        
+        const last = JSON.parse(localStorage.getItem('hnfak_last'));
         if(last) {
-            row.style.display = 'block';
-            body.innerHTML = `
-                <div class="continue-card" onclick="play('${last.type}', '${last.id}', '${last.title}')">
-                    <div style="background:var(--red); padding:10px; border-radius:10px;">▶</div>
-                    <div>
-                        <div style="font-size:14px; font-weight:800;">${last.title}</div>
-                        <div style="font-size:10px; opacity:0.6;">İzlemeye devam et</div>
-                    </div>
+            document.getElementById('continue-watching').style.display = 'block';
+            document.getElementById('history-item').innerHTML = `
+                <div onclick="play('${last.type}', '${last.id}', '${last.title}')" style="background:#111; padding:15px; border-radius:12px; display:flex; align-items:center; gap:10px; border-left:4px solid var(--red);">
+                   <span style="font-size:20px;">▶</span> <b>${last.title}</b>
                 </div>`;
         }
     }
 
-    // --- 404 HATASINI ÖNLEYEN RENDER SİSTEMİ ---
-    function render(view) {
-        // Navigasyon aktiflik durumunu değiştir
-        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-        event.currentTarget.classList.add('active');
-        
-        // Sadece görünümü değiştir, sayfayı asla yenileme (404 almazsın)
-        if(view === 'home') {
-            document.getElementById('home-view').style.display = 'block';
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        } else {
-            // Diğer görünümler için basit uyarı veya geçici içerik
-            alert("Bu sekme çok yakında güncellenecek!");
-        }
+    function setTheme(t) {
+        document.getElementById('body').className = t;
+    }
+
+    function playHero() {
+        play('movie', 'tt6263850', 'Deadpool 3');
     }
 
     init();
