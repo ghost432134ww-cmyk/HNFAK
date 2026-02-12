@@ -2,119 +2,139 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HNFAK PREMIUM</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HNFAK</title>
     <style>
-        :root { --red: #E50914; --bg: #050505; --card: #181818; }
-        body { margin: 0; background: var(--bg); color: #fff; font-family: 'Poppins', sans-serif; overflow-x: hidden; padding-bottom: 80px; }
+        :root { --red: #E50914; --black: #141414; --bg: #000; }
+        body { margin: 0; background-color: var(--bg); color: #fff; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; overflow-x: hidden; }
 
-        /* --- LOGO --- */
-        .header { padding: 15px; text-align: center; background: #000; border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 1000; }
-        .logo { color: var(--red); font-size: 24px; font-weight: bold; letter-spacing: 2px; }
-
-        /* --- HAREKETLİ KESİT ALANI (3-4 SN DEĞİŞİM) --- */
-        .hero-slider {
-            width: 100%;
-            height: 50vh;
-            position: relative;
-            overflow: hidden;
-            background: #000;
+        /* NETFLIX TARZI HEADER */
+        .header {
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 10%, transparent);
+            display: flex; align-items: center; padding: 20px 4%; transition: 0.5s;
         }
-        .slide {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: flex-end;
-            padding: 40px;
-        }
-        .slide.active { opacity: 1; }
-        .slide-info { background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px; backdrop-filter: blur(5px); }
+        .logo { color: var(--red); font-size: 28px; font-weight: bold; letter-spacing: 2px; }
 
-        /* --- FİLM SIRALARI --- */
-        .row { padding: 25px 0 0 4%; }
-        .row-title { font-size: 1.2rem; margin-bottom: 15px; font-weight: 600; color: #fff; }
-        .slider { display: flex; overflow-x: scroll; gap: 15px; padding-bottom: 20px; scrollbar-width: none; }
+        /* CANLI KESİT ALANI (BILLBOARD) */
+        .hero {
+            position: relative; width: 100%; height: 80vh; background: #000;
+            display: flex; align-items: center; justify-content: flex-start;
+        }
+        .video-background {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; overflow: hidden;
+        }
+        .video-background iframe {
+            width: 100vw; height: 56.25vw; min-height: 80vh; min-width: 142.22vh;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        }
+        .hero-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(77deg, rgba(0,0,0,0.8) 0%, transparent 85%);
+            padding: 0 4%; display: flex; flex-direction: column; justify-content: center;
+        }
+        .hero-title { font-size: 3rem; margin-bottom: 10px; font-weight: bold; }
+        .hero-desc { font-size: 1.2rem; max-width: 500px; color: #ddd; margin-bottom: 20px; }
+
+        /* FİLM LİSTELERİ */
+        .main-container { margin-top: -100px; position: relative; z-index: 10; padding-bottom: 100px; }
+        .row { padding: 20px 0 0 4%; }
+        .row-title { font-size: 1.4rem; font-weight: 600; margin-bottom: 10px; }
+        
+        .slider {
+            display: flex; overflow-x: scroll; gap: 10px;
+            padding: 20px 0; scrollbar-width: none;
+        }
         .slider::-webkit-scrollbar { display: none; }
 
-        /* --- POSTER KARTLARI --- */
-        .card { flex: 0 0 auto; width: 180px; background: var(--card); border-radius: 8px; overflow: hidden; transition: 0.3s; cursor: pointer; border: 1px solid #333; }
-        .card:hover { transform: scale(1.08); border-color: var(--red); }
-        .poster { width: 100%; aspect-ratio: 2/3; background-size: cover; background-position: center; }
-        .card iframe { width: 100%; aspect-ratio: 16/9; display: none; border: none; } /* Başta gizli, tıklayınca açılır */
-        .card.playing .poster { display: none; }
-        .card.playing iframe { display: block; }
-        .info { padding: 8px; font-size: 0.75rem; text-align: center; }
+        .card {
+            flex: 0 0 auto; width: 200px; transition: transform 0.3s;
+            cursor: pointer; border-radius: 4px; overflow: hidden;
+        }
+        .card:hover { transform: scale(1.1); z-index: 20; }
+        .card img { width: 100%; border-radius: 4px; }
 
-        /* --- MOBİL NAV --- */
-        .app-bar { position: fixed; bottom: 0; width: 100%; background: #000; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #222; z-index: 1000; }
-        .app-item { color: #777; text-decoration: none; font-size: 0.7rem; text-align: center; }
-        .app-item.active { color: var(--red); }
+        /* VİDEO OYNATICI MODAL */
+        #player-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; display: none; z-index: 2000;
+        }
+        .close-btn {
+            position: absolute; top: 20px; right: 20px; font-size: 30px;
+            cursor: pointer; color: white; z-index: 2100;
+        }
+        iframe#main-player { width: 100%; height: 100%; border: none; }
+
+        /* MOBİL NAV */
+        .mobile-nav {
+            position: fixed; bottom: 0; width: 100%; background: #121212;
+            display: flex; justify-content: space-around; padding: 15px 0;
+            border-top: 1px solid #333; z-index: 1000;
+        }
+        .nav-item { color: #888; text-decoration: none; font-size: 12px; text-align: center; }
+        .nav-item.active { color: white; }
     </style>
 </head>
 <body>
 
-<div class="header"><div class="logo">HNFAK</div></div>
+    <header class="header"><div class="logo">HNFAK</div></header>
 
-<div class="hero-slider" id="heroSlider">
-    <div class="slide active" style="background-image: linear-gradient(to top, #050505, transparent), url('https://image.tmdb.org/t/p/original/m4Jm2unRjBkvvCU2Zp2Setp9YmE.jpg');">
-        <div class="slide-info"><h2>Deadpool & Wolverine</h2><p>Şimdi İzle</p></div>
-    </div>
-    <div class="slide" style="background-image: linear-gradient(to top, #050505, transparent), url('https://image.tmdb.org/t/p/original/3mY9p990mS7v6T2S7L838vVf8A9.jpg');">
-        <div class="slide-info"><h2>Primate (2024)</h2><p>Gizem ve Aksiyon</p></div>
-    </div>
-    <div class="slide" style="background-image: linear-gradient(to top, #050505, transparent), url('https://image.tmdb.org/t/p/original/9BBTo63ANSmhC4p6r62ZL6JpGv1.jpg');">
-        <div class="slide-info"><h2>Avatar: Suyun Yolu</h2><p>Görsel Şölen</p></div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="row-title">🍿 Popüler Filmler</div>
-    <div class="slider">
-        <div class="card" onclick="playVideo(this)">
-            <div class="poster" style="background-image: url('https://image.tmdb.org/t/p/w500/29SBy9p2A963Tia8pP2S0Y6v8p6.jpg');"></div>
-            <iframe src="https://vidsrc.cc/v2/embed/movie/tt31046101" allowfullscreen></iframe>
-            <div class="info">Primate (2024)</div>
+    <div class="hero">
+        <div class="video-background">
+            <iframe src="https://www.youtube.com/embed/D30r0CwtIKc?autoplay=1&mute=1&controls=0&loop=1&playlist=D30r0CwtIKc" frameborder="0"></iframe>
         </div>
-        <div class="card" onclick="playVideo(this)">
-            <div class="poster" style="background-image: url('https://image.tmdb.org/t/p/w500/8cdWjvZQUmOZabaBSEm6768v6NG.jpg');"></div>
-            <iframe src="https://vidsrc.cc/v2/embed/movie/tt6263850" allowfullscreen></iframe>
-            <div class="info">Deadpool & Wolverine</div>
-        </div>
-        <div class="card" onclick="playVideo(this)">
-            <div class="poster" style="background-image: url('https://image.tmdb.org/t/p/w500/gKkl37HQuKTSkA6Y3XpxlYpRw33.jpg');"></div>
-            <iframe src="https://vidsrc.cc/v2/embed/movie/tt11389872" allowfullscreen></iframe>
-            <div class="info">Maymunlar Cehennemi</div>
+        <div class="hero-overlay">
+            <div class="hero-title">Deadpool & Wolverine</div>
+            <div class="hero-desc">Dünyayı kurtarmak için isteksiz bir kahraman ve daha da isteksiz bir kurtarıcı bir araya geliyor.</div>
+            <button onclick="openPlayer('tt6263850')" style="padding: 10px 25px; font-size: 18px; font-weight: bold; cursor: pointer; border: none; border-radius: 4px;">▶ Oynat</button>
         </div>
     </div>
-</div>
 
-<div class="app-bar">
-    <a href="#" class="app-item active">🏠<br>Ana Sayfa</a>
-    <a href="#filmler" class="app-item">🎬<br>Filmler</a>
-    <a href="#diziler" class="app-item">📺<br>Diziler</a>
-</div>
+    <div class="main-container">
+        <div class="row">
+            <div class="row-title">Popüler Filmler</div>
+            <div class="slider">
+                <div class="card" onclick="openPlayer('tt31046101')">
+                    <img src="https://image.tmdb.org/t/p/w500/29SBy9p2A963Tia8pP2S0Y6v8p6.jpg" alt="Primate">
+                </div>
+                <div class="card" onclick="openPlayer('tt6263850')">
+                    <img src="https://image.tmdb.org/t/p/w500/8cdWjvZQUmOZabaBSEm6768v6NG.jpg" alt="Deadpool">
+                </div>
+                <div class="card" onclick="openPlayer('tt11389872')">
+                    <img src="https://image.tmdb.org/t/p/w500/gKkl37HQuKTSkA6Y3XpxlYpRw33.jpg" alt="Maymunlar">
+                </div>
+                <div class="card" onclick="openPlayer('tt11317426')">
+                    <img src="https://image.tmdb.org/t/p/w500/udDcl70jRiiQZ60o9p6G60o2o1u.jpg" alt="Joker">
+                </div>
+            </div>
+        </div>
+    </div>
 
-<script>
-    // Hareketli Kesit Döngüsü (4 saniyede bir)
-    let currentSlide = 0;
-    const slides = document.querySelectorAll('.slide');
-    setInterval(() => {
-        slides[currentSlide].classList.remove('active');
-        currentSlide = (currentSlide + 1) % slides.length;
-        slides[currentSlide].classList.add('active');
-    }, 4000);
+    <div id="player-overlay">
+        <span class="close-btn" onclick="closePlayer()">✕</span>
+        <iframe id="main-player" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
+    </div>
 
-    // Resme tıklayınca videoyu başlat
-    function playVideo(card) {
-        card.classList.add('playing');
-    }
-</script>
+    <nav class="mobile-nav">
+        <a href="#" class="nav-item active">🏠<br>Ana Sayfa</a>
+        <a href="#" class="nav-item">🎬<br>Filmler</a>
+        <a href="#" class="nav-item">📺<br>Diziler</a>
+    </nav>
 
+    <script>
+        function openPlayer(id) {
+            const player = document.getElementById('main-player');
+            const overlay = document.getElementById('player-overlay');
+            player.src = "https://vidsrc.cc/v2/embed/movie/" + id;
+            overlay.style.display = 'block';
+        }
+        function closePlayer() {
+            const player = document.getElementById('main-player');
+            const overlay = document.getElementById('player-overlay');
+            player.src = "";
+            overlay.style.display = 'none';
+        }
+    </script>
 </body>
 </html>
