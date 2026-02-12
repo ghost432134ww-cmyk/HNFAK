@@ -3,24 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HNFAK GENESIS</title>
+    <title>HNFAK | GENESIS V10</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-status-bar-style" content="black-translucent">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    
     <style>
-        :root { --red: #E50914; --bg: #000; --glass: rgba(255, 255, 255, 0.05); }
+        :root { --red: #E50914; --bg: #000; --card-w: 130px; }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
+        
+        body { 
+            background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; 
+            overflow-x: hidden; user-select: none;
+        }
 
-        /* --- AKILLI LOADER --- */
+        /* --- AKILLI YÜKLEYİCİ (TAKILMAZ) --- */
         #loader {
             position: fixed; inset: 0; background: #000; z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 0.5s ease;
         }
-        .logo-load { font-size: 32px; font-weight: 800; color: var(--red); letter-spacing: -1px; margin-bottom: 10px; }
-        .bar-container { width: 120px; height: 2px; background: #222; border-radius: 10px; overflow: hidden; }
-        .bar-fill { width: 0%; height: 100%; background: var(--red); transition: 0.3s; }
+        .logo-load { font-size: 35px; font-weight: 800; color: var(--red); text-shadow: 0 0 15px rgba(229,9,20,0.5); }
+        .spinner { width: 30px; height: 30px; border: 3px solid #222; border-top-color: var(--red); border-radius: 50%; animate: spin 1s linear infinite; margin-top: 15px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* --- UI ELEMENTS --- */
+        /* --- HEADER --- */
         header {
             position: fixed; top: 0; width: 100%; z-index: 1000; padding: 20px 5%;
             background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
@@ -28,144 +36,168 @@
         }
         .logo { font-size: 24px; font-weight: 800; color: var(--red); }
 
+        /* --- HERO (MANŞET) --- */
         .hero {
             height: 75vh; position: relative; display: flex; align-items: flex-end; padding: 40px 5%;
-            background: #111 center/cover no-repeat;
+            background-size: cover; background-position: center; transition: 0.5s;
         }
-        .hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, var(--bg) 5%, transparent 60%); }
+        .hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, var(--bg) 5%, transparent 70%); }
         .hero-content { position: relative; z-index: 10; width: 100%; }
-        
         .play-main {
-            background: #fff; color: #000; border: none; padding: 14px 30px; border-radius: 8px;
-            font-weight: 800; font-size: 15px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+            background: #fff; color: #000; border: none; padding: 15px 35px; border-radius: 10px;
+            font-weight: 800; font-size: 16px; cursor: pointer; display: inline-flex; align-items: center; gap: 10px;
         }
 
+        /* --- KALDIĞIN YERDEN DEVAM ET --- */
+        #continue-row { display: none; padding: 110px 5% 0; }
+        .cont-box { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; border: 1px solid #222; display: flex; align-items: center; gap: 12px; }
+
+        /* --- SIRALAR (ROWS) --- */
         .section { padding: 30px 0 0 5%; }
-        .section-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 15px; opacity: 0.9; }
+        .section-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 15px; color: #eee; }
         .slider { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 20px; scrollbar-width: none; }
         .slider::-webkit-scrollbar { display: none; }
 
-        .card { flex: 0 0 auto; width: 130px; border-radius: 10px; overflow: hidden; transition: 0.3s; position: relative; }
-        .card img { width: 100%; height: 190px; object-fit: cover; background: #111; border: 1px solid #222; }
+        .card { flex: 0 0 auto; width: var(--card-w); border-radius: 10px; overflow: hidden; transition: 0.3s; }
+        .card img { width: 100%; height: 195px; object-fit: cover; background: #111; border: 1px solid #222; }
         .card:active { transform: scale(0.95); }
 
-        /* --- PLAYER --- */
+        /* --- OYNATICI (PLAYER) --- */
         #player { position: fixed; inset: 0; background: #000; z-index: 10000; display: none; }
-        .close-p { position: absolute; top: 30px; left: 20px; z-index: 10001; font-size: 24px; color: #fff; background: rgba(0,0,0,0.5); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .close-player { 
+            position: absolute; top: 40px; left: 20px; z-index: 10001; 
+            background: rgba(0,0,0,0.6); color: #fff; width: 45px; height: 45px; 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;
+        }
         iframe { width: 100%; height: 100%; border: none; }
 
-        /* --- NAV --- */
+        /* --- NAV BAR --- */
         .nav {
             position: fixed; bottom: 20px; left: 5%; width: 90%; 
             background: rgba(15,15,15,0.9); backdrop-filter: blur(20px);
             display: flex; justify-content: space-around; padding: 12px;
             border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); z-index: 900;
         }
-        .nav-item { color: #555; text-decoration: none; font-size: 11px; font-weight: 600; text-align: center; }
+        .nav-item { color: #555; text-decoration: none; font-size: 11px; text-align: center; }
         .nav-item.active { color: #fff; }
-        .nav-icon { display: block; font-size: 20px; margin-bottom: 2px; }
+        .nav-icon { display: block; font-size: 22px; margin-bottom: 2px; }
     </style>
 </head>
 <body>
 
 <div id="loader">
     <div class="logo-load">HNFAK</div>
-    <div class="bar-container"><div class="bar-fill" id="bar"></div></div>
+    <div class="spinner"></div>
 </div>
 
 <header><div class="logo">HNFAK</div></header>
 
-<div id="app-content">
+<div id="main-content">
+    <div id="continue-row">
+        <div class="section-title">İzlemeye Devam Et</div>
+        <div id="cont-display"></div>
+    </div>
+
     <div class="hero" id="hero-box">
         <div class="hero-content">
-            <h1 id="hero-t" style="font-size: 2.5rem; margin-bottom: 15px;">Yükleniyor...</h1>
-            <button class="play-main" id="hero-btn">▶ Oynat</button>
+            <h1 id="hero-name" style="font-size: 2.8rem; margin-bottom: 20px;">Yükleniyor...</h1>
+            <button class="play-main" id="hero-btn">▶ HEMEN İZLE</button>
         </div>
     </div>
-    <div id="rows"></div>
+
+    <div id="dynamic-rows"></div>
 </div>
 
 <div id="player">
-    <div class="close-p" onclick="stop()">✕</div>
-    <iframe id="ifr" src="" allowfullscreen allow="autoplay"></iframe>
+    <div class="close-player" onclick="stopPlayer()">✕</div>
+    <iframe id="main-frame" src="" allowfullscreen allow="autoplay"></iframe>
 </div>
 
 <nav class="nav">
-    <a href="#" class="nav-item active"><span class="nav-icon">🏠</span>Ana Sayfa</a>
-    <a href="#" onclick="alert('Yakında!')" class="nav-item"><span class="nav-icon">🎬</span>Filmler</a>
-    <a href="#" onclick="alert('Yakında!')" class="nav-item"><span class="nav-icon">📺</span>Diziler</a>
+    <a href="#" onclick="location.reload()" class="nav-item active"><span class="nav-icon">🏠</span>Ev</a>
+    <a href="#" class="nav-item"><span class="nav-icon">🎬</span>Filmler</a>
+    <a href="#" class="nav-item"><span class="nav-icon">📺</span>Diziler</a>
 </nav>
 
 <script>
+    // --- VERİTABANI ---
     const db = [
-        { id: "tt6263850", t: "Deadpool", c: "Popüler", i: "8cdWjvZQUmOZabaBSEm6768v6NG", ty: "movie", h: "https://image.tmdb.org/t/p/original/m4Jm2unRjBkvvCU2Zp2Setp9YmE.jpg" },
-        { id: "tt31046101", t: "Primate", c: "Popüler", i: "29SBy9p2A963Tia8pP2S0Y6v8p6", ty: "movie" },
-        { id: "tt15239678", t: "Dune 2", c: "Aksiyon", i: "pWy85e9Q3Z4r9tD4T3S1g5f4q5A", ty: "movie" },
-        { id: "tt3556926", t: "Last of Us", c: "Dizi", i: "uKvVjHNqBPlVZjZSThO2F68Ck86", ty: "tv" },
-        { id: "tt12637874", t: "Fallout", c: "Dizi", i: "hUu9bTwhA7V13X6c12U533JkHhF", ty: "tv" },
-        { id: "tt11389872", t: "Apes", c: "Popüler", i: "gKkl37HQuKTSkA6Y3XpxlYpRw33", ty: "movie" },
-        { id: "tt10366206", t: "John Wick 4", c: "Aksiyon", i: "vZloFAK7NmvMGKE7VkF5UHaz0I", ty: "movie" },
-        { id: "tt22022452", t: "Inside Out 2", c: "Popüler", i: "vpnVM9B6NMmQpWeZvzLvDESb2QY", ty: "movie" }
+        { id: "tt6263850", t: "Deadpool & Wolverine", c: "Trendler", i: "8cdWjvZQUmOZabaBSEm6768v6NG", ty: "movie", h: "https://image.tmdb.org/t/p/original/m4Jm2unRjBkvvCU2Zp2Setp9YmE.jpg" },
+        { id: "tt31046101", t: "Primate", c: "Yeni Çıkanlar", i: "29SBy9p2A963Tia8pP2S0Y6v8p6", ty: "movie" },
+        { id: "tt15239678", t: "Dune: Part Two", c: "Aksiyon", i: "pWy85e9Q3Z4r9tD4T3S1g5f4q5A", ty: "movie" },
+        { id: "tt3556926", t: "The Last of Us", c: "Popüler Diziler", i: "uKvVjHNqBPlVZjZSThO2F68Ck86", ty: "tv" },
+        { id: "tt12637874", t: "Fallout", c: "Popüler Diziler", i: "hUu9bTwhA7V13X6c12U533JkHhF", ty: "tv" },
+        { id: "tt11389872", t: "Kingdom of the Planet of the Apes", c: "Trendler", i: "gKkl37HQuKTSkA6Y3XpxlYpRw33", ty: "movie" },
+        { id: "tt10366206", t: "John Wick: Chapter 4", c: "Aksiyon", i: "vZloFAK7NmvMGKE7VkF5UHaz0I", ty: "movie" },
+        { id: "tt22022452", t: "Inside Out 2", c: "Yeni Çıkanlar", i: "vpnVM9B6NMmQpWeZvzLvDESb2QY", ty: "movie" }
     ];
 
-    function startApp() {
-        const rows = document.getElementById('rows');
-        const cats = [...new Set(db.map(x => x.c))];
-        
-        cats.forEach(cat => {
+    function init() {
+        const rowCont = document.getElementById('dynamic-rows');
+        const categories = [...new Set(db.map(x => x.c))];
+
+        categories.forEach(cat => {
             let html = `<div class="section"><div class="section-title">${cat}</div><div class="slider">`;
             db.filter(x => x.c === cat).forEach(item => {
-                html += `<div class="card" onclick="watch('${item.ty}', '${item.id}')">
-                    <img src="https://image.tmdb.org/t/p/w300/${item.i}.jpg" onerror="this.src='https://via.placeholder.com/300x450/111/fff?text=${item.t}'">
+                html += `<div class="card" onclick="startStream('${item.ty}', '${item.id}', '${item.t}')">
+                    <img src="https://image.tmdb.org/t/p/w300/${item.i}.jpg" loading="lazy">
                 </div>`;
             });
             html += `</div></div>`;
-            rows.innerHTML += html;
+            rowCont.innerHTML += html;
         });
 
-        // Hero Init
-        document.getElementById('hero-box').style.backgroundImage = `url('${db[0].h}')`;
-        document.getElementById('hero-t').innerText = db[0].t;
-        document.getElementById('hero-btn').onclick = () => watch(db[0].ty, db[0].id);
+        // Manşet Ayarı
+        const hero = db[0];
+        document.getElementById('hero-box').style.backgroundImage = `url('${hero.h}')`;
+        document.getElementById('hero-name').innerText = hero.t;
+        document.getElementById('hero-btn').onclick = () => startStream(hero.ty, hero.id, hero.t);
 
-        // Preload & Auto-Close Loader
-        let loaded = 0;
-        const total = db.length;
-        const forceOpen = setTimeout(hideLoader, 3000); // 3 saniye sonra zorla aç
-
-        db.forEach(item => {
-            const img = new Image();
-            img.src = `https://image.tmdb.org/t/p/w300/${item.i}.jpg`;
-            img.onload = img.onerror = () => {
-                loaded++;
-                document.getElementById('bar').style.width = (loaded/total*100) + "%";
-                if(loaded >= total) {
-                    clearTimeout(forceOpen);
-                    hideLoader();
-                }
-            };
-        });
+        checkHistory();
+        
+        // Loader Kapatıcı (En geç 3 saniyede açılır)
+        setTimeout(() => {
+            const l = document.getElementById('loader');
+            l.style.opacity = '0';
+            setTimeout(() => l.style.display = 'none', 500);
+        }, 2000);
     }
 
-    function hideLoader() {
-        const l = document.getElementById('loader');
-        l.style.opacity = '0';
-        setTimeout(() => l.style.display = 'none', 500);
-    }
-
-    function watch(ty, id) {
-        document.getElementById('ifr').src = `https://vidsrc.pro/embed/${ty}/${id}`;
+    function startStream(type, id, title) {
+        // Geçmişe Kaydet
+        localStorage.setItem('hnfak_last_watch', JSON.stringify({type, id, title}));
+        
+        // vidsrc.pro SUNUCUSU (Hatasız & Türkçe Seçenekli)
+        const streamUrl = `https://vidsrc.pro/embed/${type}/${id}`;
+        
+        document.getElementById('main-frame').src = streamUrl;
         document.getElementById('player').style.display = 'block';
         document.body.style.overflow = 'hidden';
     }
 
-    function stop() {
+    function stopPlayer() {
         document.getElementById('player').style.display = 'none';
-        document.getElementById('ifr').src = '';
+        document.getElementById('main-frame').src = '';
         document.body.style.overflow = 'auto';
+        checkHistory();
     }
 
-    startApp();
+    function checkHistory() {
+        const last = JSON.parse(localStorage.getItem('hnfak_last_watch'));
+        if(last) {
+            document.getElementById('continue-row').style.display = 'block';
+            document.getElementById('cont-display').innerHTML = `
+                <div class="cont-box" onclick="startStream('${last.type}', '${last.id}', '${last.title}')">
+                    <span style="color:var(--red); font-size:22px;">▶</span>
+                    <div>
+                        <div style="font-weight:800; font-size:14px;">${last.title}</div>
+                        <div style="font-size:11px; opacity:0.5;">İzlemeye devam et</div>
+                    </div>
+                </div>`;
+        }
+    }
+
+    init();
 </script>
 </body>
 </html>
