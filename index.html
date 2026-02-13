@@ -7,99 +7,127 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --brand: #ff3c00; --bg: #000000; --card: #0a0a0a; --glass: rgba(15, 15, 15, 0.85); --border: rgba(255,255,255,0.08); }
+        :root { --brand: #ff3c00; --bg: #000000; --card: #0a0a0a; --glass: rgba(15, 15, 15, 0.9); --border: rgba(255,255,255,0.08); }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; outline: none; }
         body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; }
 
-        /* AUTH & SCREENS */
-        #auth-screen { position: fixed; inset: 0; background: #000; z-index: 60000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .auth-card { background: var(--card); padding: 50px 30px; border-radius: 40px; width: 100%; max-width: 380px; text-align: center; border: 1px solid var(--border); }
+        /* GİRİŞ EKRANI */
+        #auth-screen { position: fixed; inset: 0; background: #000; z-index: 70000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .auth-card { background: var(--card); padding: 40px; border-radius: 40px; width: 100%; max-width: 380px; text-align: center; border: 1px solid var(--border); }
         .btn-main { width: 100%; background: var(--brand); color: #fff; padding: 18px; border-radius: 18px; border: none; font-weight: 800; cursor: pointer; transition: 0.3s; }
 
-        /* HEADER */
-        header { position: fixed; top: 0; width: 100%; z-index: 8000; padding: calc(env(safe-area-inset-top) + 15px) 20px; background: rgba(0,0,0,0.7); backdrop-filter: blur(25px); border-bottom: 1px solid var(--border); }
+        /* HEADER & SEARCH */
+        header { position: fixed; top: 0; width: 100%; z-index: 8000; padding: calc(env(safe-area-inset-top) + 15px) 20px; background: rgba(0,0,0,0.8); backdrop-filter: blur(25px); border-bottom: 1px solid var(--border); }
         .nav-brand { font-size: 30px; font-weight: 900; letter-spacing: -2px; color: var(--brand); cursor: pointer; }
-        
-        /* NEW SECTIONS */
-        .section-title { padding: 20px 20px 10px; font-size: 14px; font-weight: 800; color: var(--brand); letter-spacing: 1px; text-transform: uppercase; }
-        .history-row { display: flex; overflow-x: auto; gap: 12px; padding: 0 20px 20px; scrollbar-width: none; }
-        .history-card { flex: 0 0 140px; border-radius: 15px; overflow: hidden; position: relative; aspect-ratio: 16/9; background: #111; border: 1px solid var(--border); }
-        .history-card img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+        .search-bar { background: rgba(255,255,255,0.05); border-radius: 20px; padding: 12px 20px; display: flex; align-items: center; margin-top: 15px; border: 1px solid var(--border); }
+        .search-bar input { background: transparent; border: none; color: #fff; width: 100%; margin-left: 12px; }
 
-        /* GRID */
+        /* CONTENT */
         #content-wrapper { height: 100vh; overflow-y: auto; padding-top: 230px; padding-bottom: 120px; }
-        .grid { display: grid; gap: 18px; padding: 0 20px; grid-template-columns: repeat(2, 1fr); max-width: 1600px; margin: 0 auto; }
+        .section-title { padding: 20px; font-size: 14px; font-weight: 800; color: var(--brand); letter-spacing: 1px; text-transform: uppercase; }
+        .grid { display: grid; gap: 15px; padding: 0 20px; grid-template-columns: repeat(2, 1fr); max-width: 1600px; margin: 0 auto; }
         @media(min-width: 768px) { .grid { grid-template-columns: repeat(4, 1fr); } }
-        @media(min-width: 1200px) { .grid { grid-template-columns: repeat(6, 1fr); } }
-
-        .card { border-radius: 24px; overflow: hidden; aspect-ratio: 2/3; position: relative; cursor: pointer; background: #0a0a0a; transition: 0.5s cubic-bezier(0.2, 1, 0.2, 1); border: 1px solid transparent; }
-        .card:hover { transform: scale(1.05); border-color: var(--brand); }
+        
+        /* CARDS */
+        .card { border-radius: 20px; overflow: hidden; aspect-ratio: 2/3; position: relative; cursor: pointer; background: #0a0a0a; transition: 0.4s; border: 1px solid transparent; }
+        .card:hover { transform: translateY(-5px); border-color: var(--brand); }
         .card img { width: 100%; height: 100%; object-fit: cover; }
+        .history-row { display: flex; overflow-x: auto; gap: 12px; padding: 0 20px 20px; scrollbar-width: none; }
+        .history-card { flex: 0 0 160px; border-radius: 15px; overflow: hidden; position: relative; aspect-ratio: 16/9; background: #111; border: 1px solid var(--border); cursor: pointer; }
 
-        /* PLAYER & MODALS */
-        .modal { position: fixed; inset: 0; background: #000; z-index: 20000; display: none; flex-direction: column; overflow-y: auto; }
-        .btn-action { background: #111; color: #fff; padding: 12px; border-radius: 15px; border: 1px solid var(--border); font-size: 13px; font-weight: 700; flex: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-action.active { background: var(--brand); border-color: var(--brand); }
-
-        /* SIDEBAR */
-        #sidebar { position: fixed; left: -300px; top: 0; width: 300px; height: 100%; background: #050505; z-index: 50000; transition: 0.5s; padding: 80px 30px; }
+        /* SIDEBAR (KATEGORİLER BURADA) */
+        #sidebar { position: fixed; left: -300px; top: 0; width: 300px; height: 100%; background: #080808; z-index: 60000; transition: 0.4s cubic-bezier(0.2, 1, 0.2, 1); padding: 80px 25px; overflow-y: auto; }
         #sidebar.active { left: 0; }
-        .side-link { padding: 16px; border-radius: 16px; cursor: pointer; color: #666; font-weight: 700; display: flex; align-items: center; gap: 15px; margin-bottom: 5px; }
-        
-        /* FOOTER NAV */
-        .nav-bar { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 420px; background: rgba(15,15,15,0.8); backdrop-filter: blur(30px); border-radius: 28px; padding: 18px; display: flex; justify-content: space-around; z-index: 9000; border: 1px solid var(--border); }
-        .nav-icon { color: #444; font-size: 24px; cursor: pointer; transition: 0.3s; }
-        .nav-icon.active { color: var(--brand); }
+        .side-link { padding: 14px 18px; border-radius: 14px; cursor: pointer; color: #777; font-weight: 700; display: flex; align-items: center; gap: 15px; margin-bottom: 4px; transition: 0.2s; }
+        .side-link:hover { background: #151515; color: #fff; }
+        .side-link i { color: var(--brand); width: 20px; }
 
-        .hidden { display: none; }
-        #failMsg { display: none; background: var(--brand); text-align: center; font-size: 10px; font-weight: 800; padding: 6px; }
+        /* PROFİL PANELİ */
+        #profile-screen { position: fixed; inset: 0; background: #000; z-index: 50000; display: none; flex-direction: column; overflow-y: auto; padding: 100px 20px; }
+        .p-card { background: #0a0a0a; border-radius: 35px; padding: 35px; border: 1px solid var(--border); text-align: center; margin-bottom: 25px; }
+        .p-stats { display: flex; gap: 12px; margin: 20px 0; }
+        .p-stat-item { flex: 1; background: #111; padding: 15px; border-radius: 20px; border: 1px solid var(--border); }
+
+        /* OVERLAY */
+        #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 55000; display: none; backdrop-filter: blur(8px); }
+
+        /* PLAYER MODAL */
+        .modal { position: fixed; inset: 0; background: #000; z-index: 30000; display: none; flex-direction: column; overflow-y: auto; }
+        .nav-bar { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 420px; background: rgba(15,15,15,0.8); backdrop-filter: blur(30px); border-radius: 25px; padding: 18px; display: flex; justify-content: space-around; z-index: 9000; border: 1px solid var(--border); }
+        .nav-icon { color: #444; font-size: 22px; cursor: pointer; transition: 0.3s; }
+        .nav-icon.active { color: var(--brand); }
         
-        /* SURPRISE BUTTON */
-        .magic-btn { position: fixed; right: 20px; bottom: 120px; width: 50px; height: 50px; background: var(--brand); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 8500; box-shadow: 0 10px 20px rgba(255,60,0,0.4); animation: pulse 2s infinite; cursor: pointer; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        .magic-btn { position: fixed; right: 20px; bottom: 110px; width: 55px; height: 55px; background: var(--brand); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 8500; box-shadow: 0 10px 20px rgba(255,60,0,0.3); cursor: pointer; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
     <div id="auth-screen">
         <div class="auth-card">
-            <h1 class="nav-brand" style="font-size: 50px; margin-bottom: 30px;">HNFAK</h1>
+            <h1 class="nav-brand" style="font-size: 45px; margin-bottom: 25px;">HNFAK</h1>
             <input type="text" id="eInp" style="width:100%; background:#111; border:1px solid var(--border); padding:18px; border-radius:18px; color:#fff; margin-bottom:12px;" placeholder="Kullanıcı Adı">
             <button class="btn-main" onclick="auth.go()">GİRİŞ YAP</button>
             <button class="btn-main" style="background:transparent; color:#444; margin-top:10px;" onclick="auth.guest()">Misafir Girişi</button>
         </div>
     </div>
 
+    <div id="overlay" onclick="app.menu()"></div>
+
     <div id="sidebar">
-        <h2 style="color:var(--brand); margin-bottom:30px; font-weight:900;">KEŞFET</h2>
-        <div class="side-link" onclick="app.fG('top_rated')"><i class="fas fa-star"></i> En İyiler (IMDb)</div>
-        <div class="side-link" onclick="app.fT('movie')"><i class="fas fa-film"></i> Filmler</div>
-        <div class="side-link" onclick="app.fT('tv')"><i class="fas fa-tv"></i> Diziler</div>
+        <h2 style="color:var(--brand); margin-bottom:25px; font-weight:900;">KATEGORİLER</h2>
+        <div class="side-link" onclick="app.fG('top_rated')"><i class="fas fa-trophy"></i> En İyi Filmler</div>
+        <div class="side-link" onclick="app.fT('trend')"><i class="fas fa-fire"></i> Trendler</div>
+        <div class="side-link" onclick="app.fG(28)"><i class="fas fa-bolt"></i> Aksiyon</div>
+        <div class="side-link" onclick="app.fG(12)"><i class="fas fa-map"></i> Macera</div>
         <div class="side-link" onclick="app.fG(16)"><i class="fas fa-child"></i> Animasyon</div>
+        <div class="side-link" onclick="app.fG(35)"><i class="fas fa-laugh"></i> Komedi</div>
+        <div class="side-link" onclick="app.fG(80)"><i class="fas fa-mask"></i> Suç</div>
+        <div class="side-link" onclick="app.fG(18)"><i class="fas fa-theater-masks"></i> Dram</div>
+        <div class="side-link" onclick="app.fG(14)"><i class="fas fa-wand-magic-sparkles"></i> Fantastik</div>
         <div class="side-link" onclick="app.fG(27)"><i class="fas fa-ghost"></i> Korku</div>
-        <div class="side-link" onclick="auth.off()" style="margin-top:40px; color:var(--brand)"><i class="fas fa-power-off"></i> Çıkış</div>
+        <div class="side-link" onclick="app.fG(9648)"><i class="fas fa-search"></i> Gizem</div>
+        <div class="side-link" onclick="app.fG(878)"><i class="fas fa-rocket"></i> Bilim Kurgu</div>
+        <div class="side-link" onclick="app.fG(10752)"><i class="fas fa-gun"></i> Savaş</div>
+        <hr style="border:0; border-top:1px solid #222; margin:15px 0;">
+        <div class="side-link" onclick="auth.off()" style="color:var(--brand)"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</div>
+    </div>
+
+    <div id="profile-screen">
+        <div class="p-card">
+            <img id="pImg" src="" style="width:100px; height:100px; border-radius:50%; border:3px solid var(--brand); padding:5px; background:#000;">
+            <h2 id="pNm" style="margin-top:15px; font-weight:900;"></h2>
+            <p id="pEm" style="opacity:0.4; font-size:13px;"></p>
+            <div class="p-stats">
+                <div class="p-stat-item"><span style="font-size:10px; color:#555;">FAVORİ</span><br><b id="fCount">0</b></div>
+                <div class="p-stat-item"><span style="font-size:10px; color:#555;">HESAP</span><br><b id="pStat">PREMIUM</b></div>
+            </div>
+            <button class="btn-main" onclick="app.closeProfile()">PANELİ KAPAT</button>
+        </div>
+        <h3 class="section-title">KÜTÜPHANEM (FAVORİLER)</h3>
+        <div id="fav-grid" class="grid"></div>
     </div>
 
     <header>
         <div style="display:flex; justify-content:space-between; align-items:center;">
-            <i class="fas fa-bars-staggered fa-lg" onclick="app.menu()"></i>
+            <i class="fas fa-bars-staggered fa-lg" onclick="app.menu()" style="cursor:pointer;"></i>
             <span class="nav-brand" onclick="app.reset()">HNFAK</span>
             <i class="fas fa-user-circle fa-xl" onclick="app.openProfile()" style="color:var(--brand); cursor:pointer;"></i>
         </div>
-        <div style="background: rgba(255,255,255,0.05); border-radius: 20px; padding: 12px 20px; display: flex; align-items: center; margin-top: 15px; border: 1px solid var(--border);">
+        <div class="search-bar">
             <i class="fas fa-search" style="opacity:0.3;"></i>
-            <input type="text" style="background:transparent; border:none; color:#fff; width:100%; margin-left:12px;" placeholder="Ara..." oninput="app.search(this.value)">
+            <input type="text" placeholder="Film, dizi, oyuncu ara..." oninput="app.search(this.value)">
         </div>
     </header>
 
-    <div class="magic-btn" onclick="app.surprise()" title="Rastgele Film Getir"><i class="fas fa-magic"></i></div>
+    <div class="magic-btn" onclick="app.surprise()"><i class="fas fa-magic fa-lg"></i></div>
 
-    <div id="content-wrapper">
+    <div id="content-wrapper" onscroll="app.handleScroll(this)">
         <div id="history-sec" class="hidden">
             <div class="section-title">İzlemeye Devam Et</div>
             <div id="history-list" class="history-row"></div>
         </div>
-        <div class="section-title">Sizin İçin Seçilenler</div>
+        <div id="grid-title" class="section-title">Trend İçerikler</div>
         <div id="grid" class="grid"></div>
     </div>
 
@@ -107,31 +135,26 @@
         <div style="position:sticky; top:0; z-index:100; background:#000;">
             <i class="fas fa-chevron-down" onclick="app.close()" style="position:absolute; top:20px; left:20px; z-index:10; background:rgba(0,0,0,0.6); padding:12px; border-radius:50%; cursor:pointer;"></i>
             <iframe id="vFrame" src="" style="width:100%; aspect-ratio:16/9; border:none;" allowfullscreen></iframe>
-            <div id="failMsg">BAĞLANTI SORUNU: YEDEK SUNUCU AKTİF...</div>
         </div>
-        <div class="modal-body">
-            <h1 id="mT" style="font-size:28px; font-weight:900; margin-bottom:10px;"></h1>
-            <div style="display:flex; gap:10px; margin-bottom:20px;">
-                <button id="mFav" class="btn-action"><i class="fas fa-heart"></i> Favori</button>
-                <button id="mTrailer" class="btn-action" style="background:#cc0000; border-color:#cc0000;"><i class="fab fa-youtube"></i> Fragman</button>
+        <div style="padding:25px 20px;">
+            <h1 id="mT" style="font-size:26px; font-weight:900;"></h1>
+            <div style="display:flex; gap:10px; margin:20px 0;">
+                <button id="mFav" class="btn-main" style="background:#111; flex:1; font-size:14px;"><i class="fas fa-heart"></i> Favori</button>
+                <button id="mTrailer" class="btn-main" style="background:#cc0000; flex:1; font-size:14px;"><i class="fab fa-youtube"></i> Fragman</button>
             </div>
-            <div style="display:flex; gap:10px; margin-bottom:25px;">
-                <button class="btn-main" style="flex:1;" onclick="app.src(1)">SERVER 1</button>
-                <button class="btn-main" style="flex:1; background:#111; border:1px solid #222;" onclick="app.src(2)">SERVER 2</button>
+            <div id="tvPanel" class="hidden" style="display:flex; gap:10px; margin-bottom:20px;">
+                <select id="selS" onchange="app.epC()" style="flex:1; padding:15px; background:#111; color:#fff; border:1px solid var(--border); border-radius:15px;"></select>
+                <select id="selE" onchange="app.epC()" style="flex:1; padding:15px; background:#111; color:#fff; border:1px solid var(--border); border-radius:15px;"></select>
             </div>
-            <div id="tvPanel" class="hidden" style="display:flex; gap:10px; margin-bottom:25px;">
-                <select id="selS" onchange="app.epC()" style="flex:1; padding:16px; background:#111; color:#fff; border:1px solid var(--border); border-radius:18px;"></select>
-                <select id="selE" onchange="app.epC()" style="flex:1; padding:16px; background:#111; color:#fff; border:1px solid var(--border); border-radius:18px;"></select>
-            </div>
-            <p id="mD" style="opacity:0.5; line-height:1.8; margin-bottom:30px;"></p>
-            <div id="castList" style="display:flex; overflow-x:auto; gap:15px; scrollbar-width:none; padding-bottom:10px;"></div>
-            <div id="disqus_thread" style="margin-top:40px;"></div>
+            <p id="mD" style="opacity:0.5; line-height:1.7; font-size:14px; margin-bottom:25px;"></p>
+            <div id="castList" style="display:flex; overflow-x:auto; gap:15px; scrollbar-width:none;"></div>
+            <div id="disqus_thread" style="margin-top:35px;"></div>
         </div>
     </div>
 
     <nav class="nav-bar">
         <div class="nav-icon active" onclick="app.reset()"><i class="fas fa-house"></i></div>
-        <div class="nav-icon" onclick="app.fT('movie')"><i class="fas fa-play"></i></div>
+        <div class="nav-icon" onclick="app.fT('movie')"><i class="fas fa-film"></i></div>
         <div class="nav-icon" onclick="app.fT('tv')"><i class="fas fa-tv"></i></div>
         <div class="nav-icon" onclick="app.openProfile()"><i class="fas fa-user"></i></div>
     </nav>
@@ -146,33 +169,45 @@
         const auth = {
             go() {
                 const u = document.getElementById('eInp').value; if(!u) return;
-                user = { name: u }; localStorage.setItem('hnfak_user', JSON.stringify(user));
+                user = { name: u, type: 'PREMIUM', email: u + '@hnfak.com' };
+                localStorage.setItem('hnfak_user', JSON.stringify(user));
                 this.done();
             },
-            guest() { user = { name: 'Misafir' }; this.done(); },
+            guest() { user = { name: 'Misafir', type: 'ÜCRETSİZ', email: 'misafir@hnfak.com' }; this.done(); },
             done() { document.getElementById('auth-screen').style.display='none'; app.start(); },
             off() { localStorage.removeItem('hnfak_user'); location.reload(); }
         };
 
         const app = {
-            start() { if(!user) return; this.fT('trend'); this.loadHist(); },
-            menu() { const s = document.getElementById('sidebar'); s.classList.toggle('active'); },
+            start() {
+                if(!user) return;
+                this.fT('trend');
+                this.loadHist();
+                document.getElementById('pNm').innerText = user.name.toUpperCase();
+                document.getElementById('pEm').innerText = user.email;
+                document.getElementById('pStat').innerText = user.type;
+                document.getElementById('pImg').src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`;
+            },
+            menu() {
+                const s = document.getElementById('sidebar'), o = document.getElementById('overlay');
+                s.classList.toggle('active'); o.style.display = s.classList.contains('active') ? 'block' : 'none';
+            },
             async fT(type, more = false) {
                 if(!more) { page = 1; document.getElementById('grid').innerHTML = ''; mode = type; }
+                if(loading) return; loading = true;
                 const r = await fetch(`https://api.themoviedb.org/3/${type==='trend'?'trending/all/day':'discover/'+type}?api_key=${K}&language=tr-TR&page=${page}`);
                 const d = await r.json(); this.render(d.results, 'grid');
+                loading = false; if(document.getElementById('sidebar').classList.contains('active')) this.menu();
             },
             async fG(id) {
                 document.getElementById('grid').innerHTML='';
-                let url = `https://api.themoviedb.org/3/discover/movie?api_key=${K}&language=tr-TR`;
-                if(id === 'top_rated') url = `https://api.themoviedb.org/3/movie/top_rated?api_key=${K}&language=tr-TR`;
-                else url += `&with_genres=${id}`;
+                let url = id === 'top_rated' ? `https://api.themoviedb.org/3/movie/top_rated?api_key=${K}&language=tr-TR` : `https://api.themoviedb.org/3/discover/movie?api_key=${K}&with_genres=${id}&language=tr-TR`;
                 const r = await fetch(url); const d = await r.json(); this.render(d.results, 'grid');
+                this.menu();
             },
             render(list, target) {
                 const container = document.getElementById(target);
                 list.filter(x => x.poster_path).forEach(x => {
-                    const isFav = favs.some(f => f.id == x.id);
                     const d = document.createElement('div'); d.className = 'card';
                     d.innerHTML = `<img src="${IMG}${x.poster_path}" onclick="app.open('${x.id}','${x.title?'movie':'tv'}')">`;
                     container.appendChild(d);
@@ -186,16 +221,14 @@
                     fetch(`https://api.themoviedb.org/3/${type}/${id}/videos?api_key=${K}`)
                 ]);
                 const d = await mR.json(), c = await cR.json(), v = await vR.json();
-                
                 document.getElementById('mT').innerText = d.title || d.name;
                 document.getElementById('mD').innerText = d.overview;
                 document.getElementById('mFav').onclick = () => this.toggleFav({id, p:d.poster_path, t:type});
-                document.getElementById('mFav').classList.toggle('active', favs.some(f=>f.id==id));
                 
-                const trailer = v.results.find(x => x.type === 'Trailer');
-                document.getElementById('mTrailer').onclick = () => { if(trailer) window.open(`https://youtube.com/watch?v=${trailer.key}`); };
-
-                document.getElementById('castList').innerHTML = c.cast.slice(0,10).map(x => `<div style="text-align:center; flex:0 0 80px;"><img src="${x.profile_path?IMG+x.profile_path:'https://via.placeholder.com/80'}" style="width:70px; height:70px; border-radius:50%; object-fit:cover;"><p style="font-size:9px; margin-top:5px;">${x.name}</p></div>`).join('');
+                const tr = v.results.find(x => x.type === 'Trailer');
+                document.getElementById('mTrailer').onclick = () => { if(tr) window.open(`https://youtube.com/watch?v=${tr.key}`); };
+                
+                document.getElementById('castList').innerHTML = c.cast.slice(0,10).map(x => `<div style="text-align:center; flex:0 0 70px;"><img src="${x.profile_path?IMG+x.profile_path:'https://via.placeholder.com/70'}" style="width:60px; height:60px; border-radius:50%; object-fit:cover;"><p style="font-size:8px; margin-top:5px;">${x.name}</p></div>`).join('');
                 
                 if(type === 'tv') {
                     document.getElementById('tvPanel').classList.remove('hidden');
@@ -208,40 +241,38 @@
                 document.getElementById('pModal').style.display='flex';
             },
             saveHist(id, img, type) {
-                hist = hist.filter(x => x.id !== id);
-                hist.unshift({id, img, type});
+                hist = hist.filter(x => x.id !== id); hist.unshift({id, img, type});
                 if(hist.length > 10) hist.pop();
                 localStorage.setItem('hnfak_hist', JSON.stringify(hist));
                 this.loadHist();
             },
             loadHist() {
-                const sec = document.getElementById('history-sec');
-                const list = document.getElementById('history-list');
-                if(hist.length > 0) {
-                    sec.classList.remove('hidden');
-                    list.innerHTML = hist.map(x => `<div class="history-card" onclick="app.open('${x.id}','${x.type}')"><img src="${IMG}${x.img}"><div style="position:absolute; bottom:5px; left:5px; font-size:10px; font-weight:800; color:var(--brand);">İZLENİYOR</div></div>`).join('');
-                }
-            },
-            async surprise() {
-                const r = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${K}&page=${Math.floor(Math.random()*10)+1}`);
-                const d = await r.json(); const item = d.results[Math.floor(Math.random()*d.results.length)];
-                this.open(item.id, 'movie');
+                const sec = document.getElementById('history-sec'), list = document.getElementById('history-list');
+                if(hist.length > 0) { sec.classList.remove('hidden'); list.innerHTML = hist.map(x => `<div class="history-card" onclick="app.open('${x.id}','${x.type}')"><img src="${IMG}${x.img}"><div style="position:absolute; bottom:5px; left:8px; font-size:9px; font-weight:800; color:var(--brand);">DEVAM ET</div></div>`).join(''); }
             },
             toggleFav(obj) {
                 const idx = favs.findIndex(f => f.id == obj.id);
                 if(idx > -1) favs.splice(idx, 1); else favs.push(obj);
                 localStorage.setItem('hnfak_favs', JSON.stringify(favs));
-                document.getElementById('mFav').classList.toggle('active');
+                document.getElementById('fCount').innerText = favs.length;
             },
-            src(s) {
-                const h = {1:'https://vidsrc.xyz/embed/', 2:'https://vidsrc.me/embed/'};
-                let url = `${h[s]}${cur.t}/${cur.id}`;
-                if(cur.t === 'tv') url += `/${cur.s}/${cur.e}`;
-                document.getElementById('vFrame').src = url;
+            openProfile() {
+                document.getElementById('profile-screen').style.display='flex';
+                document.getElementById('fCount').innerText = favs.length;
+                document.getElementById('fav-grid').innerHTML = '';
+                favs.forEach(x => this.render([{id:x.id, poster_path:x.p, title:x.t==='movie'?1:0}], 'fav-grid'));
             },
+            closeProfile() { document.getElementById('profile-screen').style.display='none'; },
+            src(s) { document.getElementById('vFrame').src = `https://vidsrc.xyz/embed/${cur.t}/${cur.id}${cur.t==='tv'?'/'+cur.s+'/'+cur.e:''}`; },
             lE(c) { let h = ""; for(let i=1; i<=c; i++) h += `<option value="${i}">${i}. Bölüm</option>`; document.getElementById('selE').innerHTML = h; },
             epC() { cur.s = document.getElementById('selS').value; cur.e = document.getElementById('selE').value; this.src(1); },
             close() { document.getElementById('pModal').style.display='none'; document.getElementById('vFrame').src=''; },
+            async surprise() {
+                const r = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${K}&page=${Math.floor(Math.random()*5)+1}`);
+                const d = await r.json(); const item = d.results[Math.floor(Math.random()*d.results.length)];
+                this.open(item.id, 'movie');
+            },
+            handleScroll(el) { if(el.scrollTop + el.clientHeight >= el.scrollHeight - 500 && !loading) { page++; this.fT(mode, true); } },
             reset() { page=1; this.fT('trend'); },
             search(q) {
                 if(!q) return this.reset();
