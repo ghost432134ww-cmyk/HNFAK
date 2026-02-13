@@ -3,220 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>HNFAK V7 | FINAL INFINITY</title>
+    <title>HNFAK V12 | STABLE INFINITY</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --brand: #ff3c00;
-            --brand-alt: #ffcc00;
-            --bg: #030303;
-            --surface: #0f0f0f;
-            --card: #1a1a1a;
-            --text: #ffffff;
-            --text-dim: #a0a0a0;
-            --border: rgba(255,255,255,0.06);
-            --glow: 0 0 25px rgba(255, 60, 0, 0.4);
-            --accent-gradient: linear-gradient(135deg, #ff3c00, #ff8000);
-        }
-
-        /* THEME VARIATIONS */
-        body.theme-blue { --brand: #007bff; --accent-gradient: linear-gradient(135deg, #007bff, #00d4ff); --glow: 0 0 25px rgba(0, 123, 255, 0.4); }
+        :root { --brand: #ff3c00; --bg: #030303; --surface: #0f0f0f; --card: #1a1a1a; --text: #ffffff; --text-dim: #a0a0a0; --border: rgba(255,255,255,0.06); --glow: 0 0 25px rgba(255, 60, 0, 0.4); --accent-gradient: linear-gradient(135deg, #ff3c00, #ff8000); }
+        body.theme-blue { --brand: #007bff; --accent-gradient: linear-gradient(135deg, #007bff, #00d4ff); }
         body.theme-red { --brand: #d00000; --accent-gradient: linear-gradient(135deg, #d00000, #ff4d4d); }
-
+        
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; height: 100vh; transition: background 0.5s; }
+        body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; height: 100vh; }
 
-        /* KEYFRAMES */
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-
-        /* UI COMPONENTS */
         #splash { position: fixed; inset: 0; background: #000; z-index: 200000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .splash-logo { font-size: 60px; font-weight: 900; color: var(--brand); text-shadow: var(--glow); letter-spacing: -3px; }
+        .splash-logo { font-size: 60px; font-weight: 900; color: var(--brand); text-shadow: var(--glow); }
 
-        #auth-screen { position: fixed; inset: 0; background: radial-gradient(circle at top right, #1a0a05, #000); z-index: 150000; display: flex; align-items: center; justify-content: center; padding: 20px; transition: 0.5s; }
-        .auth-box { background: rgba(15, 15, 15, 0.8); backdrop-filter: blur(30px); padding: 40px; border-radius: 35px; width: 100%; max-width: 420px; border: 1px solid var(--border); text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
+        #auth-screen { position: fixed; inset: 0; background: radial-gradient(circle at top right, #1a0a05, #000); z-index: 150000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .auth-box { background: rgba(15, 15, 15, 0.8); backdrop-filter: blur(30px); padding: 40px; border-radius: 35px; width: 100%; max-width: 420px; border: 1px solid var(--border); text-align: center; }
 
-        #app-wrapper { display: flex; flex-direction: column; height: 100vh; opacity: 0; transition: 1s; }
         header { position: fixed; top: 0; width: 100%; height: 80px; z-index: 10000; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; background: linear-gradient(180deg, rgba(0,0,0,0.95) 0%, transparent 100%); transition: 0.4s; }
         header.scrolled { background: rgba(3,3,3,0.98); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border); }
 
-        /* SIDEBAR */
-        #sidebar { position: fixed; left: -350px; top: 0; width: 320px; height: 100%; background: #080808; z-index: 110000; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); padding: 100px 25px 30px; border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
-        #sidebar.open { left: 0; }
-        .side-item { padding: 15px; border-radius: 14px; color: var(--text-dim); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 15px; transition: 0.2s; }
-        .side-item:hover { background: rgba(255,255,255,0.05); color: #fff; transform: translateX(10px); }
-        .side-item i { color: var(--brand); font-size: 20px; width: 25px; text-align: center; }
+        #search-overlay { position: fixed; top: 0; width: 100%; height: 80px; background: #000; z-index: 11000; display: none; align-items: center; padding: 0 20px; border-bottom: 1px solid var(--border); }
+        #search-overlay input { flex: 1; background: transparent; border: none; color: #fff; font-size: 18px; padding: 10px; }
 
-        /* CONTENT AREA */
-        main { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 120px; scroll-behavior: smooth; }
-        .section { margin-top: 40px; }
-        .section-head { display: flex; justify-content: space-between; align-items: center; padding: 0 25px; margin-bottom: 20px; }
-        .section-title { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; border-left: 5px solid var(--brand); padding-left: 15px; }
-        .h-scroll { display: flex; overflow-x: auto; gap: 18px; padding: 0 25px 25px; scrollbar-width: none; }
+        #sidebar { position: fixed; left: -350px; top: 0; width: 320px; height: 100%; background: #080808; z-index: 110000; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); padding: 80px 20px 30px; border-right: 1px solid var(--border); overflow-y: auto; }
+        #sidebar.open { left: 0; }
+        .side-item { padding: 12px 15px; border-radius: 12px; color: var(--text-dim); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.2s; font-size: 14px; }
+        .side-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
+        .side-item i { color: var(--brand); width: 22px; text-align: center; font-size: 18px; }
+        .side-sep { height: 1px; background: var(--border); margin: 15px 0; }
+
+        #app-wrapper { display: flex; flex-direction: column; height: 100vh; opacity: 0; transition: 1s; }
+        main { flex: 1; overflow-y: auto; padding-bottom: 120px; scroll-behavior: smooth; }
+        .section { margin-top: 30px; }
+        .section-title { font-size: 18px; font-weight: 900; padding: 0 25px; margin-bottom: 15px; border-left: 4px solid var(--brand); margin-left: 25px; padding-left: 10px; }
+        
+        .h-scroll { display: flex; overflow-x: auto; gap: 15px; padding: 0 25px 20px; scrollbar-width: none; }
         .h-scroll::-webkit-scrollbar { display: none; }
 
-        /* CARDS */
-        .card { flex: 0 0 160px; aspect-ratio: 2/3; border-radius: 20px; overflow: hidden; position: relative; cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 10px 20px rgba(0,0,0,0.3); background: var(--card); }
-        .card:hover { transform: scale(1.08) translateY(-10px); z-index: 10; border: 2px solid var(--brand); box-shadow: var(--glow); }
+        .card { flex: 0 0 150px; aspect-ratio: 2/3; border-radius: 15px; overflow: hidden; position: relative; cursor: pointer; transition: 0.3s; background: var(--card); border: 1px solid transparent; }
+        .card:hover { transform: scale(1.05); border: 1px solid var(--brand); box-shadow: var(--glow); }
         .card img { width: 100%; height: 100%; object-fit: cover; }
-        .card-info { position: absolute; bottom: 0; width: 100%; padding: 30px 10px 10px; background: linear-gradient(0deg, rgba(0,0,0,0.9), transparent); font-size: 11px; font-weight: 700; text-align: center; }
+        .card-info { position: absolute; bottom: 0; width: 100%; padding: 25px 10px 10px; background: linear-gradient(0deg, #000 0%, transparent 100%); font-size: 11px; text-align: center; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-        /* MODALS */
-        .modal { position: fixed; inset: 0; background: #000; z-index: 120000; display: none; flex-direction: column; overflow-y: auto; animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-        .details-box { padding: 30px 25px; background: linear-gradient(180deg, #000, #0a0a0a); }
+        .modal { position: fixed; inset: 0; background: #000; z-index: 120000; display: none; flex-direction: column; overflow-y: auto; }
+        
+        .magic-btn { position: fixed; right: 20px; bottom: 120px; width: 55px; height: 55px; background: var(--accent-gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: var(--glow); z-index: 9999; cursor: pointer; border: none; font-size: 20px; }
 
-        /* BUTTONS */
-        .btn { padding: 16px; border-radius: 16px; border: none; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; font-size: 14px; }
-        .btn-main { background: var(--accent-gradient); color: #fff; box-shadow: var(--glow); }
-        .btn-alt { background: #1a1a1a; color: #fff; border: 1px solid var(--border); }
-
-        /* NEW: HAKKIMIZDA PANEL */
-        #about-panel { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 180000; display: none; padding: 40px 25px; overflow-y: auto; backdrop-filter: blur(20px); }
-        .about-card { background: var(--surface); border: 1px solid var(--border); padding: 30px; border-radius: 30px; line-height: 1.8; }
-
-        /* NAVIGATION */
-        #bottom-nav { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 500px; height: 75px; background: rgba(15,15,15,0.85); backdrop-filter: blur(25px); border-radius: 30px; border: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 10000; }
+        #bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; height: 70px; background: rgba(15,15,15,0.95); backdrop-filter: blur(20px); border-radius: 25px; border: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 10000; }
         .nav-link { color: var(--text-dim); font-size: 22px; cursor: pointer; transition: 0.3s; }
-        .nav-link.active { color: var(--brand); transform: translateY(-5px); }
+        .nav-link.active { color: var(--brand); transform: translateY(-3px); }
 
-        /* MAGIC BUTTON */
-        .magic-btn { position: fixed; right: 20px; bottom: 120px; width: 60px; height: 60px; background: var(--accent-gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: var(--glow); z-index: 9000; cursor: pointer; animation: pulse 2s infinite; border: none; color: #fff; }
-
-        /* SPEED TEST */
-        #speed-test { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 15px; margin: 20px 0; display: flex; justify-content: space-between; align-items: center; }
-
+        .btn { padding: 15px; border-radius: 12px; border: none; font-weight: 800; cursor: pointer; transition: 0.3s; }
+        .btn-main { background: var(--accent-gradient); color: #fff; }
         .hidden { display: none !important; }
+
+        #loader { text-align: center; padding: 20px; color: var(--brand); font-size: 24px; display: none; }
     </style>
 </head>
 <body class="theme-default">
 
     <div id="splash">
-        <div class="splash-logo" onclick="UI.secretMenu()">HNFAK</div>
-        <div style="color: #666; font-size: 10px; margin-top: 10px; font-weight: 800; letter-spacing: 4px;">INFINITY EDITION</div>
-        <div id="splash-bar-container" style="width: 200px; height: 2px; background: #111; margin-top: 30px;">
-            <div id="splash-bar" style="width: 0%; height: 100%; background: var(--brand); transition: 0.8s;"></div>
+        <div class="splash-logo">HNFAK</div>
+        <div style="width:150px; height:2px; background:#111; margin-top:20px;">
+            <div id="splash-bar" style="width:0%; height:100%; background:var(--brand); transition:1s;"></div>
         </div>
     </div>
 
     <div id="auth-screen" class="hidden">
         <div class="auth-box">
-            <h1 id="auth-title" style="color:var(--brand); font-size:32px; font-weight:900; margin-bottom:10px;">GİRİŞ YAP</h1>
-            <input type="text" id="lUser" class="auth-box-input" style="width:100%; padding:15px; background:#000; border:1px solid #222; border-radius:12px; color:#fff; margin-bottom:10px;" placeholder="Kullanıcı Adı">
-            <input type="password" id="lPass" class="auth-box-input" style="width:100%; padding:15px; background:#000; border:1px solid #222; border-radius:12px; color:#fff; margin-bottom:20px;" placeholder="Şifre">
-            <button class="btn btn-main" style="width:100%;" onclick="Auth.login()">SİSTEME GİRİŞ</button>
-            <p onclick="Auth.toggle()" style="margin-top:20px; color:#555; cursor:pointer; font-size:13px;">Hala üye değil misin? <b style="color:#fff;">Kayıt Ol</b></p>
+            <h1 id="auth-title" style="color:var(--brand); margin-bottom:20px;">GİRİŞ YAP</h1>
+            <input type="text" id="lUser" placeholder="Kullanıcı Adı" style="width:100%; padding:15px; background:#000; border:1px solid #222; color:#fff; border-radius:10px; margin-bottom:10px;">
+            <input type="password" id="lPass" placeholder="Şifre" style="width:100%; padding:15px; background:#000; border:1px solid #222; color:#fff; border-radius:10px; margin-bottom:20px;">
+            <button class="btn btn-main" style="width:100%;" onclick="Auth.login()">SİSTEME GİR</button>
+            <button class="btn" style="width:100%; background:transparent; color:#888; margin-top:10px;" onclick="Auth.guest()">Misafir Olarak Devam Et</button>
+            <p onclick="Auth.toggle()" style="margin-top:20px; color:#555; cursor:pointer;">Hesabın yok mu? <b>Kayıt Ol</b></p>
         </div>
     </div>
 
     <div id="app-wrapper">
         <header id="main-header">
-            <i class="fas fa-bars-staggered fa-lg" onclick="UI.sidebar()"></i>
-            <div style="font-size:26px; font-weight:900; color:var(--brand); cursor:pointer;" onclick="App.init()">HNFAK</div>
-            <div onclick="UI.openAbout()" style="background:rgba(255,255,255,0.1); padding:8px 15px; border-radius:10px; font-size:10px; font-weight:800; cursor:pointer;">HAKKIMIZDA</div>
+            <i class="fas fa-bars-staggered fa-lg" onclick="UI.sidebar(true)"></i>
+            <div style="font-size:24px; font-weight:900; color:var(--brand); letter-spacing:-1px;" onclick="location.reload()">HNFAK</div>
+            <i class="fas fa-search fa-lg" onclick="UI.search(true)"></i>
         </header>
 
-        <button class="magic-btn" onclick="App.shuffle()" title="Sürpriz Film"><i class="fas fa-magic"></i></button>
+        <div id="search-overlay">
+            <i class="fas fa-search" style="color:var(--brand);"></i>
+            <input type="text" id="searchInput" placeholder="Film veya dizi ara..." oninput="App.search(this.value)">
+            <i class="fas fa-times" onclick="UI.search(false)"></i>
+        </div>
 
         <div id="sidebar">
-            <div style="padding-bottom:20px; border-bottom:1px solid #1a1a1a; margin-bottom:20px; text-align:center;">
-                <h3 id="sideName">Kullanıcı</h3>
-                <span id="userStats" style="font-size:10px; color:var(--brand-alt); font-weight:900;">0 İZLEME TAMAMLANDI</span>
-            </div>
-            <div class="side-item" onclick="UI.changeTheme('default')"><i class="fas fa-palette"></i> Klasik Tema</div>
-            <div class="side-item" onclick="UI.changeTheme('blue')"><i class="fas fa-palette" style="color:#007bff"></i> Gece Mavisi</div>
-            <div class="side-item" onclick="UI.changeTheme('red')"><i class="fas fa-palette" style="color:#d00000"></i> Kan Kırmızısı</div>
+            <div style="text-align:center; margin-bottom:30px;"><h3 id="sideName">Kullanıcı</h3></div>
+            <div class="side-item" onclick="App.filterLang('tr')"><i class="fas fa-microphone"></i> Türkçe Dublaj</div>
+            <div class="side-item" onclick="App.filterLang('en')"><i class="fas fa-closed-captioning"></i> Türkçe Altyazı</div>
+            <div class="side-sep"></div>
             <div class="side-item" onclick="App.filterGenre(28)"><i class="fas fa-bolt"></i> Aksiyon</div>
             <div class="side-item" onclick="App.filterGenre(16)"><i class="fas fa-dragon"></i> Animasyon</div>
-            <div class="side-item" style="color:var(--brand); margin-top:auto;" onclick="Auth.logout()"><i class="fas fa-sign-out-alt"></i> Güvenli Çıkış</div>
+            <div class="side-item" onclick="App.filterGenre(35)"><i class="fas fa-laugh"></i> Komedi</div>
+            <div class="side-item" onclick="App.filterGenre(18)"><i class="fas fa-clapperboard"></i> Dram</div>
+            <div class="side-item" onclick="App.filterGenre(27)"><i class="fas fa-ghost"></i> Korku</div>
+            <div class="side-item" onclick="App.filterGenre(9648)"><i class="fas fa-magnifying-glass"></i> Gizem</div>
+            <div class="side-item" onclick="App.filterGenre(878)"><i class="fas fa-rocket"></i> Bilim Kurgu</div>
+            <div class="side-item" onclick="App.filterGenre(99)"><i class="fas fa-video"></i> Belgesel</div>
+            <div class="side-item" onclick="App.filterGenre(10752)"><i class="fas fa-gun"></i> Savaş</div>
+            <div class="side-sep"></div>
+            <div class="side-item" onclick="UI.changeTheme('blue')"><i class="fas fa-palette"></i> Mavi Tema</div>
+            <div class="side-item" onclick="UI.changeTheme('red')"><i class="fas fa-palette"></i> Kırmızı Tema</div>
+            <div class="side-item" onclick="Auth.logout()" style="color:var(--brand);"><i class="fas fa-power-off"></i> Çıkış</div>
         </div>
 
         <main id="main-scroll" onscroll="UI.onScroll(this)">
-            <div id="hero-carousel" style="height:60vh; width:100%; position:relative; overflow:hidden;">
+            <div id="hero" style="height:50vh; position:relative;">
                 <img id="hero-img" src="" style="width:100%; height:100%; object-fit:cover;">
-                <div style="position:absolute; inset:0; background:linear-gradient(0deg, var(--bg) 0%, transparent 100%);"></div>
-                <div style="position:absolute; bottom:40px; left:25px; right:25px;">
-                    <h1 id="hero-title" style="font-size:35px; font-weight:900; margin-bottom:15px;">Yükleniyor...</h1>
-                    <button class="btn btn-main" style="width:150px;" id="hero-btn">ŞİMDİ İZLE</button>
+                <div style="position:absolute; inset:0; background:linear-gradient(0deg, var(--bg), transparent);"></div>
+                <div style="position:absolute; bottom:20px; left:25px;">
+                    <h1 id="hero-title" style="font-size:28px; font-weight:900;">Yükleniyor...</h1>
+                    <button class="btn btn-main" style="margin-top:10px;" id="hero-btn">İzle</button>
                 </div>
             </div>
 
             <div id="history-sec" class="section hidden">
-                <div class="section-head"><h2 class="section-title">İZLEMEYE DEVAM ET</h2></div>
+                <div class="section-title">İzlemeye Devam Et</div>
                 <div class="h-scroll" id="history-list"></div>
             </div>
 
             <div class="section">
-                <div class="section-head"><h2 class="section-title">TREND LİSTESİ</h2></div>
-                <div class="h-scroll" id="trending-list"></div>
-            </div>
-
-            <div class="section">
-                <div class="section-head"><h2 class="section-title">KEŞFET</h2></div>
-                <div id="grid-list" style="display:grid; grid-template-columns:repeat(2,1fr); gap:15px; padding:25px;"></div>
+                <div class="section-title">Popüler İçerikler</div>
+                <div id="grid-list" style="display:grid; grid-template-columns:repeat(2,1fr); gap:15px; padding:20px;"></div>
+                <div id="loader"><i class="fas fa-circle-notch fa-spin"></i></div>
             </div>
         </main>
 
+        <button class="magic-btn" onclick="App.shuffle()"><i class="fas fa-magic"></i></button>
+
         <nav id="bottom-nav">
-            <div class="nav-link active" onclick="App.init()"><i class="fas fa-home"></i></div>
-            <div class="nav-link" onclick="App.filterGenre(35)"><i class="fas fa-laugh"></i></div>
-            <div class="nav-link" onclick="UI.openProfile()"><i class="fas fa-user-astronaut"></i></div>
+            <div class="nav-link active" onclick="location.reload()"><i class="fas fa-home"></i></div>
+            <div class="nav-link" onclick="UI.sidebar(true)"><i class="fas fa-list"></i></div>
+            <div class="nav-link" onclick="UI.openAbout()"><i class="fas fa-info-circle"></i></div>
         </nav>
     </div>
 
     <div id="player-modal" class="modal">
-        <div style="position:relative; width:100%; aspect-ratio:16/9; background:#000;">
-            <div style="position:absolute; top:15px; left:15px; z-index:100; cursor:pointer;" onclick="Player.close()">
-                <i class="fas fa-chevron-down" style="background:rgba(0,0,0,0.5); padding:10px; border-radius:50%;"></i>
-            </div>
+        <div style="width:100%; aspect-ratio:16/9; position:relative; background:#000;">
+            <i class="fas fa-chevron-down" style="position:absolute; top:20px; left:20px; z-index:100; background:rgba(0,0,0,0.5); padding:12px; border-radius:50%; cursor:pointer;" onclick="Player.close()"></i>
             <iframe id="main-frame" src="" style="width:100%; height:100%; border:none;" allowfullscreen></iframe>
         </div>
-        <div class="details-box">
-            <h1 id="mTitle" style="font-size:28px; font-weight:900;">Film Başlığı</h1>
-            <div id="speed-test">
-                <span style="font-size:11px; font-weight:700; color:var(--text-dim);"><i class="fas fa-signal"></i> İNTERNET DURUMU</span>
-                <span style="font-size:11px; font-weight:900; color:#4caf50;">HD OYNATMAYA UYGUN</span>
+        <div style="padding:25px;">
+            <h2 id="mTitle">Başlık</h2>
+            <div id="tv-controls" class="hidden" style="display:flex; gap:10px; margin-top:15px;">
+                <select id="selS" onchange="Player.changeEp()" style="flex:1; padding:12px; background:#111; color:#fff; border-radius:10px; border:1px solid #222;"></select>
+                <select id="selE" onchange="Player.changeEp()" style="flex:1; padding:12px; background:#111; color:#fff; border-radius:10px; border:1px solid #222;"></select>
             </div>
-            <div style="display:flex; gap:10px; margin:20px 0;">
-                <button class="btn btn-main" style="flex:1;" id="favBtn"><i class="fas fa-plus"></i> LİSTEM</button>
-                <button class="btn btn-alt" style="flex:1;" onclick="UI.share()"><i class="fas fa-share"></i> PAYLAŞ</button>
-            </div>
-            <p id="mDesc" style="color:#888; line-height:1.6; font-size:14px; margin-bottom:20px;"></p>
-            <div id="tv-panel" class="hidden">
-                <div style="display:flex; gap:10px;">
-                    <select id="selS" class="btn-alt" style="flex:1; padding:10px; border-radius:10px;" onchange="Player.changeEp()"></select>
-                    <select id="selE" class="btn-alt" style="flex:1; padding:10px; border-radius:10px;" onchange="Player.changeEp()"></select>
-                </div>
-            </div>
-            <div id="disqus_thread" style="margin-top:40px;"></div>
-        </div>
-    </div>
-
-    <div id="about-panel">
-        <div class="about-card">
-            <h2 style="color:var(--brand); margin-bottom:20px;">HNFAK HAKKINDA</h2>
-            <p>HNFAK, sinema tutkunları için tasarlanmış bağımsız bir dijital eğlence arayüzüdür. Amacımız, dünyadaki tüm içerikleri en hızlı, en şık ve en kullanıcı dostu şekilde tek bir noktada toplamaktır.</p>
-            <br>
-            <h4 style="color:#fff;">Versiyon: V7.0 (Final Infinity)</h4>
-            <p style="font-size:13px; color:#555;">Bu proje tamamen hobi amaçlı geliştirilmiş bir API entegrasyonudur.</p>
-            <br>
-            <button class="btn btn-main" style="width:100%;" onclick="UI.closeAbout()">HARİKA!</button>
-        </div>
-    </div>
-
-    <div id="profile-modal" class="modal" style="padding:100px 25px;">
-        <div style="position:fixed; top:20px; right:20px; cursor:pointer;" onclick="UI.closeProfile()"><i class="fas fa-times fa-2x"></i></div>
-        <div style="text-align:center;">
-            <div style="width:100px; height:100px; border-radius:50%; background:var(--accent-gradient); margin:0 auto 20px; display:flex; align-items:center; justify-content:center; font-size:40px; border:4px solid #111;" id="pAvatar">U</div>
-            <h2 id="pName">Kullanıcı</h2>
-            <div style="background:var(--surface); padding:20px; border-radius:20px; margin:30px 0;">
-                <h4 style="color:var(--brand);">TOPLAM İZLEME SÜRESİ</h4>
-                <div style="font-size:30px; font-weight:900;">247 <small style="font-size:12px;">SAAT</small></div>
-            </div>
-            <div class="section-title" style="font-size:16px;">FAVORİLERİM</div>
-            <div id="fav-grid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:20px;"></div>
+            <p id="mDesc" style="margin-top:20px; color:#888; font-size:14px; line-height:1.6;"></p>
+            <button class="btn btn-main" id="favBtn" style="width:100%; margin-top:20px;">Listeme Ekle</button>
         </div>
     </div>
 
@@ -224,7 +165,7 @@
         const K = 'c4c468367090c8c779814353144fe7f7', IMG = 'https://image.tmdb.org/t/p/w500', BIG = 'https://image.tmdb.org/t/p/original';
         let user = JSON.parse(localStorage.getItem('hnfak_session')) || null;
         let db = JSON.parse(localStorage.getItem('hnfak_db')) || [];
-        let activeMedia = {}, secretClicks = 0;
+        let curPage = 1, isLoading = false, activePath = 'movie/popular';
 
         const Auth = {
             init() {
@@ -233,171 +174,136 @@
                     setTimeout(() => {
                         document.getElementById('splash').style.display = 'none';
                         if(user) this.success(); else document.getElementById('auth-screen').classList.remove('hidden');
-                    }, 800);
+                    }, 500);
                 }, 1000);
             },
-            toggle() {
-                const t = document.getElementById('auth-title');
-                t.innerText = t.innerText === 'GİRİŞ YAP' ? 'KAYIT OL' : 'GİRİŞ YAP';
-            },
+            toggle() { const t = document.getElementById('auth-title'); t.innerText = t.innerText === 'GİRİŞ YAP' ? 'KAYIT OL' : 'GİRİŞ YAP'; },
+            guest() { this.save({username: 'Misafir', favs: [], hist: []}, true); },
             login() {
                 const u = document.getElementById('lUser').value, p = document.getElementById('lPass').value;
-                if(!u || !p) return alert('Doldur patron!');
+                if(!u || !p) return;
                 const isReg = document.getElementById('auth-title').innerText === 'KAYIT OL';
-                
                 if(isReg) {
-                    if(db.find(x => x.username === u)) return alert('Var zaten!');
-                    const newUser = { username:u, password:p, favs:[], hist:[], stats: {watched: 0} };
-                    db.push(newUser); this.save(newUser);
+                    const newUser = {username: u, password: p, favs: [], hist: []};
+                    db.push(newUser); this.save(newUser, true);
                 } else {
                     const found = db.find(x => x.username === u && x.password === p);
-                    if(found) this.save(found); else alert('Hatalı!');
+                    if(found) this.save(found, true); else alert('Hatalı!');
                 }
             },
-            save(u) {
+            save(u, reload) {
                 user = u; localStorage.setItem('hnfak_session', JSON.stringify(u));
                 const idx = db.findIndex(x => x.username === u.username);
                 if(idx > -1) db[idx] = u; else db.push(u);
                 localStorage.setItem('hnfak_db', JSON.stringify(db));
-                location.reload();
+                if(reload) location.reload();
             },
             success() {
                 document.getElementById('auth-screen').style.display = 'none';
                 document.getElementById('app-wrapper').style.opacity = '1';
                 document.getElementById('sideName').innerText = user.username;
-                document.getElementById('pName').innerText = user.username;
-                document.getElementById('pAvatar').innerText = user.username[0].toUpperCase();
-                document.getElementById('userStats').innerText = (user.stats?.watched || 0) + ' İZLEME TAMAMLANDI';
                 App.init();
-                UI.checkNightMode();
             },
             logout() { localStorage.removeItem('hnfak_session'); location.reload(); }
         };
 
         const UI = {
-            sidebar() { document.getElementById('sidebar').classList.toggle('open'); },
-            onScroll(el) { document.getElementById('main-header').classList.toggle('scrolled', el.scrollTop > 50); },
-            openAbout() { document.getElementById('about-panel').style.display = 'block'; },
-            closeAbout() { document.getElementById('about-panel').style.display = 'none'; },
-            openProfile() {
-                document.getElementById('profile-modal').style.display = 'flex';
-                const grid = document.getElementById('fav-grid'); grid.innerHTML = '';
-                user.favs.forEach(f => {
-                    const img = document.createElement('img');
-                    img.src = IMG + f.poster;
-                    img.style.width = '100%'; img.style.borderRadius = '10px';
-                    img.onclick = () => Player.open(f.id, f.type);
-                    grid.appendChild(img);
-                });
+            sidebar(s) { document.getElementById('sidebar').classList.toggle('open', s); },
+            search(s) { document.getElementById('search-overlay').style.display = s ? 'flex' : 'none'; },
+            onScroll(el) {
+                document.getElementById('main-header').classList.toggle('scrolled', el.scrollTop > 50);
+                if (el.scrollTop + el.clientHeight >= el.scrollHeight - 600 && !isLoading) {
+                    App.loadMore();
+                }
             },
-            closeProfile() { document.getElementById('profile-modal').style.display = 'none'; },
-            changeTheme(t) {
-                document.body.className = 'theme-' + t;
-                this.sidebar();
-            },
-            checkNightMode() {
-                const hour = new Date().getHours();
-                if(hour >= 22 || hour <= 6) document.body.style.filter = 'brightness(0.8)';
-            },
-            secretMenu() {
-                secretClicks++;
-                if(secretClicks === 5) alert('Geliştirici Modu Aktif: HNFAK-X Core V7');
-            },
-            share() { alert('Bağlantı Panoya Kopyalandı!'); }
+            changeTheme(t) { document.body.className = 'theme-' + t; this.sidebar(false); },
+            openAbout() { alert("HNFAK V12 | Infinity Edition\n\n- Sonsuz Kaydırma\n- Akıllı Kategori Menüsü\n- Türkçe Dublaj/Altyazı Filtresi\n- Misafir Girişi"); }
         };
 
         const App = {
             async init() {
                 this.loadHero();
-                this.loadRow('trending/all/week', 'trending-list');
-                this.loadGrid('movie/popular');
+                this.loadGrid(activePath);
                 this.renderHistory();
             },
             async loadHero() {
-                const r = await fetch(`https://api.themoviedb.org/3/movie/now_playing?api_key=${K}&language=tr-TR`);
+                const r = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${K}&language=tr-TR`);
                 const d = await r.json();
-                const item = d.results[0];
-                document.getElementById('hero-img').src = BIG + item.backdrop_path;
-                document.getElementById('hero-title').innerText = item.title;
-                document.getElementById('hero-btn').onclick = () => Player.open(item.id, 'movie');
+                const m = d.results[0];
+                document.getElementById('hero-img').src = BIG + m.backdrop_path;
+                document.getElementById('hero-title').innerText = m.title;
+                document.getElementById('hero-btn').onclick = () => Player.open(m.id, 'movie');
             },
-            async loadRow(path, target) {
-                const r = await fetch(`https://api.themoviedb.org/3/${path}?api_key=${K}&language=tr-TR`);
+            async loadGrid(path, reset = true) {
+                if(reset) { curPage = 1; document.getElementById('grid-list').innerHTML = ''; }
+                isLoading = true;
+                document.getElementById('loader').style.display = 'block';
+                const r = await fetch(`https://api.themoviedb.org/3/${path}${path.includes('?') ? '&' : '?'}api_key=${K}&language=tr-TR&page=${curPage}`);
                 const d = await r.json();
-                const container = document.getElementById(target); container.innerHTML = '';
-                d.results.forEach(item => this.renderCard(item, target));
+                d.results.forEach(m => this.renderCard(m, 'grid-list'));
+                isLoading = false;
+                document.getElementById('loader').style.display = 'none';
             },
-            async loadGrid(path) {
-                const r = await fetch(`https://api.themoviedb.org/3/${path}?api_key=${K}&language=tr-TR`);
-                const d = await r.json();
-                const container = document.getElementById('grid-list'); container.innerHTML = '';
-                d.results.forEach(item => this.renderCard(item, 'grid-list'));
-            },
-            renderCard(item, target) {
-                if(!item.poster_path) return;
+            loadMore() { curPage++; this.loadGrid(activePath, false); },
+            renderCard(m, target) {
+                if(!m.poster_path) return;
                 const div = document.createElement('div');
                 div.className = 'card';
-                div.innerHTML = `<img src="${IMG}${item.poster_path}" loading="lazy"><div class="card-info">${(item.title || item.name).substring(0,15)}</div>`;
-                div.onclick = () => Player.open(item.id, item.title ? 'movie' : 'tv');
+                div.innerHTML = `<img src="${IMG}${m.poster_path}"><div class="card-info">${m.title || m.name}</div>`;
+                div.onclick = () => Player.open(m.id, m.title ? 'movie' : 'tv');
                 document.getElementById(target).appendChild(div);
             },
             renderHistory() {
-                if(user.hist.length > 0) {
+                if(user.hist && user.hist.length > 0) {
                     document.getElementById('history-sec').classList.remove('hidden');
-                    const list = document.getElementById('history-list'); list.innerHTML = '';
+                    const hl = document.getElementById('history-list'); hl.innerHTML = '';
                     user.hist.forEach(h => {
                         const div = document.createElement('div');
-                        div.className = 'card'; div.style.flex = '0 0 120px';
-                        div.innerHTML = `<img src="${IMG}${h.poster}" style="opacity:0.5;">`;
+                        div.className = 'card'; div.style.flex = '0 0 100px';
+                        div.innerHTML = `<img src="${IMG}${h.poster}" style="opacity:0.6;">`;
                         div.onclick = () => Player.open(h.id, h.type);
-                        list.appendChild(div);
+                        hl.appendChild(div);
                     });
                 }
             },
-            async shuffle() {
-                const r = await fetch(`https://api.themoviedb.org/3/movie/top_rated?api_key=${K}&page=${Math.floor(Math.random()*10)+1}`);
-                const d = await r.json();
-                const item = d.results[Math.floor(Math.random()*d.results.length)];
-                Player.open(item.id, 'movie');
+            filterGenre(id) { 
+                activePath = `discover/movie?with_genres=${id}`; 
+                this.loadGrid(activePath); 
+                UI.sidebar(false); // Kategori seçilince KAPAT
             },
-            async filterGenre(id) {
-                this.loadGrid(`discover/movie?with_genres=${id}`);
-                this.sidebar();
-            }
+            filterLang(l) { 
+                activePath = `discover/movie?with_original_language=${l}`; 
+                this.loadGrid(activePath); 
+                UI.sidebar(false); // Dil seçilince KAPAT
+            },
+            search(q) { if(q.length > 2) { activePath = `search/multi?query=${q}`; this.loadGrid(activePath); } },
+            shuffle() { Player.open(Math.floor(Math.random() * 500) + 1, 'movie'); }
         };
 
         const Player = {
             async open(id, type) {
-                activeMedia = { id, type };
                 const r = await fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=${K}&language=tr-TR`);
                 const d = await r.json();
-                
                 document.getElementById('mTitle').innerText = d.title || d.name;
                 document.getElementById('mDesc').innerText = d.overview;
                 document.getElementById('main-frame').src = `https://vidsrc.xyz/embed/${type}/${id}`;
                 
-                // Stat Update
-                if(!user.stats) user.stats = {watched: 0};
-                user.stats.watched++;
-                
-                // History Update
-                user.hist = user.hist.filter(x => x.id !== id);
-                user.hist.unshift({id, type, poster: d.poster_path});
-                Auth.save(user);
-
                 if(type === 'tv') {
-                    document.getElementById('tv-panel').classList.remove('hidden');
+                    document.getElementById('tv-controls').classList.remove('hidden');
                     let sH = ''; d.seasons.forEach(s => sH += `<option value="${s.season_number}">${s.name}</option>`);
                     document.getElementById('selS').innerHTML = sH;
                     this.loadEps(1, d.seasons[0].episode_count);
-                } else document.getElementById('tv-panel').classList.add('hidden');
+                } else document.getElementById('tv-controls').classList.add('hidden');
+
+                if(!user.hist) user.hist = [];
+                user.hist = user.hist.filter(x => x.id !== id);
+                user.hist.unshift({id, type, poster: d.poster_path});
+                Auth.save(user, false); // Yenileme yapma
+                App.renderHistory();
 
                 document.getElementById('player-modal').style.display = 'flex';
-                
-                // Favorite Button UI
-                const isFav = user.favs.some(x => x.id == id);
-                document.getElementById('favBtn').innerHTML = isFav ? '<i class="fas fa-check"></i> LİSTEDE' : '<i class="fas fa-plus"></i> LİSTEM';
-                document.getElementById('favBtn').onclick = () => this.toggleFav(d);
+                document.getElementById('favBtn').innerText = user.favs.some(x => x.id == id) ? 'Listeden Çıkar' : 'Listeme Ekle';
+                document.getElementById('favBtn').onclick = () => this.toggleFav(d, type);
             },
             loadEps(s, count) {
                 let eH = ''; for(let i=1; i<=count; i++) eH += `<option value="${i}">${i}. Bölüm</option>`;
@@ -405,14 +311,14 @@
             },
             changeEp() {
                 const s = document.getElementById('selS').value, e = document.getElementById('selE').value;
-                document.getElementById('main-frame').src = `https://vidsrc.xyz/embed/tv/${activeMedia.id}/${s}/${e}`;
+                document.getElementById('main-frame').src = `https://vidsrc.xyz/embed/tv/${activeMedia.id || user.hist[0].id}/${s}/${e}`;
             },
-            toggleFav(d) {
+            toggleFav(d, type) {
                 const idx = user.favs.findIndex(x => x.id == d.id);
                 if(idx > -1) user.favs.splice(idx, 1);
-                else user.favs.push({id: d.id, type: activeMedia.type, poster: d.poster_path});
-                Auth.save(user);
-                Player.open(d.id, activeMedia.type);
+                else user.favs.push({id: d.id, type, poster: d.poster_path});
+                Auth.save(user, false);
+                document.getElementById('favBtn').innerText = idx > -1 ? 'Listeme Ekle' : 'Listeden Çıkar';
             },
             close() { document.getElementById('player-modal').style.display = 'none'; document.getElementById('main-frame').src = ''; }
         };
