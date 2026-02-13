@@ -2,274 +2,221 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HNFAK | V33 NEXUS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title id="pTitle">HNFAK</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
-        :root { --brand: #ff3c00; --bg: #000; --panel: rgba(10,10,10,0.85); --border: rgba(255,60,0,0.15); --text: #fff; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; margin: 0; padding-bottom: 90px; overflow-x: hidden; }
+        :root { 
+            --brand: #ff3c00; --gold: #ffd700; --bg: #000; 
+            --speed: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; border: none; outline: none; -webkit-user-select: none; }
+        body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; -webkit-font-smoothing: antialiased; }
 
-        /* AMBIENT BACKGROUND */
-        #ambient-glow { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 50%, rgba(255,60,0,0.05), transparent); transition: 1s; }
+        /* --- CORE LOADER --- */
+        #loader { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: 0.8s var(--speed); }
+        .hnf-pulse { width: 50px; height: 50px; background: var(--brand); border-radius: 50%; animation: pulse 1s infinite alternate; }
+        @keyframes pulse { from { transform: scale(0.8); opacity: 0.5; } to { transform: scale(1.2); opacity: 1; } }
 
-        /* HEADER & GLASSMORPHISM */
-        header { position: fixed; top: 0; width: 100%; z-index: 2000; padding: 15px 5%; background: rgba(0,0,0,0.7); backdrop-filter: blur(25px); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 26px; font-weight: 950; letter-spacing: -1px; cursor: pointer; }
-        .logo span { color: var(--brand); text-shadow: 0 0 15px var(--brand); }
+        /* --- PROTECTED GATE (kadır01kadir) --- */
+        .gate-modal { position: fixed; inset: 0; background: #000; z-index: 9500; display: none; align-items: center; justify-content: center; }
+        .gate-box { width: 90%; max-width: 400px; text-align: center; padding: 60px 30px; background: #050505; border-radius: 30px; border: 1px solid #111; }
+        .gate-input { width: 100%; padding: 22px; background: #000; border: 1px solid #222; color: var(--brand); border-radius: 15px; text-align: center; font-size: 24px; letter-spacing: 10px; margin: 30px 0; font-weight: 950; }
 
-        /* AI SEARCH BAR */
-        .ai-search { display: flex; align-items: center; background: #111; border-radius: 50px; padding: 8px 15px; border: 1px solid var(--border); width: 40%; transition: 0.3s; }
-        .ai-search:focus-within { border-color: var(--brand); box-shadow: 0 0 15px rgba(255,60,0,0.2); }
-        .ai-search input { background: none; border: none; color: #fff; width: 100%; padding: 5px; font-size: 14px; }
+        /* --- MASTER HEADER --- */
+        header { position: fixed; top: 0; width: 100%; z-index: 3000; padding: env(safe-area-inset-top) 6% 25px; display: flex; justify-content: space-between; align-items: center; transition: 0.4s; background: linear-gradient(180deg, #000 0%, transparent 100%); }
+        header.scrolled { background: rgba(0,0,0,0.9); backdrop-filter: blur(30px); padding-top: 15px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        
+        /* --- SIDEBAR --- */
+        .sidebar { position: fixed; left: -350px; top: 0; width: 320px; height: 100%; background: #050505; z-index: 4000; transition: 0.5s var(--speed); padding: 130px 30px; border-right: 1px solid #111; }
+        .sidebar.active { left: 0; box-shadow: 20px 0 100px #000; }
+        .cat-item { padding: 22px; margin-bottom: 10px; border-radius: 15px; cursor: pointer; transition: 0.3s; background: #000; display: flex; align-items: center; gap: 15px; font-weight: 800; font-size: 14px; color: #444; }
+        .cat-item:hover { background: #0a0a0a; color: var(--brand); transform: translateX(10px); }
 
-        /* DYNAMIC FILTERS */
-        .filter-row { display: flex; gap: 10px; overflow-x: auto; padding: 100px 5% 10px; scrollbar-width: none; }
-        .filter-chip { padding: 10px 20px; background: var(--panel); border: 1px solid #222; border-radius: 12px; font-size: 13px; white-space: nowrap; cursor: pointer; transition: 0.3s; }
-        .filter-chip.active { background: var(--brand); border-color: var(--brand); }
+        /* --- CONTENT GRID --- */
+        #content-wrapper { height: 100vh; overflow-y: scroll; scroll-behavior: smooth; }
+        .grid { display: grid; gap: 20px; padding: 20px; grid-template-columns: repeat(2, 1fr); margin-top: 100px; }
+        @media(min-width: 768px) { .grid { grid-template-columns: repeat(4, 1fr); gap: 30px; } }
+        @media(min-width: 1200px) { .grid { grid-template-columns: repeat(6, 1fr); } }
 
-        /* GRID SYSTEM */
-        .container { padding: 20px 5%; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 15px; }
-        @media(min-width: 768px) { .grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 25px; } }
+        .card { background: #030303; border-radius: 25px; overflow: hidden; border: 1px solid #111; position: relative; aspect-ratio: 2/3; transition: 0.5s var(--speed); cursor: pointer; }
+        .card:hover { transform: translateY(-10px); border-color: var(--brand); box-shadow: 0 15px 30px rgba(255, 60, 0, 0.2); }
+        .card img { width: 100%; height: 100%; object-fit: cover; transition: 0.6s; pointer-events: none; }
+        .card:hover img { filter: brightness(0.4); transform: scale(1.05); }
 
-        .card { background: var(--panel); border-radius: 16px; overflow: hidden; border: 1px solid #111; aspect-ratio: 2/3; position: relative; cursor: pointer; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1); }
-        .card:hover { transform: translateY(-10px) rotate(1deg); border-color: var(--brand); box-shadow: 0 20px 40px rgba(0,0,0,0.8); }
-        .card img { width: 100%; height: 100%; object-fit: cover; }
-        .card-info { position: absolute; bottom: 0; width: 100%; padding: 10px; background: linear-gradient(0deg, #000 0%, transparent 100%); font-size: 12px; font-weight: bold; }
-
-        /* PLAYER MODAL V33 */
-        .modal { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; overflow-y: auto; }
-        .player-wrapper { width: 100%; aspect-ratio: 16/9; position: sticky; top: 0; background: #000; box-shadow: 0 10px 50px #000; }
-        .ambient-layer { position: absolute; inset: 0; z-index: -1; filter: blur(100px); opacity: 0.4; }
-
-        /* NAVIGATION */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); display: flex; justify-content: space-around; padding: 15px 10px; border-top: 1px solid var(--border); z-index: 4000; }
-        .nav-item { color: #666; font-size: 22px; cursor: pointer; position: relative; }
+        /* --- NAVIGATION --- */
+        .nav { position: fixed; bottom: 0; width: 100%; background: rgba(0,0,0,0.97); backdrop-filter: blur(30px); display: flex; justify-content: space-around; padding: 22px 15px calc(22px + env(safe-area-inset-bottom)); border-top: 1px solid #111; z-index: 3500; }
+        .nav-item { color: #222; font-size: 26px; text-align: center; flex: 1; transition: 0.3s; }
         .nav-item.active { color: var(--brand); }
-        .nav-item span { display: block; font-size: 10px; margin-top: 5px; font-weight: 800; }
+        .nav-item span { display: block; font-size: 9px; margin-top: 8px; font-weight: 900; letter-spacing: 1px; }
 
-        /* BUTTONS */
-        .btn-v33 { background: var(--brand); color: #fff; padding: 12px 24px; border-radius: 15px; border: none; font-weight: 900; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
-        .btn-v33:hover { transform: scale(1.05); filter: brightness(1.2); }
-
-        /* UTILS */
+        /* --- UI ELEMENTS --- */
+        .btn-hnf { background: var(--brand); color: #fff; padding: 22px; border-radius: 18px; font-weight: 950; cursor: pointer; width: 100%; transition: 0.3s; letter-spacing: 2px; font-size: 13px; text-transform: uppercase; }
+        .sys-modal { position: fixed; inset: 0; background: #000; z-index: 9000; display: none; align-items: center; justify-content: center; }
+        .p-modal { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; overflow-y: auto; }
         .hidden { display: none; }
-        .pulse { animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div id="ambient-glow"></div>
+    <div id="loader"><div class="hnf-pulse"></div></div>
 
-    <header>
-        <div class="logo" onclick="app.egg()">HNF<span>AK</span></div>
-        <div class="ai-search">
-            <i class="fas fa-magic" style="color:var(--brand); margin-right: 10px;"></i>
-            <input type="text" id="aiInp" placeholder="AI ile her şeyi sor..." onkeydown="if(event.key==='Enter') app.searchAI()">
+    <div id="gateUI" class="gate-modal">
+        <div class="gate-box">
+            <h2 style="letter-spacing: 5px; font-size: 18px; font-weight: 950;">HNFAK ACCESS</h2>
+            <input type="password" id="adminKey" class="gate-input" placeholder="••••">
+            <button class="btn-hnf" onclick="app.unlock()">AUTHORIZE</button>
+            <p onclick="app.closeGate()" style="margin-top:25px; opacity:0.2; font-size:10px; cursor:pointer; font-weight: 950;">TERMINATE</p>
         </div>
-        <div style="font-size: 20px;"><i class="fas fa-user-circle" onclick="app.authPanel()"></i></div>
-    </header>
-
-    <div class="filter-row">
-        <div class="filter-chip active" onclick="app.reset('trend')">🔥 Trendler</div>
-        <div class="filter-chip" onclick="app.fetchCat(28, 'Aksiyon')">Aksiyon</div>
-        <div class="filter-chip" onclick="app.fetchCat(878, 'Bilim Kurgu')">Bilim Kurgu</div>
-        <div class="filter-chip" onclick="app.fetchCat(27, 'Korku')">Korku</div>
-        <div class="filter-chip" onclick="app.fetchCat(35, 'Komedi')">Komedi</div>
-        <div class="filter-chip" onclick="app.fetchCat(16, 'Animasyon')">Animasyon</div>
     </div>
 
-    <div class="container">
-        <h2 id="section-title" style="letter-spacing: -1px; margin-bottom: 25px;">Senin İçin Seçilenler</h2>
+    <div id="adminUI" class="sys-modal">
+        <div class="gate-box" style="max-width: 500px;">
+            <h2 style="color:var(--brand); margin-bottom:30px; letter-spacing: 10px;">HNFAK ADMIN</h2>
+            <div style="text-align:left; font-size:12px; color:#444; background:#000; padding:30px; border-radius:20px; margin-bottom:30px; line-height:2.2; border: 1px solid #111; font-family: monospace;">
+                <p>> HNFAK_CORE: STABLE</p>
+                <p>> KEY: kadır01kadir (SECURE)</p>
+                <p>> EMAILJS: ACTIVE</p>
+            </div>
+            <button class="btn-hnf" onclick="app.clear()" style="background:#111; color:#f00; border: 1px solid #300; margin-bottom: 10px;">PURGE STORAGE</button>
+            <button class="btn-hnf" onclick="app.adminOff()" style="background:#050505;">EXIT CORE</button>
+        </div>
+    </div>
+
+    <header id="h">
+        <div onclick="app.menu()" style="cursor:pointer; font-size: 26px;"><i class="fas fa-bars-staggered"></i></div>
+        <div id="mainLogo" style="font-size: 28px; font-weight: 950; letter-spacing: -2px; cursor:pointer;" onmousedown="app.atS()" onmouseup="app.atE()">HNFAK</div>
+        <div id="uStatus" onclick="app.auth()" style="background:#111; padding:10px 22px; border-radius:12px; font-size:11px; font-weight:950; border:1px solid #222; cursor:pointer;">IDENTITY</div>
+    </header>
+
+    <div class="sidebar" id="sidebar">
+        <div id="catList"></div>
+        <div onclick="app.pOn()" id="sideP" style="color:var(--gold); margin-top:50px; font-weight:950; cursor:pointer; font-size: 15px;"><i class="fas fa-star"></i> HNFAK PREMIUM</div>
+    </div>
+
+    <div id="content-wrapper">
         <main id="grid" class="grid"></main>
     </div>
 
-    <div class="bottom-nav">
-        <div class="nav-item active" onclick="app.reset('trend')"><i class="fas fa-compass"></i><span>Keşfet</span></div>
-        <div class="nav-item" onclick="app.showFavs()"><i class="fas fa-heart"></i><span>Listem</span></div>
-        <div class="nav-item" onclick="app.showActivity()"><i class="fas fa-bolt"></i><span>Canlı</span></div>
-        <div class="nav-item" onclick="app.authPanel()"><i class="fas fa-crown"></i><span>Nexus</span></div>
+    <div class="nav">
+        <div class="nav-item active" onclick="app.reset('trend')"><i class="fas fa-home"></i><span>HNFAK</span></div>
+        <div class="nav-item" onclick="app.favs()"><i class="fas fa-bookmark"></i><span>KAYITLI</span></div>
+        <div class="nav-item" onclick="app.pOn()"><i class="fas fa-crown"></i><span>PREMIUM</span></div>
+        <div class="nav-item" onclick="app.auth()"><i class="fas fa-user-shield"></i><span>PROFİL</span></div>
     </div>
 
-    <div id="pModal" class="modal">
-        <div id="pAmbient" class="ambient-layer"></div>
-        <div class="player-wrapper">
-            <i class="fas fa-times" onclick="app.close()" style="position:absolute; top:20px; right:20px; z-index:100; font-size:24px; cursor:pointer;"></i>
+    <div id="pModal" class="p-modal">
+        <div style="width:100%; aspect-ratio:16/9; background:#000; position:sticky; top:0; z-index:100;">
+            <i class="fas fa-times" onclick="app.close()" style="position:absolute; top:20px; left:20px; z-index:110; font-size:25px; cursor:pointer; background:rgba(0,0,0,0.5); padding:10px; border-radius:50%;"></i>
             <iframe id="vFrame" src="" style="width:100%; height:100%; border:none;" allowfullscreen></iframe>
         </div>
-        <div style="padding: 30px; max-width: 1000px; margin: 0 auto;">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                <div>
-                    <h1 id="mT" style="margin:0; font-size: 32px; letter-spacing: -1px;"></h1>
-                    <p id="mRate" style="color:var(--brand); font-weight:bold; margin-top:5px;"></p>
-                </div>
-                <div style="text-align:right;">
-                    <span class="status-dot"></span> <small style="opacity:0.5;">4K Akış Aktif</small>
-                </div>
+        <div style="padding:40px 20px; max-width: 1000px; margin: 0 auto; width: 100%;">
+            <h1 id="mT" style="font-size: 36px; margin-bottom: 25px; font-weight: 950;"></h1>
+            <div id="tvPanel" class="hidden" style="display:flex; gap:15px; margin: 35px 0;">
+                <select id="selS" onchange="app.epC()" style="flex:1; padding:18px; border-radius:12px; background:#111; color:#fff; border:1px solid #222; font-weight:900;"></select>
+                <select id="selE" onchange="app.epC()" style="flex:1; padding:18px; border-radius:12px; background:#111; color:#fff; border:1px solid #222; font-weight:900;"></select>
             </div>
-
-            <div id="tvPanel" class="hidden" style="margin: 25px 0; background: #080808; padding: 20px; border-radius: 20px; border: 1px solid #111;">
-                <div style="display:flex; gap:15px;">
-                    <select id="selS" onchange="app.epChange()" style="flex:1; background:#000; color:#fff; padding:12px; border:1px solid #222; border-radius:12px;"></select>
-                    <select id="selE" onchange="app.epChange()" style="flex:1; background:#000; color:#fff; padding:12px; border:1px solid #222; border-radius:12px;"></select>
-                </div>
+            <div style="display:flex; gap:15px; margin-bottom:50px;">
+                <button onclick="app.src(1)" class="btn-hnf">SUNUCU 1</button>
+                <button onclick="app.src(2)" class="btn-hnf" style="background:#111; color: #444;">SUNUCU 2</button>
             </div>
-
-            <div style="display:flex; gap:15px; margin: 30px 0;">
-                <button onclick="app.src(1)" class="btn-v33">SUNUCU 1</button>
-                <button onclick="app.src(2)" class="btn-v33" style="background:#111;">SUNUCU 2</button>
-                <button id="favBtn" class="btn-v33" style="background:transparent; border:1px solid #222;"><i class="fas fa-plus"></i></button>
-                <button onclick="app.share()" class="btn-v33" style="background:transparent; border:1px solid #222;"><i class="fas fa-share-nodes"></i></button>
-            </div>
-
-            <p id="mD" style="line-height:1.8; opacity:0.7; font-size:16px;"></p>
-            
-            <hr style="border:0; border-top:1px solid #111; margin:40px 0;">
-            
-            <h3>Nexus Topluluk</h3>
-            <div style="display:flex; gap:15px;">
-                <input type="text" id="cInp" placeholder="Bu yapım hakkında ne düşünüyorsun?" style="flex:1; background:#080808; border:1px solid #111; color:#fff; padding:18px; border-radius:15px;">
-                <button onclick="app.postComment()" class="btn-v33">PAYLAŞ</button>
-            </div>
-            <div id="cList" style="margin-top:30px;"></div>
-        </div>
-    </div>
-
-    <div id="authModal" class="modal" style="justify-content:center; align-items:center; background:rgba(0,0,0,0.95);">
-        <div style="width:90%; max-width:400px; background:#050505; padding:50px; border-radius:30px; border:1px solid var(--border); text-align:center; box-shadow:0 0 50px rgba(255,60,0,0.1);">
-            <h2 style="color:var(--brand); margin-bottom:10px;">NEXUS ACCESS</h2>
-            <p style="opacity:0.5; font-size:12px; margin-bottom:30px;">HNFAK Bulut Sistemine Bağlan</p>
-            <div id="authStep1">
-                <input type="text" id="uName" placeholder="Kullanıcı Adı" style="width:100%; padding:15px; margin-bottom:12px; background:#111; border:1px solid #222; color:#fff; border-radius:12px;">
-                <input type="email" id="uMail" placeholder="E-posta" style="width:100%; padding:15px; margin-bottom:25px; background:#111; border:1px solid #222; color:#fff; border-radius:12px;">
-                <button onclick="app.sendVerifyCode()" id="sendBtn" class="btn-v33" style="width:100%; justify-content:center;">DOĞRULAMA KODU AL</button>
-                <p onclick="app.guestLogin()" style="margin-top:25px; font-size:13px; opacity:0.4; cursor:pointer;">Misafir Modu</p>
-            </div>
-            <div id="authStep2" class="hidden">
-                <input type="text" id="vCodeInp" placeholder="----" style="width:100%; padding:15px; text-align:center; font-size:40px; background:transparent; border:none; color:var(--brand); letter-spacing:10px;">
-                <button onclick="app.verifyAndLogin()" class="btn-v33" style="width:100%; justify-content:center;">SİSTEME GİRİŞ YAP</button>
-            </div>
+            <p id="mD" style="opacity:0.3; line-height:2; font-size: 16px;"></p>
         </div>
     </div>
 
     <script>
-        const TMDB_KEY = 'c4c468367090c8c779814353144fe7f7', IMG = 'https://image.tmdb.org/t/p/w500', BG = 'https://image.tmdb.org/t/p/original';
+        const K = 'c4c468367090c8c779814353144fe7f7', IMG = 'https://image.tmdb.org/t/p/w500';
         emailjs.init("xzqFieS_v8a0G8B5B");
 
-        let page = 1, mode = 'trend', currentCatId = null, generatedCode = "", eggCount = 0;
-        let favorites = JSON.parse(localStorage.getItem('hn_favs')) || [];
-        let cur = {id:'', type:'', s:1, e:1};
+        let p = 1, m = 'trend', aT;
+        let cur = {id:'', t:'', s:1, e:1};
 
         const app = {
             start() {
-                this.fetchTrend(); this.checkUser();
-                window.onscroll = () => { if((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 800) this.loadMore(); };
+                setTimeout(() => { document.getElementById('loader').style.opacity = '0'; setTimeout(()=> document.getElementById('loader').style.display='none', 800); }, 1000);
+                this.fT(); this.rC(); this.cU();
+                const wrap = document.getElementById('content-wrapper');
+                wrap.onscroll = () => {
+                    const h = document.getElementById('h');
+                    if(wrap.scrollTop > 50) h.classList.add('scrolled'); else h.classList.remove('scrolled');
+                    if((wrap.innerHeight + wrap.scrollTop) >= wrap.scrollHeight - 2000) this.lM();
+                };
             },
-
-            checkUser() {
-                const u = localStorage.getItem('hn_u');
-                if(u) document.querySelector('.nav-item:last-child span').innerText = u;
+            atS() { aT = setTimeout(() => { document.getElementById('gateUI').style.display='flex'; }, 5000); },
+            atE() { clearTimeout(aT); },
+            unlock() {
+                if(document.getElementById('adminKey').value === "kadır01kadir") {
+                    document.getElementById('gateUI').style.display='none';
+                    document.getElementById('adminUI').style.display='flex';
+                } else { alert("HATA"); this.closeGate(); }
             },
-
-            async fetchTrend() {
-                const r = await fetch(`https://api.themoviedb.org/3/trending/all/day?api_key=${TMDB_KEY}&language=tr-TR&page=${page}`);
-                const d = await r.json(); this.render(d.results, "Haftanın Parlayan Yıldızları");
+            closeGate() { document.getElementById('gateUI').style.display='none'; document.getElementById('adminKey').value=''; },
+            adminOff() { document.getElementById('adminUI').style.display='none'; },
+            menu() { document.getElementById('sidebar').classList.toggle('active'); },
+            cU() { 
+                const u = localStorage.getItem('hn_u'), isP = localStorage.getItem('hn_premium');
+                const logo = document.getElementById('mainLogo');
+                const title = document.getElementById('pTitle');
+                if(isP) {
+                    logo.innerText = "HNFAK PREMIUM";
+                    title.innerText = "HNFAK PREMIUM";
+                    document.getElementById('sideP').style.display = 'none';
+                } else {
+                    logo.innerText = "HNFAK";
+                    title.innerText = "HNFAK";
+                }
+                if(u) document.getElementById('uStatus').innerHTML = u.toUpperCase() + (isP ? ' ★' : '');
             },
-
-            async fetchCat(id, name) {
-                mode = 'cat'; currentCatId = id; page = 1; document.getElementById('grid').innerHTML = '';
-                const r = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_KEY}&with_genres=${id}&language=tr-TR&page=${page}`);
-                const d = await r.json(); this.render(d.results, name);
-                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-                event.target.classList.add('active');
+            rC() {
+                const cats = {28:'Aksiyon', 35:'Komedi', 27:'Korku', 878:'Bilim Kurgu', 18:'Dram', 16:'Animasyon'};
+                document.getElementById('catList').innerHTML = Object.entries(cats).map(([id, n]) => `<div class="cat-item" onclick="app.fC(${id})">${n}</div>`).join('');
             },
-
-            async searchAI() {
-                const q = document.getElementById('aiInp').value;
-                if(!q) return;
-                mode = 'search'; document.getElementById('grid').innerHTML = '';
-                const r = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_KEY}&query=${q}&language=tr-TR`);
-                const d = await r.json(); this.render(d.results, `AI Sonuçları: ${q}`);
+            async fT() {
+                const r = await fetch(`https://api.themoviedb.org/3/trending/all/day?api_key=${K}&language=tr-TR&page=${p}`);
+                const d = await r.json(); this.render(d.results);
             },
-
-            render(list, t) {
-                document.getElementById('section-title').innerText = t;
-                list.filter(m => m.poster_path).forEach(m => {
+            async fC(id) {
+                m='cat'; p=1; document.getElementById('grid').innerHTML='';
+                const r = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${K}&with_genres=${id}&language=tr-TR&page=${p}`);
+                const d = await r.json(); this.render(d.results); this.menu();
+            },
+            render(list) {
+                list.filter(x => x.poster_path).forEach(x => {
                     const d = document.createElement('div');
                     d.className = 'card';
-                    d.innerHTML = `<img src="${IMG}${m.poster_path}" loading="lazy" onclick="app.open('${m.id}','${m.title?'movie':'tv'}','${m.backdrop_path}')">
-                                   <div class="card-info">${m.title || m.name}</div>`;
+                    d.innerHTML = `<img src="${IMG}${x.poster_path}" loading="lazy" onclick="app.open('${x.id}','${x.title?'movie':'tv'}')">`;
                     document.getElementById('grid').appendChild(d);
                 });
             },
-
-            async open(id, type, bp) {
-                cur = {id, type, s:1, e:1};
-                document.getElementById('pAmbient').style.backgroundImage = `url(${IMG}${bp})`;
-                const r = await fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=${TMDB_KEY}&language=tr-TR`);
+            async open(id, type) {
+                cur = {id, t:type, s:1, e:1};
+                const r = await fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=${K}&language=tr-TR`);
                 const d = await r.json();
-                
                 document.getElementById('mT').innerText = d.title || d.name;
                 document.getElementById('mD').innerText = d.overview;
-                document.getElementById('mRate').innerText = `⭐ ${d.vote_average.toFixed(1)} / 10`;
-                
                 if(type === 'tv') {
                     document.getElementById('tvPanel').classList.remove('hidden');
                     document.getElementById('selS').innerHTML = d.seasons.map(s => `<option value="${s.season_number}">${s.name}</option>`).join('');
-                    this.loadEps(d.seasons[0].episode_count);
+                    this.lE(d.seasons[0].episode_count);
                 } else document.getElementById('tvPanel').classList.add('hidden');
-
-                this.src(1); this.loadComments(id);
-                document.getElementById('pModal').style.display = 'flex';
-                document.body.style.overflow = 'hidden';
+                this.src(1);
+                document.getElementById('pModal').style.display='flex';
+                document.body.style.overflow='hidden';
             },
-
             src(s) {
-                const hosts = ['', 'https://vidsrc.me/embed/', 'https://vidsrc.xyz/embed/'];
-                document.getElementById('vFrame').src = `${hosts[s]}${cur.type}?tmdb=${cur.id}${cur.type==='tv'?'&season='+cur.s+'&episode='+cur.e:''}`;
+                const h = ['', 'https://vidsrc.me/embed/', 'https://vidsrc.xyz/embed/'];
+                document.getElementById('vFrame').src = `${h[s]}${cur.t}?tmdb=${cur.id}${cur.t==='tv'?'&season='+cur.s+'&episode='+cur.e:''}`;
             },
-
-            async postComment() {
-                const u = localStorage.getItem('hn_u') || "Anonim", t = document.getElementById('cInp').value;
-                if(!t) return;
-                const cms = JSON.parse(localStorage.getItem('c_'+cur.id)) || [];
-                cms.unshift({u, t, d: new Date().toLocaleTimeString()});
-                localStorage.setItem('c_'+cur.id, JSON.stringify(cms));
-                document.getElementById('cInp').value = ""; this.loadComments(cur.id);
-            },
-
-            loadComments(id) {
-                const cms = JSON.parse(localStorage.getItem('c_'+id)) || [];
-                document.getElementById('cList').innerHTML = cms.map(c => `<div style="background:#080808; padding:15px; border-radius:15px; margin-bottom:12px; border:1px solid #111;"><small style="color:var(--brand)">@${c.u}</small><p style="margin:5px 0; font-size:14px;">${c.t}</p></div>`).join('');
-            },
-
-            async sendVerifyCode() {
-                const m = document.getElementById('uMail').value, n = document.getElementById('uName').value;
-                if(!m || !n) return alert("Eksik bilgi!");
-                generatedCode = Math.floor(1000 + Math.random() * 9000).toString();
-                emailjs.send("service_5dtv2rj", "template_mkb1ucg", { to_name:n, email:m, passcode:generatedCode, verification_code:generatedCode, company_name:"HNFAK NEXUS" })
-                .then(() => { document.getElementById('authStep1').classList.add('hidden'); document.getElementById('authStep2').classList.remove('hidden'); });
-            },
-
-            verifyAndLogin() {
-                if(document.getElementById('vCodeInp').value === generatedCode) {
-                    localStorage.setItem('hn_u', document.getElementById('uName').value);
-                    location.reload();
-                }
-            },
-
-            egg() { eggCount++; if(eggCount === 10) { document.body.style.filter = 'grayscale(1) contrast(2)'; alert("Retro Mod Aktif!"); } },
-            loadMore() { if(mode==='trend'||mode==='cat') { page++; mode==='trend'?this.fetchTrend():this.fetchCat(currentCatId, ""); } },
-            guestLogin() { localStorage.setItem('hn_u', 'Guest'); location.reload(); },
-            authPanel() { document.getElementById('authModal').style.display = 'flex'; },
-            close() { document.getElementById('pModal').style.display = 'none'; document.getElementById('vFrame').src=''; document.body.style.overflow='auto'; },
-            loadEps(c) { let h = ""; for(let i=1; i<=c; i++) h += `<option value="${i}">${i}. Bölüm</option>`; document.getElementById('selE').innerHTML = h; },
-            epChange() { cur.s = document.getElementById('selS').value; cur.e = document.getElementById('selE').value; this.src(1); },
-            reset(m) { page=1; mode=m; document.getElementById('grid').innerHTML=''; this.fetchTrend(); }
+            lE(c) { let h = ""; for(let i=1; i<=c; i++) h += `<option value="${i}">${i}. Bölüm</option>`; document.getElementById('selE').innerHTML = h; },
+            epC() { cur.s = document.getElementById('selS').value; cur.e = document.getElementById('selE').value; this.src(1); },
+            pOn() { localStorage.setItem('hn_premium', 'true'); alert("HNFAK PREMIUM AKTİF."); location.reload(); },
+            clear() { localStorage.clear(); location.reload(); },
+            auth() { let n = prompt("KİMLİK?"); if(n) { localStorage.setItem('hn_u', n); location.reload(); } },
+            close() { document.getElementById('pModal').style.display='none'; document.getElementById('vFrame').src=''; document.body.style.overflow='auto'; },
+            reset(x) { p=1; m=x; document.getElementById('grid').innerHTML=''; this.fT(); },
+            lM() { if(m==='trend') { p++; this.fT(); } }
         };
 
         window.onload = () => app.start();
