@@ -3,223 +3,255 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title id="pTitle">HNFAK</title>
+    <title>HNFAK</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { 
-            --brand: #ff3c00; --gold: #ffd700; --bg: #000; 
-            --speed: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
+        :root { --brand: #ff3c00; --bg: #000000; --card: #0a0a0a; --glass: rgba(15, 15, 15, 0.85); --border: rgba(255,255,255,0.08); }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; outline: none; }
+        body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; }
+
+        /* AUTH & SCREENS */
+        #auth-screen { position: fixed; inset: 0; background: #000; z-index: 60000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .auth-card { background: var(--card); padding: 50px 30px; border-radius: 40px; width: 100%; max-width: 380px; text-align: center; border: 1px solid var(--border); }
+        .btn-main { width: 100%; background: var(--brand); color: #fff; padding: 18px; border-radius: 18px; border: none; font-weight: 800; cursor: pointer; transition: 0.3s; }
+
+        /* HEADER */
+        header { position: fixed; top: 0; width: 100%; z-index: 8000; padding: calc(env(safe-area-inset-top) + 15px) 20px; background: rgba(0,0,0,0.7); backdrop-filter: blur(25px); border-bottom: 1px solid var(--border); }
+        .nav-brand { font-size: 30px; font-weight: 900; letter-spacing: -2px; color: var(--brand); cursor: pointer; }
         
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; border: none; outline: none; -webkit-user-select: none; }
-        body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; -webkit-font-smoothing: antialiased; }
+        /* NEW SECTIONS */
+        .section-title { padding: 20px 20px 10px; font-size: 14px; font-weight: 800; color: var(--brand); letter-spacing: 1px; text-transform: uppercase; }
+        .history-row { display: flex; overflow-x: auto; gap: 12px; padding: 0 20px 20px; scrollbar-width: none; }
+        .history-card { flex: 0 0 140px; border-radius: 15px; overflow: hidden; position: relative; aspect-ratio: 16/9; background: #111; border: 1px solid var(--border); }
+        .history-card img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
 
-        /* --- CORE LOADER --- */
-        #loader { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: 0.8s var(--speed); }
-        .hnf-pulse { width: 50px; height: 50px; background: var(--brand); border-radius: 50%; animation: pulse 1s infinite alternate; }
-        @keyframes pulse { from { transform: scale(0.8); opacity: 0.5; } to { transform: scale(1.2); opacity: 1; } }
-
-        /* --- PROTECTED GATE (kadır01kadir) --- */
-        .gate-modal { position: fixed; inset: 0; background: #000; z-index: 9500; display: none; align-items: center; justify-content: center; }
-        .gate-box { width: 90%; max-width: 400px; text-align: center; padding: 60px 30px; background: #050505; border-radius: 30px; border: 1px solid #111; }
-        .gate-input { width: 100%; padding: 22px; background: #000; border: 1px solid #222; color: var(--brand); border-radius: 15px; text-align: center; font-size: 24px; letter-spacing: 10px; margin: 30px 0; font-weight: 950; }
-
-        /* --- MASTER HEADER --- */
-        header { position: fixed; top: 0; width: 100%; z-index: 3000; padding: env(safe-area-inset-top) 6% 25px; display: flex; justify-content: space-between; align-items: center; transition: 0.4s; background: linear-gradient(180deg, #000 0%, transparent 100%); }
-        header.scrolled { background: rgba(0,0,0,0.9); backdrop-filter: blur(30px); padding-top: 15px; border-bottom: 1px solid rgba(255,255,255,0.03); }
-        
-        /* --- SIDEBAR --- */
-        .sidebar { position: fixed; left: -350px; top: 0; width: 320px; height: 100%; background: #050505; z-index: 4000; transition: 0.5s var(--speed); padding: 130px 30px; border-right: 1px solid #111; }
-        .sidebar.active { left: 0; box-shadow: 20px 0 100px #000; }
-        .cat-item { padding: 22px; margin-bottom: 10px; border-radius: 15px; cursor: pointer; transition: 0.3s; background: #000; display: flex; align-items: center; gap: 15px; font-weight: 800; font-size: 14px; color: #444; }
-        .cat-item:hover { background: #0a0a0a; color: var(--brand); transform: translateX(10px); }
-
-        /* --- CONTENT GRID --- */
-        #content-wrapper { height: 100vh; overflow-y: scroll; scroll-behavior: smooth; }
-        .grid { display: grid; gap: 20px; padding: 20px; grid-template-columns: repeat(2, 1fr); margin-top: 100px; }
-        @media(min-width: 768px) { .grid { grid-template-columns: repeat(4, 1fr); gap: 30px; } }
+        /* GRID */
+        #content-wrapper { height: 100vh; overflow-y: auto; padding-top: 230px; padding-bottom: 120px; }
+        .grid { display: grid; gap: 18px; padding: 0 20px; grid-template-columns: repeat(2, 1fr); max-width: 1600px; margin: 0 auto; }
+        @media(min-width: 768px) { .grid { grid-template-columns: repeat(4, 1fr); } }
         @media(min-width: 1200px) { .grid { grid-template-columns: repeat(6, 1fr); } }
 
-        .card { background: #030303; border-radius: 25px; overflow: hidden; border: 1px solid #111; position: relative; aspect-ratio: 2/3; transition: 0.5s var(--speed); cursor: pointer; }
-        .card:hover { transform: translateY(-10px); border-color: var(--brand); box-shadow: 0 15px 30px rgba(255, 60, 0, 0.2); }
-        .card img { width: 100%; height: 100%; object-fit: cover; transition: 0.6s; pointer-events: none; }
-        .card:hover img { filter: brightness(0.4); transform: scale(1.05); }
+        .card { border-radius: 24px; overflow: hidden; aspect-ratio: 2/3; position: relative; cursor: pointer; background: #0a0a0a; transition: 0.5s cubic-bezier(0.2, 1, 0.2, 1); border: 1px solid transparent; }
+        .card:hover { transform: scale(1.05); border-color: var(--brand); }
+        .card img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* --- NAVIGATION --- */
-        .nav { position: fixed; bottom: 0; width: 100%; background: rgba(0,0,0,0.97); backdrop-filter: blur(30px); display: flex; justify-content: space-around; padding: 22px 15px calc(22px + env(safe-area-inset-bottom)); border-top: 1px solid #111; z-index: 3500; }
-        .nav-item { color: #222; font-size: 26px; text-align: center; flex: 1; transition: 0.3s; }
-        .nav-item.active { color: var(--brand); }
-        .nav-item span { display: block; font-size: 9px; margin-top: 8px; font-weight: 900; letter-spacing: 1px; }
+        /* PLAYER & MODALS */
+        .modal { position: fixed; inset: 0; background: #000; z-index: 20000; display: none; flex-direction: column; overflow-y: auto; }
+        .btn-action { background: #111; color: #fff; padding: 12px; border-radius: 15px; border: 1px solid var(--border); font-size: 13px; font-weight: 700; flex: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-action.active { background: var(--brand); border-color: var(--brand); }
 
-        /* --- UI ELEMENTS --- */
-        .btn-hnf { background: var(--brand); color: #fff; padding: 22px; border-radius: 18px; font-weight: 950; cursor: pointer; width: 100%; transition: 0.3s; letter-spacing: 2px; font-size: 13px; text-transform: uppercase; }
-        .sys-modal { position: fixed; inset: 0; background: #000; z-index: 9000; display: none; align-items: center; justify-content: center; }
-        .p-modal { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; overflow-y: auto; }
+        /* SIDEBAR */
+        #sidebar { position: fixed; left: -300px; top: 0; width: 300px; height: 100%; background: #050505; z-index: 50000; transition: 0.5s; padding: 80px 30px; }
+        #sidebar.active { left: 0; }
+        .side-link { padding: 16px; border-radius: 16px; cursor: pointer; color: #666; font-weight: 700; display: flex; align-items: center; gap: 15px; margin-bottom: 5px; }
+        
+        /* FOOTER NAV */
+        .nav-bar { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 420px; background: rgba(15,15,15,0.8); backdrop-filter: blur(30px); border-radius: 28px; padding: 18px; display: flex; justify-content: space-around; z-index: 9000; border: 1px solid var(--border); }
+        .nav-icon { color: #444; font-size: 24px; cursor: pointer; transition: 0.3s; }
+        .nav-icon.active { color: var(--brand); }
+
         .hidden { display: none; }
+        #failMsg { display: none; background: var(--brand); text-align: center; font-size: 10px; font-weight: 800; padding: 6px; }
+        
+        /* SURPRISE BUTTON */
+        .magic-btn { position: fixed; right: 20px; bottom: 120px; width: 50px; height: 50px; background: var(--brand); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 8500; box-shadow: 0 10px 20px rgba(255,60,0,0.4); animation: pulse 2s infinite; cursor: pointer; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
 
-    <div id="loader"><div class="hnf-pulse"></div></div>
-
-    <div id="gateUI" class="gate-modal">
-        <div class="gate-box">
-            <h2 style="letter-spacing: 5px; font-size: 18px; font-weight: 950;">HNFAK ACCESS</h2>
-            <input type="password" id="adminKey" class="gate-input" placeholder="••••">
-            <button class="btn-hnf" onclick="app.unlock()">AUTHORIZE</button>
-            <p onclick="app.closeGate()" style="margin-top:25px; opacity:0.2; font-size:10px; cursor:pointer; font-weight: 950;">TERMINATE</p>
+    <div id="auth-screen">
+        <div class="auth-card">
+            <h1 class="nav-brand" style="font-size: 50px; margin-bottom: 30px;">HNFAK</h1>
+            <input type="text" id="eInp" style="width:100%; background:#111; border:1px solid var(--border); padding:18px; border-radius:18px; color:#fff; margin-bottom:12px;" placeholder="Kullanıcı Adı">
+            <button class="btn-main" onclick="auth.go()">GİRİŞ YAP</button>
+            <button class="btn-main" style="background:transparent; color:#444; margin-top:10px;" onclick="auth.guest()">Misafir Girişi</button>
         </div>
     </div>
 
-    <div id="adminUI" class="sys-modal">
-        <div class="gate-box" style="max-width: 500px;">
-            <h2 style="color:var(--brand); margin-bottom:30px; letter-spacing: 10px;">HNFAK ADMIN</h2>
-            <div style="text-align:left; font-size:12px; color:#444; background:#000; padding:30px; border-radius:20px; margin-bottom:30px; line-height:2.2; border: 1px solid #111; font-family: monospace;">
-                <p>> HNFAK_CORE: STABLE</p>
-                <p>> KEY: kadır01kadir (SECURE)</p>
-                <p>> EMAILJS: ACTIVE</p>
-            </div>
-            <button class="btn-hnf" onclick="app.clear()" style="background:#111; color:#f00; border: 1px solid #300; margin-bottom: 10px;">PURGE STORAGE</button>
-            <button class="btn-hnf" onclick="app.adminOff()" style="background:#050505;">EXIT CORE</button>
-        </div>
+    <div id="sidebar">
+        <h2 style="color:var(--brand); margin-bottom:30px; font-weight:900;">KEŞFET</h2>
+        <div class="side-link" onclick="app.fG('top_rated')"><i class="fas fa-star"></i> En İyiler (IMDb)</div>
+        <div class="side-link" onclick="app.fT('movie')"><i class="fas fa-film"></i> Filmler</div>
+        <div class="side-link" onclick="app.fT('tv')"><i class="fas fa-tv"></i> Diziler</div>
+        <div class="side-link" onclick="app.fG(16)"><i class="fas fa-child"></i> Animasyon</div>
+        <div class="side-link" onclick="app.fG(27)"><i class="fas fa-ghost"></i> Korku</div>
+        <div class="side-link" onclick="auth.off()" style="margin-top:40px; color:var(--brand)"><i class="fas fa-power-off"></i> Çıkış</div>
     </div>
 
-    <header id="h">
-        <div onclick="app.menu()" style="cursor:pointer; font-size: 26px;"><i class="fas fa-bars-staggered"></i></div>
-        <div id="mainLogo" style="font-size: 28px; font-weight: 950; letter-spacing: -2px; cursor:pointer;" onmousedown="app.atS()" onmouseup="app.atE()">HNFAK</div>
-        <div id="uStatus" onclick="app.auth()" style="background:#111; padding:10px 22px; border-radius:12px; font-size:11px; font-weight:950; border:1px solid #222; cursor:pointer;">IDENTITY</div>
+    <header>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <i class="fas fa-bars-staggered fa-lg" onclick="app.menu()"></i>
+            <span class="nav-brand" onclick="app.reset()">HNFAK</span>
+            <i class="fas fa-user-circle fa-xl" onclick="app.openProfile()" style="color:var(--brand); cursor:pointer;"></i>
+        </div>
+        <div style="background: rgba(255,255,255,0.05); border-radius: 20px; padding: 12px 20px; display: flex; align-items: center; margin-top: 15px; border: 1px solid var(--border);">
+            <i class="fas fa-search" style="opacity:0.3;"></i>
+            <input type="text" style="background:transparent; border:none; color:#fff; width:100%; margin-left:12px;" placeholder="Ara..." oninput="app.search(this.value)">
+        </div>
     </header>
 
-    <div class="sidebar" id="sidebar">
-        <div id="catList"></div>
-        <div onclick="app.pOn()" id="sideP" style="color:var(--gold); margin-top:50px; font-weight:950; cursor:pointer; font-size: 15px;"><i class="fas fa-star"></i> HNFAK PREMIUM</div>
-    </div>
+    <div class="magic-btn" onclick="app.surprise()" title="Rastgele Film Getir"><i class="fas fa-magic"></i></div>
 
     <div id="content-wrapper">
-        <main id="grid" class="grid"></main>
+        <div id="history-sec" class="hidden">
+            <div class="section-title">İzlemeye Devam Et</div>
+            <div id="history-list" class="history-row"></div>
+        </div>
+        <div class="section-title">Sizin İçin Seçilenler</div>
+        <div id="grid" class="grid"></div>
     </div>
 
-    <div class="nav">
-        <div class="nav-item active" onclick="app.reset('trend')"><i class="fas fa-home"></i><span>HNFAK</span></div>
-        <div class="nav-item" onclick="app.favs()"><i class="fas fa-bookmark"></i><span>KAYITLI</span></div>
-        <div class="nav-item" onclick="app.pOn()"><i class="fas fa-crown"></i><span>PREMIUM</span></div>
-        <div class="nav-item" onclick="app.auth()"><i class="fas fa-user-shield"></i><span>PROFİL</span></div>
+    <div id="pModal" class="modal">
+        <div style="position:sticky; top:0; z-index:100; background:#000;">
+            <i class="fas fa-chevron-down" onclick="app.close()" style="position:absolute; top:20px; left:20px; z-index:10; background:rgba(0,0,0,0.6); padding:12px; border-radius:50%; cursor:pointer;"></i>
+            <iframe id="vFrame" src="" style="width:100%; aspect-ratio:16/9; border:none;" allowfullscreen></iframe>
+            <div id="failMsg">BAĞLANTI SORUNU: YEDEK SUNUCU AKTİF...</div>
+        </div>
+        <div class="modal-body">
+            <h1 id="mT" style="font-size:28px; font-weight:900; margin-bottom:10px;"></h1>
+            <div style="display:flex; gap:10px; margin-bottom:20px;">
+                <button id="mFav" class="btn-action"><i class="fas fa-heart"></i> Favori</button>
+                <button id="mTrailer" class="btn-action" style="background:#cc0000; border-color:#cc0000;"><i class="fab fa-youtube"></i> Fragman</button>
+            </div>
+            <div style="display:flex; gap:10px; margin-bottom:25px;">
+                <button class="btn-main" style="flex:1;" onclick="app.src(1)">SERVER 1</button>
+                <button class="btn-main" style="flex:1; background:#111; border:1px solid #222;" onclick="app.src(2)">SERVER 2</button>
+            </div>
+            <div id="tvPanel" class="hidden" style="display:flex; gap:10px; margin-bottom:25px;">
+                <select id="selS" onchange="app.epC()" style="flex:1; padding:16px; background:#111; color:#fff; border:1px solid var(--border); border-radius:18px;"></select>
+                <select id="selE" onchange="app.epC()" style="flex:1; padding:16px; background:#111; color:#fff; border:1px solid var(--border); border-radius:18px;"></select>
+            </div>
+            <p id="mD" style="opacity:0.5; line-height:1.8; margin-bottom:30px;"></p>
+            <div id="castList" style="display:flex; overflow-x:auto; gap:15px; scrollbar-width:none; padding-bottom:10px;"></div>
+            <div id="disqus_thread" style="margin-top:40px;"></div>
+        </div>
     </div>
 
-    <div id="pModal" class="p-modal">
-        <div style="width:100%; aspect-ratio:16/9; background:#000; position:sticky; top:0; z-index:100;">
-            <i class="fas fa-times" onclick="app.close()" style="position:absolute; top:20px; left:20px; z-index:110; font-size:25px; cursor:pointer; background:rgba(0,0,0,0.5); padding:10px; border-radius:50%;"></i>
-            <iframe id="vFrame" src="" style="width:100%; height:100%; border:none;" allowfullscreen></iframe>
-        </div>
-        <div style="padding:40px 20px; max-width: 1000px; margin: 0 auto; width: 100%;">
-            <h1 id="mT" style="font-size: 36px; margin-bottom: 25px; font-weight: 950;"></h1>
-            <div id="tvPanel" class="hidden" style="display:flex; gap:15px; margin: 35px 0;">
-                <select id="selS" onchange="app.epC()" style="flex:1; padding:18px; border-radius:12px; background:#111; color:#fff; border:1px solid #222; font-weight:900;"></select>
-                <select id="selE" onchange="app.epC()" style="flex:1; padding:18px; border-radius:12px; background:#111; color:#fff; border:1px solid #222; font-weight:900;"></select>
-            </div>
-            <div style="display:flex; gap:15px; margin-bottom:50px;">
-                <button onclick="app.src(1)" class="btn-hnf">SUNUCU 1</button>
-                <button onclick="app.src(2)" class="btn-hnf" style="background:#111; color: #444;">SUNUCU 2</button>
-            </div>
-            <p id="mD" style="opacity:0.3; line-height:2; font-size: 16px;"></p>
-        </div>
-    </div>
+    <nav class="nav-bar">
+        <div class="nav-icon active" onclick="app.reset()"><i class="fas fa-house"></i></div>
+        <div class="nav-icon" onclick="app.fT('movie')"><i class="fas fa-play"></i></div>
+        <div class="nav-icon" onclick="app.fT('tv')"><i class="fas fa-tv"></i></div>
+        <div class="nav-icon" onclick="app.openProfile()"><i class="fas fa-user"></i></div>
+    </nav>
 
     <script>
         const K = 'c4c468367090c8c779814353144fe7f7', IMG = 'https://image.tmdb.org/t/p/w500';
-        emailjs.init("xzqFieS_v8a0G8B5B");
+        let page = 1, mode = 'trend', loading = false, cur = {id:'', t:'', s:1, e:1};
+        let favs = JSON.parse(localStorage.getItem('hnfak_favs')) || [];
+        let hist = JSON.parse(localStorage.getItem('hnfak_hist')) || [];
+        let user = JSON.parse(localStorage.getItem('hnfak_user')) || null;
 
-        let p = 1, m = 'trend', aT;
-        let cur = {id:'', t:'', s:1, e:1};
+        const auth = {
+            go() {
+                const u = document.getElementById('eInp').value; if(!u) return;
+                user = { name: u }; localStorage.setItem('hnfak_user', JSON.stringify(user));
+                this.done();
+            },
+            guest() { user = { name: 'Misafir' }; this.done(); },
+            done() { document.getElementById('auth-screen').style.display='none'; app.start(); },
+            off() { localStorage.removeItem('hnfak_user'); location.reload(); }
+        };
 
         const app = {
-            start() {
-                setTimeout(() => { document.getElementById('loader').style.opacity = '0'; setTimeout(()=> document.getElementById('loader').style.display='none', 800); }, 1000);
-                this.fT(); this.rC(); this.cU();
-                const wrap = document.getElementById('content-wrapper');
-                wrap.onscroll = () => {
-                    const h = document.getElementById('h');
-                    if(wrap.scrollTop > 50) h.classList.add('scrolled'); else h.classList.remove('scrolled');
-                    if((wrap.innerHeight + wrap.scrollTop) >= wrap.scrollHeight - 2000) this.lM();
-                };
+            start() { if(!user) return; this.fT('trend'); this.loadHist(); },
+            menu() { const s = document.getElementById('sidebar'); s.classList.toggle('active'); },
+            async fT(type, more = false) {
+                if(!more) { page = 1; document.getElementById('grid').innerHTML = ''; mode = type; }
+                const r = await fetch(`https://api.themoviedb.org/3/${type==='trend'?'trending/all/day':'discover/'+type}?api_key=${K}&language=tr-TR&page=${page}`);
+                const d = await r.json(); this.render(d.results, 'grid');
             },
-            atS() { aT = setTimeout(() => { document.getElementById('gateUI').style.display='flex'; }, 5000); },
-            atE() { clearTimeout(aT); },
-            unlock() {
-                if(document.getElementById('adminKey').value === "kadır01kadir") {
-                    document.getElementById('gateUI').style.display='none';
-                    document.getElementById('adminUI').style.display='flex';
-                } else { alert("HATA"); this.closeGate(); }
+            async fG(id) {
+                document.getElementById('grid').innerHTML='';
+                let url = `https://api.themoviedb.org/3/discover/movie?api_key=${K}&language=tr-TR`;
+                if(id === 'top_rated') url = `https://api.themoviedb.org/3/movie/top_rated?api_key=${K}&language=tr-TR`;
+                else url += `&with_genres=${id}`;
+                const r = await fetch(url); const d = await r.json(); this.render(d.results, 'grid');
             },
-            closeGate() { document.getElementById('gateUI').style.display='none'; document.getElementById('adminKey').value=''; },
-            adminOff() { document.getElementById('adminUI').style.display='none'; },
-            menu() { document.getElementById('sidebar').classList.toggle('active'); },
-            cU() { 
-                const u = localStorage.getItem('hn_u'), isP = localStorage.getItem('hn_premium');
-                const logo = document.getElementById('mainLogo');
-                const title = document.getElementById('pTitle');
-                if(isP) {
-                    logo.innerText = "HNFAK PREMIUM";
-                    title.innerText = "HNFAK PREMIUM";
-                    document.getElementById('sideP').style.display = 'none';
-                } else {
-                    logo.innerText = "HNFAK";
-                    title.innerText = "HNFAK";
-                }
-                if(u) document.getElementById('uStatus').innerHTML = u.toUpperCase() + (isP ? ' ★' : '');
-            },
-            rC() {
-                const cats = {28:'Aksiyon', 35:'Komedi', 27:'Korku', 878:'Bilim Kurgu', 18:'Dram', 16:'Animasyon'};
-                document.getElementById('catList').innerHTML = Object.entries(cats).map(([id, n]) => `<div class="cat-item" onclick="app.fC(${id})">${n}</div>`).join('');
-            },
-            async fT() {
-                const r = await fetch(`https://api.themoviedb.org/3/trending/all/day?api_key=${K}&language=tr-TR&page=${p}`);
-                const d = await r.json(); this.render(d.results);
-            },
-            async fC(id) {
-                m='cat'; p=1; document.getElementById('grid').innerHTML='';
-                const r = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${K}&with_genres=${id}&language=tr-TR&page=${p}`);
-                const d = await r.json(); this.render(d.results); this.menu();
-            },
-            render(list) {
+            render(list, target) {
+                const container = document.getElementById(target);
                 list.filter(x => x.poster_path).forEach(x => {
-                    const d = document.createElement('div');
-                    d.className = 'card';
-                    d.innerHTML = `<img src="${IMG}${x.poster_path}" loading="lazy" onclick="app.open('${x.id}','${x.title?'movie':'tv'}')">`;
-                    document.getElementById('grid').appendChild(d);
+                    const isFav = favs.some(f => f.id == x.id);
+                    const d = document.createElement('div'); d.className = 'card';
+                    d.innerHTML = `<img src="${IMG}${x.poster_path}" onclick="app.open('${x.id}','${x.title?'movie':'tv'}')">`;
+                    container.appendChild(d);
                 });
             },
             async open(id, type) {
                 cur = {id, t:type, s:1, e:1};
-                const r = await fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=${K}&language=tr-TR`);
-                const d = await r.json();
+                const [mR, cR, vR] = await Promise.all([
+                    fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=${K}&language=tr-TR`),
+                    fetch(`https://api.themoviedb.org/3/${type}/${id}/credits?api_key=${K}&language=tr-TR`),
+                    fetch(`https://api.themoviedb.org/3/${type}/${id}/videos?api_key=${K}`)
+                ]);
+                const d = await mR.json(), c = await cR.json(), v = await vR.json();
+                
                 document.getElementById('mT').innerText = d.title || d.name;
                 document.getElementById('mD').innerText = d.overview;
+                document.getElementById('mFav').onclick = () => this.toggleFav({id, p:d.poster_path, t:type});
+                document.getElementById('mFav').classList.toggle('active', favs.some(f=>f.id==id));
+                
+                const trailer = v.results.find(x => x.type === 'Trailer');
+                document.getElementById('mTrailer').onclick = () => { if(trailer) window.open(`https://youtube.com/watch?v=${trailer.key}`); };
+
+                document.getElementById('castList').innerHTML = c.cast.slice(0,10).map(x => `<div style="text-align:center; flex:0 0 80px;"><img src="${x.profile_path?IMG+x.profile_path:'https://via.placeholder.com/80'}" style="width:70px; height:70px; border-radius:50%; object-fit:cover;"><p style="font-size:9px; margin-top:5px;">${x.name}</p></div>`).join('');
+                
                 if(type === 'tv') {
                     document.getElementById('tvPanel').classList.remove('hidden');
                     document.getElementById('selS').innerHTML = d.seasons.map(s => `<option value="${s.season_number}">${s.name}</option>`).join('');
                     this.lE(d.seasons[0].episode_count);
                 } else document.getElementById('tvPanel').classList.add('hidden');
+
                 this.src(1);
+                this.saveHist(id, d.backdrop_path || d.poster_path, type);
                 document.getElementById('pModal').style.display='flex';
-                document.body.style.overflow='hidden';
+            },
+            saveHist(id, img, type) {
+                hist = hist.filter(x => x.id !== id);
+                hist.unshift({id, img, type});
+                if(hist.length > 10) hist.pop();
+                localStorage.setItem('hnfak_hist', JSON.stringify(hist));
+                this.loadHist();
+            },
+            loadHist() {
+                const sec = document.getElementById('history-sec');
+                const list = document.getElementById('history-list');
+                if(hist.length > 0) {
+                    sec.classList.remove('hidden');
+                    list.innerHTML = hist.map(x => `<div class="history-card" onclick="app.open('${x.id}','${x.type}')"><img src="${IMG}${x.img}"><div style="position:absolute; bottom:5px; left:5px; font-size:10px; font-weight:800; color:var(--brand);">İZLENİYOR</div></div>`).join('');
+                }
+            },
+            async surprise() {
+                const r = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${K}&page=${Math.floor(Math.random()*10)+1}`);
+                const d = await r.json(); const item = d.results[Math.floor(Math.random()*d.results.length)];
+                this.open(item.id, 'movie');
+            },
+            toggleFav(obj) {
+                const idx = favs.findIndex(f => f.id == obj.id);
+                if(idx > -1) favs.splice(idx, 1); else favs.push(obj);
+                localStorage.setItem('hnfak_favs', JSON.stringify(favs));
+                document.getElementById('mFav').classList.toggle('active');
             },
             src(s) {
-                const h = ['', 'https://vidsrc.me/embed/', 'https://vidsrc.xyz/embed/'];
-                document.getElementById('vFrame').src = `${h[s]}${cur.t}?tmdb=${cur.id}${cur.t==='tv'?'&season='+cur.s+'&episode='+cur.e:''}`;
+                const h = {1:'https://vidsrc.xyz/embed/', 2:'https://vidsrc.me/embed/'};
+                let url = `${h[s]}${cur.t}/${cur.id}`;
+                if(cur.t === 'tv') url += `/${cur.s}/${cur.e}`;
+                document.getElementById('vFrame').src = url;
             },
             lE(c) { let h = ""; for(let i=1; i<=c; i++) h += `<option value="${i}">${i}. Bölüm</option>`; document.getElementById('selE').innerHTML = h; },
             epC() { cur.s = document.getElementById('selS').value; cur.e = document.getElementById('selE').value; this.src(1); },
-            pOn() { localStorage.setItem('hn_premium', 'true'); alert("HNFAK PREMIUM AKTİF."); location.reload(); },
-            clear() { localStorage.clear(); location.reload(); },
-            auth() { let n = prompt("KİMLİK?"); if(n) { localStorage.setItem('hn_u', n); location.reload(); } },
-            close() { document.getElementById('pModal').style.display='none'; document.getElementById('vFrame').src=''; document.body.style.overflow='auto'; },
-            reset(x) { p=1; m=x; document.getElementById('grid').innerHTML=''; this.fT(); },
-            lM() { if(m==='trend') { p++; this.fT(); } }
+            close() { document.getElementById('pModal').style.display='none'; document.getElementById('vFrame').src=''; },
+            reset() { page=1; this.fT('trend'); },
+            search(q) {
+                if(!q) return this.reset();
+                setTimeout(async () => {
+                    const r = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${K}&language=tr-TR&query=${q}`);
+                    const d = await r.json(); document.getElementById('grid').innerHTML = ''; this.render(d.results, 'grid');
+                }, 500);
+            }
         };
-
-        window.onload = () => app.start();
+        if(user) auth.done();
     </script>
 </body>
 </html>
