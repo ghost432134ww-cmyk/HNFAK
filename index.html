@@ -3,65 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>HNFAK V12 | STABLE INFINITY</title>
+    <title>HNFAK V14 | SETTINGS ACTIVE</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root { --brand: #ff3c00; --bg: #030303; --surface: #0f0f0f; --card: #1a1a1a; --text: #ffffff; --text-dim: #a0a0a0; --border: rgba(255,255,255,0.06); --glow: 0 0 25px rgba(255, 60, 0, 0.4); --accent-gradient: linear-gradient(135deg, #ff3c00, #ff8000); }
-        body.theme-blue { --brand: #007bff; --accent-gradient: linear-gradient(135deg, #007bff, #00d4ff); }
-        body.theme-red { --brand: #d00000; --accent-gradient: linear-gradient(135deg, #d00000, #ff4d4d); }
+        body.theme-blue { --brand: #007bff; --accent-gradient: linear-gradient(135deg, #007bff, #00d4ff); --glow: 0 0 25px rgba(0, 123, 255, 0.4); }
+        body.theme-red { --brand: #d00000; --accent-gradient: linear-gradient(135deg, #d00000, #ff4d4d); --glow: 0 0 25px rgba(208, 0, 0, 0.4); }
         
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; height: 100vh; }
 
+        /* Splash & Auth */
         #splash { position: fixed; inset: 0; background: #000; z-index: 200000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .splash-logo { font-size: 60px; font-weight: 900; color: var(--brand); text-shadow: var(--glow); }
-
         #auth-screen { position: fixed; inset: 0; background: radial-gradient(circle at top right, #1a0a05, #000); z-index: 150000; display: flex; align-items: center; justify-content: center; padding: 20px; }
         .auth-box { background: rgba(15, 15, 15, 0.8); backdrop-filter: blur(30px); padding: 40px; border-radius: 35px; width: 100%; max-width: 420px; border: 1px solid var(--border); text-align: center; }
 
+        /* Header */
         header { position: fixed; top: 0; width: 100%; height: 80px; z-index: 10000; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; background: linear-gradient(180deg, rgba(0,0,0,0.95) 0%, transparent 100%); transition: 0.4s; }
         header.scrolled { background: rgba(3,3,3,0.98); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border); }
 
-        #search-overlay { position: fixed; top: 0; width: 100%; height: 80px; background: #000; z-index: 11000; display: none; align-items: center; padding: 0 20px; border-bottom: 1px solid var(--border); }
-        #search-overlay input { flex: 1; background: transparent; border: none; color: #fff; font-size: 18px; padding: 10px; }
-
+        /* Sidebar */
         #sidebar { position: fixed; left: -350px; top: 0; width: 320px; height: 100%; background: #080808; z-index: 110000; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); padding: 80px 20px 30px; border-right: 1px solid var(--border); overflow-y: auto; }
         #sidebar.open { left: 0; }
         .side-item { padding: 12px 15px; border-radius: 12px; color: var(--text-dim); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.2s; font-size: 14px; }
         .side-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
         .side-item i { color: var(--brand); width: 22px; text-align: center; font-size: 18px; }
-        .side-sep { height: 1px; background: var(--border); margin: 15px 0; }
 
+        /* App Layout */
         #app-wrapper { display: flex; flex-direction: column; height: 100vh; opacity: 0; transition: 1s; }
         main { flex: 1; overflow-y: auto; padding-bottom: 120px; scroll-behavior: smooth; }
         .section { margin-top: 30px; }
         .section-title { font-size: 18px; font-weight: 900; padding: 0 25px; margin-bottom: 15px; border-left: 4px solid var(--brand); margin-left: 25px; padding-left: 10px; }
         
+        /* Cards */
         .h-scroll { display: flex; overflow-x: auto; gap: 15px; padding: 0 25px 20px; scrollbar-width: none; }
         .h-scroll::-webkit-scrollbar { display: none; }
-
         .card { flex: 0 0 150px; aspect-ratio: 2/3; border-radius: 15px; overflow: hidden; position: relative; cursor: pointer; transition: 0.3s; background: var(--card); border: 1px solid transparent; }
         .card:hover { transform: scale(1.05); border: 1px solid var(--brand); box-shadow: var(--glow); }
         .card img { width: 100%; height: 100%; object-fit: cover; }
         .card-info { position: absolute; bottom: 0; width: 100%; padding: 25px 10px 10px; background: linear-gradient(0deg, #000 0%, transparent 100%); font-size: 11px; text-align: center; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
+        /* Player & Cast & Comments */
         .modal { position: fixed; inset: 0; background: #000; z-index: 120000; display: none; flex-direction: column; overflow-y: auto; }
-        
-        .magic-btn { position: fixed; right: 20px; bottom: 120px; width: 55px; height: 55px; background: var(--accent-gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: var(--glow); z-index: 9999; cursor: pointer; border: none; font-size: 20px; }
+        .cast-card { flex: 0 0 80px; text-align: center; font-size: 10px; color: var(--text-dim); }
+        .cast-card img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-bottom: 5px; border: 1px solid var(--border); }
+        .comment-box { background: var(--surface); border-radius: 15px; padding: 15px; margin-bottom: 10px; border: 1px solid var(--border); }
 
+        /* Settings Panel Overlay */
+        #settings-panel { position: fixed; inset: 0; background: #000; z-index: 130000; display: none; flex-direction: column; padding: 40px 25px; }
+
+        /* Nav & Buttons */
         #bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; height: 70px; background: rgba(15,15,15,0.95); backdrop-filter: blur(20px); border-radius: 25px; border: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 10000; }
-        .nav-link { color: var(--text-dim); font-size: 22px; cursor: pointer; transition: 0.3s; }
-        .nav-link.active { color: var(--brand); transform: translateY(-3px); }
-
+        .nav-link { color: var(--text-dim); font-size: 22px; cursor: pointer; }
+        .nav-link.active { color: var(--brand); }
         .btn { padding: 15px; border-radius: 12px; border: none; font-weight: 800; cursor: pointer; transition: 0.3s; }
         .btn-main { background: var(--accent-gradient); color: #fff; }
         .hidden { display: none !important; }
-
-        #loader { text-align: center; padding: 20px; color: var(--brand); font-size: 24px; display: none; }
+        #loader { text-align: center; padding: 20px; color: var(--brand); display: none; }
     </style>
 </head>
-<body class="theme-default">
+<body>
 
     <div id="splash">
         <div class="splash-logo">HNFAK</div>
@@ -77,20 +80,18 @@
             <input type="password" id="lPass" placeholder="Şifre" style="width:100%; padding:15px; background:#000; border:1px solid #222; color:#fff; border-radius:10px; margin-bottom:20px;">
             <button class="btn btn-main" style="width:100%;" onclick="Auth.login()">SİSTEME GİR</button>
             <button class="btn" style="width:100%; background:transparent; color:#888; margin-top:10px;" onclick="Auth.guest()">Misafir Olarak Devam Et</button>
-            <p onclick="Auth.toggle()" style="margin-top:20px; color:#555; cursor:pointer;">Hesabın yok mu? <b>Kayıt Ol</b></p>
         </div>
     </div>
 
     <div id="app-wrapper">
         <header id="main-header">
             <i class="fas fa-bars-staggered fa-lg" onclick="UI.sidebar(true)"></i>
-            <div style="font-size:24px; font-weight:900; color:var(--brand); letter-spacing:-1px;" onclick="location.reload()">HNFAK</div>
+            <div style="font-size:24px; font-weight:900; color:var(--brand); letter-spacing:-1px;">HNFAK</div>
             <i class="fas fa-search fa-lg" onclick="UI.search(true)"></i>
         </header>
 
-        <div id="search-overlay">
-            <i class="fas fa-search" style="color:var(--brand);"></i>
-            <input type="text" id="searchInput" placeholder="Film veya dizi ara..." oninput="App.search(this.value)">
+        <div id="search-overlay" style="position:fixed; top:0; width:100%; height:80px; background:#000; z-index:11000; display:none; align-items:center; padding:0 20px;">
+            <input type="text" id="searchInput" placeholder="Film veya dizi ara..." oninput="App.search(this.value)" style="flex:1; background:transparent; border:none; color:#fff; font-size:18px;">
             <i class="fas fa-times" onclick="UI.search(false)"></i>
         </div>
 
@@ -98,20 +99,35 @@
             <div style="text-align:center; margin-bottom:30px;"><h3 id="sideName">Kullanıcı</h3></div>
             <div class="side-item" onclick="App.filterLang('tr')"><i class="fas fa-microphone"></i> Türkçe Dublaj</div>
             <div class="side-item" onclick="App.filterLang('en')"><i class="fas fa-closed-captioning"></i> Türkçe Altyazı</div>
-            <div class="side-sep"></div>
+            <div class="side-sep" style="height:1px; background:var(--border); margin:15px 0;"></div>
             <div class="side-item" onclick="App.filterGenre(28)"><i class="fas fa-bolt"></i> Aksiyon</div>
             <div class="side-item" onclick="App.filterGenre(16)"><i class="fas fa-dragon"></i> Animasyon</div>
             <div class="side-item" onclick="App.filterGenre(35)"><i class="fas fa-laugh"></i> Komedi</div>
-            <div class="side-item" onclick="App.filterGenre(18)"><i class="fas fa-clapperboard"></i> Dram</div>
             <div class="side-item" onclick="App.filterGenre(27)"><i class="fas fa-ghost"></i> Korku</div>
-            <div class="side-item" onclick="App.filterGenre(9648)"><i class="fas fa-magnifying-glass"></i> Gizem</div>
             <div class="side-item" onclick="App.filterGenre(878)"><i class="fas fa-rocket"></i> Bilim Kurgu</div>
-            <div class="side-item" onclick="App.filterGenre(99)"><i class="fas fa-video"></i> Belgesel</div>
-            <div class="side-item" onclick="App.filterGenre(10752)"><i class="fas fa-gun"></i> Savaş</div>
-            <div class="side-sep"></div>
-            <div class="side-item" onclick="UI.changeTheme('blue')"><i class="fas fa-palette"></i> Mavi Tema</div>
-            <div class="side-item" onclick="UI.changeTheme('red')"><i class="fas fa-palette"></i> Kırmızı Tema</div>
+            <div class="side-sep" style="height:1px; background:var(--border); margin:15px 0;"></div>
+            <div class="side-item" onclick="UI.settings(true)"><i class="fas fa-cog"></i> Ayarlar</div>
             <div class="side-item" onclick="Auth.logout()" style="color:var(--brand);"><i class="fas fa-power-off"></i> Çıkış</div>
+        </div>
+
+        <div id="settings-panel">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;">
+                <h2 style="font-weight:900;">AYARLAR</h2>
+                <i class="fas fa-times fa-lg" onclick="UI.settings(false)"></i>
+            </div>
+            <div style="margin-bottom:30px;">
+                <p style="color:var(--text-dim); margin-bottom:15px; font-size:14px;">TEMA SEÇİMİ</p>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn" style="background:#ff3c00; flex:1;" onclick="UI.changeTheme('default')">Turuncu</button>
+                    <button class="btn" style="background:#007bff; flex:1;" onclick="UI.changeTheme('blue')">Mavi</button>
+                    <button class="btn" style="background:#d00000; flex:1;" onclick="UI.changeTheme('red')">Kırmızı</button>
+                </div>
+            </div>
+            <div class="comment-box">
+                <p style="color:var(--brand); font-weight:800;">PROFİL</p>
+                <p id="profileInfo" style="font-size:14px; margin-top:5px;"></p>
+            </div>
+            <p style="text-align:center; color:#333; font-size:10px; margin-top:auto;">HNFAK V14 | STABLE ENGINE</p>
         </div>
 
         <main id="main-scroll" onscroll="UI.onScroll(this)">
@@ -120,7 +136,7 @@
                 <div style="position:absolute; inset:0; background:linear-gradient(0deg, var(--bg), transparent);"></div>
                 <div style="position:absolute; bottom:20px; left:25px;">
                     <h1 id="hero-title" style="font-size:28px; font-weight:900;">Yükleniyor...</h1>
-                    <button class="btn btn-main" style="margin-top:10px;" id="hero-btn">İzle</button>
+                    <button class="btn btn-main" style="margin-top:10px;" id="hero-btn">Şimdi İzle</button>
                 </div>
             </div>
 
@@ -130,34 +146,42 @@
             </div>
 
             <div class="section">
-                <div class="section-title">Popüler İçerikler</div>
+                <div class="section-title">Popüler</div>
                 <div id="grid-list" style="display:grid; grid-template-columns:repeat(2,1fr); gap:15px; padding:20px;"></div>
                 <div id="loader"><i class="fas fa-circle-notch fa-spin"></i></div>
             </div>
         </main>
 
-        <button class="magic-btn" onclick="App.shuffle()"><i class="fas fa-magic"></i></button>
-
         <nav id="bottom-nav">
             <div class="nav-link active" onclick="location.reload()"><i class="fas fa-home"></i></div>
             <div class="nav-link" onclick="UI.sidebar(true)"><i class="fas fa-list"></i></div>
-            <div class="nav-link" onclick="UI.openAbout()"><i class="fas fa-info-circle"></i></div>
+            <div class="nav-link" onclick="UI.settings(true)"><i class="fas fa-cog"></i></div>
         </nav>
     </div>
 
     <div id="player-modal" class="modal">
-        <div style="width:100%; aspect-ratio:16/9; position:relative; background:#000;">
-            <i class="fas fa-chevron-down" style="position:absolute; top:20px; left:20px; z-index:100; background:rgba(0,0,0,0.5); padding:12px; border-radius:50%; cursor:pointer;" onclick="Player.close()"></i>
+        <div style="width:100%; aspect-ratio:16/9; position:sticky; top:0; z-index:100; background:#000;">
+            <i class="fas fa-chevron-down" style="position:absolute; top:20px; left:20px; z-index:110; background:rgba(0,0,0,0.5); padding:12px; border-radius:50%;" onclick="Player.close()"></i>
             <iframe id="main-frame" src="" style="width:100%; height:100%; border:none;" allowfullscreen></iframe>
         </div>
-        <div style="padding:25px;">
-            <h2 id="mTitle">Başlık</h2>
+        <div style="padding:20px;">
+            <h2 id="mTitle" style="font-size:22px; font-weight:900;">Başlık</h2>
             <div id="tv-controls" class="hidden" style="display:flex; gap:10px; margin-top:15px;">
                 <select id="selS" onchange="Player.changeEp()" style="flex:1; padding:12px; background:#111; color:#fff; border-radius:10px; border:1px solid #222;"></select>
                 <select id="selE" onchange="Player.changeEp()" style="flex:1; padding:12px; background:#111; color:#fff; border-radius:10px; border:1px solid #222;"></select>
             </div>
-            <p id="mDesc" style="margin-top:20px; color:#888; font-size:14px; line-height:1.6;"></p>
+            <p id="mDesc" style="margin-top:15px; color:#888; font-size:14px;"></p>
             <button class="btn btn-main" id="favBtn" style="width:100%; margin-top:20px;">Listeme Ekle</button>
+            <div class="section" style="margin-left:0; margin-top:30px;">
+                <div style="font-size:16px; font-weight:800; margin-bottom:15px; color:var(--brand);">Oyuncular</div>
+                <div class="h-scroll" id="cast-list" style="padding:0;"></div>
+            </div>
+            <div class="section" style="margin-left:0; margin-top:30px; padding-bottom:50px;">
+                <div style="font-size:16px; font-weight:800; margin-bottom:15px; color:var(--brand);">Yorumlar</div>
+                <div id="comment-list"></div>
+                <input type="text" id="commentInput" placeholder="Yorum yaz..." style="width:100%; padding:15px; background:#111; border:1px solid #222; color:#fff; border-radius:12px; margin-top:10px;">
+                <button class="btn btn-main" style="width:100%; margin-top:10px;" onclick="Player.addComment()">Gönder</button>
+            </div>
         </div>
     </div>
 
@@ -165,7 +189,7 @@
         const K = 'c4c468367090c8c779814353144fe7f7', IMG = 'https://image.tmdb.org/t/p/w500', BIG = 'https://image.tmdb.org/t/p/original';
         let user = JSON.parse(localStorage.getItem('hnfak_session')) || null;
         let db = JSON.parse(localStorage.getItem('hnfak_db')) || [];
-        let curPage = 1, isLoading = false, activePath = 'movie/popular';
+        let curPage = 1, isLoading = false, activePath = 'movie/popular', activeId = null;
 
         const Auth = {
             init() {
@@ -175,33 +199,21 @@
                         document.getElementById('splash').style.display = 'none';
                         if(user) this.success(); else document.getElementById('auth-screen').classList.remove('hidden');
                     }, 500);
-                }, 1000);
+                }, 800);
             },
-            toggle() { const t = document.getElementById('auth-title'); t.innerText = t.innerText === 'GİRİŞ YAP' ? 'KAYIT OL' : 'GİRİŞ YAP'; },
             guest() { this.save({username: 'Misafir', favs: [], hist: []}, true); },
             login() {
-                const u = document.getElementById('lUser').value, p = document.getElementById('lPass').value;
-                if(!u || !p) return;
-                const isReg = document.getElementById('auth-title').innerText === 'KAYIT OL';
-                if(isReg) {
-                    const newUser = {username: u, password: p, favs: [], hist: []};
-                    db.push(newUser); this.save(newUser, true);
-                } else {
-                    const found = db.find(x => x.username === u && x.password === p);
-                    if(found) this.save(found, true); else alert('Hatalı!');
-                }
+                const u = document.getElementById('lUser').value;
+                this.save({username: u || 'Üye', favs: [], hist: []}, true);
             },
             save(u, reload) {
                 user = u; localStorage.setItem('hnfak_session', JSON.stringify(u));
-                const idx = db.findIndex(x => x.username === u.username);
-                if(idx > -1) db[idx] = u; else db.push(u);
-                localStorage.setItem('hnfak_db', JSON.stringify(db));
                 if(reload) location.reload();
             },
             success() {
-                document.getElementById('auth-screen').style.display = 'none';
                 document.getElementById('app-wrapper').style.opacity = '1';
                 document.getElementById('sideName').innerText = user.username;
+                document.getElementById('profileInfo').innerText = "Kullanıcı: " + user.username + "\nFavori Sayısı: " + (user.favs ? user.favs.length : 0);
                 App.init();
             },
             logout() { localStorage.removeItem('hnfak_session'); location.reload(); }
@@ -210,45 +222,38 @@
         const UI = {
             sidebar(s) { document.getElementById('sidebar').classList.toggle('open', s); },
             search(s) { document.getElementById('search-overlay').style.display = s ? 'flex' : 'none'; },
+            settings(s) { document.getElementById('settings-panel').style.display = s ? 'flex' : 'none'; if(s) this.sidebar(false); },
             onScroll(el) {
                 document.getElementById('main-header').classList.toggle('scrolled', el.scrollTop > 50);
-                if (el.scrollTop + el.clientHeight >= el.scrollHeight - 600 && !isLoading) {
-                    App.loadMore();
-                }
+                if (el.scrollTop + el.clientHeight >= el.scrollHeight - 600 && !isLoading) App.loadMore();
             },
-            changeTheme(t) { document.body.className = 'theme-' + t; this.sidebar(false); },
-            openAbout() { alert("HNFAK V12 | Infinity Edition\n\n- Sonsuz Kaydırma\n- Akıllı Kategori Menüsü\n- Türkçe Dublaj/Altyazı Filtresi\n- Misafir Girişi"); }
+            changeTheme(t) { 
+                document.body.className = (t === 'default') ? 'theme-default' : 'theme-' + t;
+                localStorage.setItem('hnfak_theme', t);
+            }
         };
 
         const App = {
-            async init() {
-                this.loadHero();
-                this.loadGrid(activePath);
-                this.renderHistory();
-            },
+            async init() { this.loadHero(); this.loadGrid(activePath); this.renderHistory(); },
             async loadHero() {
                 const r = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${K}&language=tr-TR`);
-                const d = await r.json();
-                const m = d.results[0];
+                const d = await r.json(); const m = d.results[0];
                 document.getElementById('hero-img').src = BIG + m.backdrop_path;
                 document.getElementById('hero-title').innerText = m.title;
                 document.getElementById('hero-btn').onclick = () => Player.open(m.id, 'movie');
             },
             async loadGrid(path, reset = true) {
                 if(reset) { curPage = 1; document.getElementById('grid-list').innerHTML = ''; }
-                isLoading = true;
-                document.getElementById('loader').style.display = 'block';
+                isLoading = true; document.getElementById('loader').style.display = 'block';
                 const r = await fetch(`https://api.themoviedb.org/3/${path}${path.includes('?') ? '&' : '?'}api_key=${K}&language=tr-TR&page=${curPage}`);
                 const d = await r.json();
                 d.results.forEach(m => this.renderCard(m, 'grid-list'));
-                isLoading = false;
-                document.getElementById('loader').style.display = 'none';
+                isLoading = false; document.getElementById('loader').style.display = 'none';
             },
             loadMore() { curPage++; this.loadGrid(activePath, false); },
             renderCard(m, target) {
                 if(!m.poster_path) return;
-                const div = document.createElement('div');
-                div.className = 'card';
+                const div = document.createElement('div'); div.className = 'card';
                 div.innerHTML = `<img src="${IMG}${m.poster_path}"><div class="card-info">${m.title || m.name}</div>`;
                 div.onclick = () => Player.open(m.id, m.title ? 'movie' : 'tv');
                 document.getElementById(target).appendChild(div);
@@ -258,36 +263,33 @@
                     document.getElementById('history-sec').classList.remove('hidden');
                     const hl = document.getElementById('history-list'); hl.innerHTML = '';
                     user.hist.forEach(h => {
-                        const div = document.createElement('div');
-                        div.className = 'card'; div.style.flex = '0 0 100px';
-                        div.innerHTML = `<img src="${IMG}${h.poster}" style="opacity:0.6;">`;
+                        const div = document.createElement('div'); div.className = 'card'; div.style.flex = '0 0 100px';
+                        div.innerHTML = `<img src="${IMG}${h.poster}" style="opacity:0.7;">`;
                         div.onclick = () => Player.open(h.id, h.type);
                         hl.appendChild(div);
                     });
                 }
             },
-            filterGenre(id) { 
-                activePath = `discover/movie?with_genres=${id}`; 
-                this.loadGrid(activePath); 
-                UI.sidebar(false); // Kategori seçilince KAPAT
-            },
-            filterLang(l) { 
-                activePath = `discover/movie?with_original_language=${l}`; 
-                this.loadGrid(activePath); 
-                UI.sidebar(false); // Dil seçilince KAPAT
-            },
-            search(q) { if(q.length > 2) { activePath = `search/multi?query=${q}`; this.loadGrid(activePath); } },
-            shuffle() { Player.open(Math.floor(Math.random() * 500) + 1, 'movie'); }
+            filterGenre(id) { activePath = `discover/movie?with_genres=${id}`; this.loadGrid(activePath); UI.sidebar(false); },
+            filterLang(l) { activePath = `discover/movie?with_original_language=${l}`; this.loadGrid(activePath); UI.sidebar(false); },
+            search(q) { if(q.length > 2) { activePath = `search/multi?query=${q}`; this.loadGrid(activePath); } }
         };
 
         const Player = {
             async open(id, type) {
-                const r = await fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=${K}&language=tr-TR`);
+                activeId = id;
+                const r = await fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=${K}&language=tr-TR&append_to_response=credits`);
                 const d = await r.json();
                 document.getElementById('mTitle').innerText = d.title || d.name;
                 document.getElementById('mDesc').innerText = d.overview;
                 document.getElementById('main-frame').src = `https://vidsrc.xyz/embed/${type}/${id}`;
                 
+                const cl = document.getElementById('cast-list'); cl.innerHTML = '';
+                d.credits.cast.slice(0, 10).forEach(c => {
+                    const pic = c.profile_path ? IMG + c.profile_path : 'https://via.placeholder.com/60x60';
+                    cl.innerHTML += `<div class="cast-card"><img src="${pic}"><div>${c.name}</div></div>`;
+                });
+
                 if(type === 'tv') {
                     document.getElementById('tv-controls').classList.remove('hidden');
                     let sH = ''; d.seasons.forEach(s => sH += `<option value="${s.season_number}">${s.name}</option>`);
@@ -298,12 +300,9 @@
                 if(!user.hist) user.hist = [];
                 user.hist = user.hist.filter(x => x.id !== id);
                 user.hist.unshift({id, type, poster: d.poster_path});
-                Auth.save(user, false); // Yenileme yapma
+                Auth.save(user, false);
                 App.renderHistory();
-
                 document.getElementById('player-modal').style.display = 'flex';
-                document.getElementById('favBtn').innerText = user.favs.some(x => x.id == id) ? 'Listeden Çıkar' : 'Listeme Ekle';
-                document.getElementById('favBtn').onclick = () => this.toggleFav(d, type);
             },
             loadEps(s, count) {
                 let eH = ''; for(let i=1; i<=count; i++) eH += `<option value="${i}">${i}. Bölüm</option>`;
@@ -311,14 +310,13 @@
             },
             changeEp() {
                 const s = document.getElementById('selS').value, e = document.getElementById('selE').value;
-                document.getElementById('main-frame').src = `https://vidsrc.xyz/embed/tv/${activeMedia.id || user.hist[0].id}/${s}/${e}`;
+                document.getElementById('main-frame').src = `https://vidsrc.xyz/embed/tv/${activeId}/${s}/${e}`;
             },
-            toggleFav(d, type) {
-                const idx = user.favs.findIndex(x => x.id == d.id);
-                if(idx > -1) user.favs.splice(idx, 1);
-                else user.favs.push({id: d.id, type, poster: d.poster_path});
-                Auth.save(user, false);
-                document.getElementById('favBtn').innerText = idx > -1 ? 'Listeme Ekle' : 'Listeden Çıkar';
+            addComment() {
+                const inp = document.getElementById('commentInput'); if(!inp.value) return;
+                const div = document.createElement('div'); div.className = 'comment-box';
+                div.innerHTML = `<div style="color:var(--brand); font-size:12px; font-weight:800;">${user.username}</div><div style="font-size:13px; color:#aaa;">${inp.value}</div>`;
+                document.getElementById('comment-list').prepend(div); inp.value = '';
             },
             close() { document.getElementById('player-modal').style.display = 'none'; document.getElementById('main-frame').src = ''; }
         };
