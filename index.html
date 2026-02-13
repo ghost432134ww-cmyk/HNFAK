@@ -3,152 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>HNFAK V14 | SETTINGS ACTIVE</title>
+    <title>HNFAK V15 | FINAL MASTER</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root { --brand: #ff3c00; --bg: #030303; --surface: #0f0f0f; --card: #1a1a1a; --text: #ffffff; --text-dim: #a0a0a0; --border: rgba(255,255,255,0.06); --glow: 0 0 25px rgba(255, 60, 0, 0.4); --accent-gradient: linear-gradient(135deg, #ff3c00, #ff8000); }
-        body.theme-blue { --brand: #007bff; --accent-gradient: linear-gradient(135deg, #007bff, #00d4ff); --glow: 0 0 25px rgba(0, 123, 255, 0.4); }
-        body.theme-red { --brand: #d00000; --accent-gradient: linear-gradient(135deg, #d00000, #ff4d4d); --glow: 0 0 25px rgba(208, 0, 0, 0.4); }
+        body.theme-blue { --brand: #007bff; --accent-gradient: linear-gradient(135deg, #007bff, #00d4ff); }
+        body.theme-red { --brand: #d00000; --accent-gradient: linear-gradient(135deg, #d00000, #ff4d4d); }
         
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; height: 100vh; }
+        body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; height: 100vh; transition: 0.3s; }
 
-        /* Splash & Auth */
+        /* Splash */
         #splash { position: fixed; inset: 0; background: #000; z-index: 200000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .splash-logo { font-size: 60px; font-weight: 900; color: var(--brand); text-shadow: var(--glow); }
+
+        /* Auth */
         #auth-screen { position: fixed; inset: 0; background: radial-gradient(circle at top right, #1a0a05, #000); z-index: 150000; display: flex; align-items: center; justify-content: center; padding: 20px; }
         .auth-box { background: rgba(15, 15, 15, 0.8); backdrop-filter: blur(30px); padding: 40px; border-radius: 35px; width: 100%; max-width: 420px; border: 1px solid var(--border); text-align: center; }
 
-        /* Header */
-        header { position: fixed; top: 0; width: 100%; height: 80px; z-index: 10000; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; background: linear-gradient(180deg, rgba(0,0,0,0.95) 0%, transparent 100%); transition: 0.4s; }
-        header.scrolled { background: rgba(3,3,3,0.98); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border); }
-
-        /* Sidebar */
+        /* Layout */
+        header { position: fixed; top: 0; width: 100%; height: 80px; z-index: 10000; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, transparent 100%); }
         #sidebar { position: fixed; left: -350px; top: 0; width: 320px; height: 100%; background: #080808; z-index: 110000; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); padding: 80px 20px 30px; border-right: 1px solid var(--border); overflow-y: auto; }
         #sidebar.open { left: 0; }
-        .side-item { padding: 12px 15px; border-radius: 12px; color: var(--text-dim); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.2s; font-size: 14px; }
-        .side-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
-        .side-item i { color: var(--brand); width: 22px; text-align: center; font-size: 18px; }
-
-        /* App Layout */
-        #app-wrapper { display: flex; flex-direction: column; height: 100vh; opacity: 0; transition: 1s; }
-        main { flex: 1; overflow-y: auto; padding-bottom: 120px; scroll-behavior: smooth; }
-        .section { margin-top: 30px; }
-        .section-title { font-size: 18px; font-weight: 900; padding: 0 25px; margin-bottom: 15px; border-left: 4px solid var(--brand); margin-left: 25px; padding-left: 10px; }
         
-        /* Cards */
-        .h-scroll { display: flex; overflow-x: auto; gap: 15px; padding: 0 25px 20px; scrollbar-width: none; }
-        .h-scroll::-webkit-scrollbar { display: none; }
-        .card { flex: 0 0 150px; aspect-ratio: 2/3; border-radius: 15px; overflow: hidden; position: relative; cursor: pointer; transition: 0.3s; background: var(--card); border: 1px solid transparent; }
-        .card:hover { transform: scale(1.05); border: 1px solid var(--brand); box-shadow: var(--glow); }
+        main { height: 100vh; overflow-y: auto; scroll-behavior: smooth; padding-bottom: 120px; }
+        .section-title { font-size: 18px; font-weight: 900; padding: 0 25px; margin-bottom: 15px; border-left: 4px solid var(--brand); margin-left: 25px; }
+
+        /* UI Items */
+        .side-item { padding: 12px 15px; border-radius: 12px; color: var(--text-dim); cursor: pointer; display: flex; align-items: center; gap: 12px; margin-bottom: 5px; }
+        .side-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
+        .side-item i { color: var(--brand); width: 20px; }
+
+        .card { flex: 0 0 150px; aspect-ratio: 2/3; border-radius: 15px; overflow: hidden; position: relative; cursor: pointer; transition: 0.3s; background: var(--card); }
+        .card:hover { transform: scale(1.05); box-shadow: var(--glow); }
         .card img { width: 100%; height: 100%; object-fit: cover; }
-        .card-info { position: absolute; bottom: 0; width: 100%; padding: 25px 10px 10px; background: linear-gradient(0deg, #000 0%, transparent 100%); font-size: 11px; text-align: center; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .card-info { position: absolute; bottom: 0; width: 100%; padding: 20px 10px 10px; background: linear-gradient(0deg, #000 0%, transparent 100%); font-size: 11px; text-align: center; }
 
-        /* Player & Cast & Comments */
+        /* Panels */
         .modal { position: fixed; inset: 0; background: #000; z-index: 120000; display: none; flex-direction: column; overflow-y: auto; }
-        .cast-card { flex: 0 0 80px; text-align: center; font-size: 10px; color: var(--text-dim); }
-        .cast-card img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-bottom: 5px; border: 1px solid var(--border); }
-        .comment-box { background: var(--surface); border-radius: 15px; padding: 15px; margin-bottom: 10px; border: 1px solid var(--border); }
-
-        /* Settings Panel Overlay */
         #settings-panel { position: fixed; inset: 0; background: #000; z-index: 130000; display: none; flex-direction: column; padding: 40px 25px; }
 
-        /* Nav & Buttons */
-        #bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; height: 70px; background: rgba(15,15,15,0.95); backdrop-filter: blur(20px); border-radius: 25px; border: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 10000; }
+        .cast-card { flex: 0 0 80px; text-align: center; font-size: 10px; color: var(--text-dim); }
+        .cast-card img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border); }
+
+        #bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; height: 70px; background: rgba(15,15,15,0.95); backdrop-filter: blur(20px); border-radius: 25px; display: flex; justify-content: space-around; align-items: center; z-index: 10000; border: 1px solid var(--border); }
         .nav-link { color: var(--text-dim); font-size: 22px; cursor: pointer; }
         .nav-link.active { color: var(--brand); }
-        .btn { padding: 15px; border-radius: 12px; border: none; font-weight: 800; cursor: pointer; transition: 0.3s; }
+
+        .btn { padding: 15px; border-radius: 12px; border: none; font-weight: 800; cursor: pointer; width: 100%; }
         .btn-main { background: var(--accent-gradient); color: #fff; }
-        .hidden { display: none !important; }
         #loader { text-align: center; padding: 20px; color: var(--brand); display: none; }
+        .hidden { display: none !important; }
     </style>
 </head>
-<body>
+<body class="theme-default">
 
     <div id="splash">
         <div class="splash-logo">HNFAK</div>
-        <div style="width:150px; height:2px; background:#111; margin-top:20px;">
-            <div id="splash-bar" style="width:0%; height:100%; background:var(--brand); transition:1s;"></div>
-        </div>
     </div>
 
     <div id="auth-screen" class="hidden">
         <div class="auth-box">
-            <h1 id="auth-title" style="color:var(--brand); margin-bottom:20px;">GİRİŞ YAP</h1>
-            <input type="text" id="lUser" placeholder="Kullanıcı Adı" style="width:100%; padding:15px; background:#000; border:1px solid #222; color:#fff; border-radius:10px; margin-bottom:10px;">
-            <input type="password" id="lPass" placeholder="Şifre" style="width:100%; padding:15px; background:#000; border:1px solid #222; color:#fff; border-radius:10px; margin-bottom:20px;">
-            <button class="btn btn-main" style="width:100%;" onclick="Auth.login()">SİSTEME GİR</button>
-            <button class="btn" style="width:100%; background:transparent; color:#888; margin-top:10px;" onclick="Auth.guest()">Misafir Olarak Devam Et</button>
+            <h1 style="color:var(--brand); margin-bottom:20px;">HOŞ GELDİN</h1>
+            <input type="text" id="lUser" placeholder="İsim Yazın..." style="width:100%; padding:15px; background:#000; border:1px solid #222; color:#fff; border-radius:10px; margin-bottom:15px;">
+            <button class="btn btn-main" onclick="Auth.login()">GİRİŞ YAP</button>
+            <button class="btn" style="background:transparent; color:#888; margin-top:10px;" onclick="Auth.guest()">Misafir</button>
         </div>
     </div>
 
-    <div id="app-wrapper">
+    <div id="app-wrapper" style="opacity:0; transition:1s;">
         <header id="main-header">
             <i class="fas fa-bars-staggered fa-lg" onclick="UI.sidebar(true)"></i>
-            <div style="font-size:24px; font-weight:900; color:var(--brand); letter-spacing:-1px;">HNFAK</div>
+            <div style="font-size:24px; font-weight:900; color:var(--brand);">HNFAK</div>
             <i class="fas fa-search fa-lg" onclick="UI.search(true)"></i>
         </header>
 
         <div id="search-overlay" style="position:fixed; top:0; width:100%; height:80px; background:#000; z-index:11000; display:none; align-items:center; padding:0 20px;">
-            <input type="text" id="searchInput" placeholder="Film veya dizi ara..." oninput="App.search(this.value)" style="flex:1; background:transparent; border:none; color:#fff; font-size:18px;">
+            <input type="text" id="searchInput" placeholder="Ara..." oninput="App.search(this.value)" style="flex:1; background:transparent; border:none; color:#fff; font-size:18px;">
             <i class="fas fa-times" onclick="UI.search(false)"></i>
         </div>
 
         <div id="sidebar">
-            <div style="text-align:center; margin-bottom:30px;"><h3 id="sideName">Kullanıcı</h3></div>
+            <h3 id="sideName" style="text-align:center; margin-bottom:20px;">Kullanıcı</h3>
             <div class="side-item" onclick="App.filterLang('tr')"><i class="fas fa-microphone"></i> Türkçe Dublaj</div>
             <div class="side-item" onclick="App.filterLang('en')"><i class="fas fa-closed-captioning"></i> Türkçe Altyazı</div>
-            <div class="side-sep" style="height:1px; background:var(--border); margin:15px 0;"></div>
+            <div style="height:1px; background:var(--border); margin:15px 0;"></div>
             <div class="side-item" onclick="App.filterGenre(28)"><i class="fas fa-bolt"></i> Aksiyon</div>
-            <div class="side-item" onclick="App.filterGenre(16)"><i class="fas fa-dragon"></i> Animasyon</div>
             <div class="side-item" onclick="App.filterGenre(35)"><i class="fas fa-laugh"></i> Komedi</div>
             <div class="side-item" onclick="App.filterGenre(27)"><i class="fas fa-ghost"></i> Korku</div>
             <div class="side-item" onclick="App.filterGenre(878)"><i class="fas fa-rocket"></i> Bilim Kurgu</div>
-            <div class="side-sep" style="height:1px; background:var(--border); margin:15px 0;"></div>
+            <div style="height:1px; background:var(--border); margin:15px 0;"></div>
             <div class="side-item" onclick="UI.settings(true)"><i class="fas fa-cog"></i> Ayarlar</div>
             <div class="side-item" onclick="Auth.logout()" style="color:var(--brand);"><i class="fas fa-power-off"></i> Çıkış</div>
         </div>
 
         <div id="settings-panel">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;">
-                <h2 style="font-weight:900;">AYARLAR</h2>
+            <div style="display:flex; justify-content:space-between; margin-bottom:40px;">
+                <h2>AYARLAR</h2>
                 <i class="fas fa-times fa-lg" onclick="UI.settings(false)"></i>
             </div>
-            <div style="margin-bottom:30px;">
-                <p style="color:var(--text-dim); margin-bottom:15px; font-size:14px;">TEMA SEÇİMİ</p>
-                <div style="display:flex; gap:10px;">
-                    <button class="btn" style="background:#ff3c00; flex:1;" onclick="UI.changeTheme('default')">Turuncu</button>
-                    <button class="btn" style="background:#007bff; flex:1;" onclick="UI.changeTheme('blue')">Mavi</button>
-                    <button class="btn" style="background:#d00000; flex:1;" onclick="UI.changeTheme('red')">Kırmızı</button>
-                </div>
+            <p style="margin-bottom:10px; font-size:12px; color:var(--text-dim);">RENK TEMASI</p>
+            <div style="display:flex; gap:10px; margin-bottom:30px;">
+                <button class="btn" style="background:#ff3c00;" onclick="UI.changeTheme('default')">Turuncu</button>
+                <button class="btn" style="background:#007bff;" onclick="UI.changeTheme('blue')">Mavi</button>
+                <button class="btn" style="background:#d00000;" onclick="UI.changeTheme('red')">Kırmızı</button>
             </div>
-            <div class="comment-box">
-                <p style="color:var(--brand); font-weight:800;">PROFİL</p>
-                <p id="profileInfo" style="font-size:14px; margin-top:5px;"></p>
+            <div style="background:var(--surface); padding:20px; border-radius:15px; border:1px solid var(--border);">
+                <p id="profileData"></p>
             </div>
-            <p style="text-align:center; color:#333; font-size:10px; margin-top:auto;">HNFAK V14 | STABLE ENGINE</p>
         </div>
 
         <main id="main-scroll" onscroll="UI.onScroll(this)">
-            <div id="hero" style="height:50vh; position:relative;">
+            <div id="hero" style="height:50vh; position:relative; margin-bottom:30px;">
                 <img id="hero-img" src="" style="width:100%; height:100%; object-fit:cover;">
                 <div style="position:absolute; inset:0; background:linear-gradient(0deg, var(--bg), transparent);"></div>
                 <div style="position:absolute; bottom:20px; left:25px;">
-                    <h1 id="hero-title" style="font-size:28px; font-weight:900;">Yükleniyor...</h1>
-                    <button class="btn btn-main" style="margin-top:10px;" id="hero-btn">Şimdi İzle</button>
+                    <h1 id="hero-title" style="font-size:26px; font-weight:900;">...</h1>
+                    <button class="btn btn-main" id="hero-btn" style="width:auto; padding:10px 30px; margin-top:10px;">İzle</button>
                 </div>
             </div>
 
             <div id="history-sec" class="section hidden">
                 <div class="section-title">İzlemeye Devam Et</div>
-                <div class="h-scroll" id="history-list"></div>
+                <div style="display:flex; overflow-x:auto; gap:15px; padding:0 25px 20px;" id="history-list"></div>
             </div>
 
             <div class="section">
-                <div class="section-title">Popüler</div>
+                <div class="section-title" id="list-title">Popüler</div>
                 <div id="grid-list" style="display:grid; grid-template-columns:repeat(2,1fr); gap:15px; padding:20px;"></div>
-                <div id="loader"><i class="fas fa-circle-notch fa-spin"></i></div>
+                <div id="loader"><i class="fas fa-spinner fa-spin"></i></div>
             </div>
         </main>
 
@@ -161,75 +145,60 @@
 
     <div id="player-modal" class="modal">
         <div style="width:100%; aspect-ratio:16/9; position:sticky; top:0; z-index:100; background:#000;">
-            <i class="fas fa-chevron-down" style="position:absolute; top:20px; left:20px; z-index:110; background:rgba(0,0,0,0.5); padding:12px; border-radius:50%;" onclick="Player.close()"></i>
+            <i class="fas fa-chevron-down" style="position:absolute; top:20px; left:20px; z-index:110; background:rgba(0,0,0,0.5); padding:10px; border-radius:50%;" onclick="Player.close()"></i>
             <iframe id="main-frame" src="" style="width:100%; height:100%; border:none;" allowfullscreen></iframe>
         </div>
         <div style="padding:20px;">
-            <h2 id="mTitle" style="font-size:22px; font-weight:900;">Başlık</h2>
-            <div id="tv-controls" class="hidden" style="display:flex; gap:10px; margin-top:15px;">
-                <select id="selS" onchange="Player.changeEp()" style="flex:1; padding:12px; background:#111; color:#fff; border-radius:10px; border:1px solid #222;"></select>
-                <select id="selE" onchange="Player.changeEp()" style="flex:1; padding:12px; background:#111; color:#fff; border-radius:10px; border:1px solid #222;"></select>
+            <h2 id="mTitle">...</h2>
+            <div id="tv-controls" class="hidden" style="display:flex; gap:10px; margin-top:10px;">
+                <select id="selS" onchange="Player.changeEp()" style="flex:1; padding:10px; background:#111; color:#fff; border-radius:8px;"></select>
+                <select id="selE" onchange="Player.changeEp()" style="flex:1; padding:10px; background:#111; color:#fff; border-radius:8px;"></select>
             </div>
             <p id="mDesc" style="margin-top:15px; color:#888; font-size:14px;"></p>
-            <button class="btn btn-main" id="favBtn" style="width:100%; margin-top:20px;">Listeme Ekle</button>
-            <div class="section" style="margin-left:0; margin-top:30px;">
-                <div style="font-size:16px; font-weight:800; margin-bottom:15px; color:var(--brand);">Oyuncular</div>
-                <div class="h-scroll" id="cast-list" style="padding:0;"></div>
+            <div style="margin-top:25px;">
+                <p style="color:var(--brand); font-weight:800; margin-bottom:10px;">Oyuncular</p>
+                <div style="display:flex; overflow-x:auto; gap:15px;" id="cast-list"></div>
             </div>
-            <div class="section" style="margin-left:0; margin-top:30px; padding-bottom:50px;">
-                <div style="font-size:16px; font-weight:800; margin-bottom:15px; color:var(--brand);">Yorumlar</div>
+            <div style="margin-top:25px; padding-bottom:50px;">
+                <p style="color:var(--brand); font-weight:800; margin-bottom:10px;">Yorumlar</p>
                 <div id="comment-list"></div>
-                <input type="text" id="commentInput" placeholder="Yorum yaz..." style="width:100%; padding:15px; background:#111; border:1px solid #222; color:#fff; border-radius:12px; margin-top:10px;">
-                <button class="btn btn-main" style="width:100%; margin-top:10px;" onclick="Player.addComment()">Gönder</button>
+                <input type="text" id="commentInp" placeholder="Yorum ekle..." style="width:100%; padding:15px; background:#111; border:1px solid #222; color:#fff; border-radius:10px; margin-top:10px;">
+                <button class="btn btn-main" style="margin-top:10px; padding:10px;" onclick="Player.addComment()">Gönder</button>
             </div>
         </div>
     </div>
 
     <script>
         const K = 'c4c468367090c8c779814353144fe7f7', IMG = 'https://image.tmdb.org/t/p/w500', BIG = 'https://image.tmdb.org/t/p/original';
-        let user = JSON.parse(localStorage.getItem('hnfak_session')) || null;
-        let db = JSON.parse(localStorage.getItem('hnfak_db')) || [];
+        let user = JSON.parse(localStorage.getItem('hnfak_v15_user')) || null;
         let curPage = 1, isLoading = false, activePath = 'movie/popular', activeId = null;
 
         const Auth = {
             init() {
                 setTimeout(() => {
-                    document.getElementById('splash-bar').style.width = '100%';
-                    setTimeout(() => {
-                        document.getElementById('splash').style.display = 'none';
-                        if(user) this.success(); else document.getElementById('auth-screen').classList.remove('hidden');
-                    }, 500);
-                }, 800);
+                    document.getElementById('splash').style.display = 'none';
+                    if(user) this.success(); else document.getElementById('auth-screen').classList.remove('hidden');
+                }, 1500);
             },
-            guest() { this.save({username: 'Misafir', favs: [], hist: []}, true); },
-            login() {
-                const u = document.getElementById('lUser').value;
-                this.save({username: u || 'Üye', favs: [], hist: []}, true);
-            },
-            save(u, reload) {
-                user = u; localStorage.setItem('hnfak_session', JSON.stringify(u));
-                if(reload) location.reload();
-            },
+            login() { const n = document.getElementById('lUser').value || 'Üye'; this.save({username: n, favs: [], hist: []}); },
+            guest() { this.save({username: 'Misafir', favs: [], hist: []}); },
+            save(u) { user = u; localStorage.setItem('hnfak_v15_user', JSON.stringify(u)); location.reload(); },
             success() {
                 document.getElementById('app-wrapper').style.opacity = '1';
                 document.getElementById('sideName').innerText = user.username;
-                document.getElementById('profileInfo').innerText = "Kullanıcı: " + user.username + "\nFavori Sayısı: " + (user.favs ? user.favs.length : 0);
+                document.getElementById('profileInfo')?.innerText || (document.getElementById('profileData').innerText = "Kullanıcı: " + user.username);
                 App.init();
             },
-            logout() { localStorage.removeItem('hnfak_session'); location.reload(); }
+            logout() { localStorage.removeItem('hnfak_v15_user'); location.reload(); }
         };
 
         const UI = {
             sidebar(s) { document.getElementById('sidebar').classList.toggle('open', s); },
             search(s) { document.getElementById('search-overlay').style.display = s ? 'flex' : 'none'; },
             settings(s) { document.getElementById('settings-panel').style.display = s ? 'flex' : 'none'; if(s) this.sidebar(false); },
+            changeTheme(t) { document.body.className = 'theme-' + t; this.settings(false); },
             onScroll(el) {
-                document.getElementById('main-header').classList.toggle('scrolled', el.scrollTop > 50);
                 if (el.scrollTop + el.clientHeight >= el.scrollHeight - 600 && !isLoading) App.loadMore();
-            },
-            changeTheme(t) { 
-                document.body.className = (t === 'default') ? 'theme-default' : 'theme-' + t;
-                localStorage.setItem('hnfak_theme', t);
             }
         };
 
@@ -264,7 +233,7 @@
                     const hl = document.getElementById('history-list'); hl.innerHTML = '';
                     user.hist.forEach(h => {
                         const div = document.createElement('div'); div.className = 'card'; div.style.flex = '0 0 100px';
-                        div.innerHTML = `<img src="${IMG}${h.poster}" style="opacity:0.7;">`;
+                        div.innerHTML = `<img src="${IMG}${h.poster}">`;
                         div.onclick = () => Player.open(h.id, h.type);
                         hl.appendChild(div);
                     });
@@ -294,17 +263,18 @@
                     document.getElementById('tv-controls').classList.remove('hidden');
                     let sH = ''; d.seasons.forEach(s => sH += `<option value="${s.season_number}">${s.name}</option>`);
                     document.getElementById('selS').innerHTML = sH;
-                    this.loadEps(1, d.seasons[0].episode_count);
+                    this.loadEps(d.seasons[0].episode_count);
                 } else document.getElementById('tv-controls').classList.add('hidden');
 
                 if(!user.hist) user.hist = [];
-                user.hist = user.hist.filter(x => x.id !== id);
+                user.hist = user.hist.filter(x => x.id !== id).slice(0, 10);
                 user.hist.unshift({id, type, poster: d.poster_path});
-                Auth.save(user, false);
+                localStorage.setItem('hnfak_v15_user', JSON.stringify(user));
                 App.renderHistory();
+
                 document.getElementById('player-modal').style.display = 'flex';
             },
-            loadEps(s, count) {
+            loadEps(count) {
                 let eH = ''; for(let i=1; i<=count; i++) eH += `<option value="${i}">${i}. Bölüm</option>`;
                 document.getElementById('selE').innerHTML = eH;
             },
@@ -313,9 +283,9 @@
                 document.getElementById('main-frame').src = `https://vidsrc.xyz/embed/tv/${activeId}/${s}/${e}`;
             },
             addComment() {
-                const inp = document.getElementById('commentInput'); if(!inp.value) return;
-                const div = document.createElement('div'); div.className = 'comment-box';
-                div.innerHTML = `<div style="color:var(--brand); font-size:12px; font-weight:800;">${user.username}</div><div style="font-size:13px; color:#aaa;">${inp.value}</div>`;
+                const inp = document.getElementById('commentInp'); if(!inp.value) return;
+                const div = document.createElement('div'); div.style.cssText = "background:#111; padding:10px; border-radius:10px; margin-bottom:10px; font-size:13px;";
+                div.innerHTML = `<b style="color:var(--brand);">${user.username}:</b> ${inp.value}`;
                 document.getElementById('comment-list').prepend(div); inp.value = '';
             },
             close() { document.getElementById('player-modal').style.display = 'none'; document.getElementById('main-frame').src = ''; }
